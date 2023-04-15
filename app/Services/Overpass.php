@@ -3,14 +3,14 @@
 namespace App\Services;
 
 use App\Models\OsmInfo;
-use App\Models\Place;
+use App\Models\Branch;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
 
 class Overpass {
 
     /**
-     * @param array<Place> $places
+     * @param array<Branch> $places
      * @return array<OsmInfo>
      * @throws GuzzleException
      */

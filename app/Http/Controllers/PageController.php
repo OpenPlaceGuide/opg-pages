@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Place;
+use App\Models\Branch;
 use App\Services\Overpass;
 use App\Services\Repository;
-use Bame\StaticMap\StaticMap;
 use Bame\StaticMap\TripleZoomMap;
 use Illuminate\Support\Facades\Cache;
 
@@ -16,30 +15,29 @@ class PageController extends Controller
         $repositoryName = 'ethiopia';
 
         $repository = new Repository($repositoryName);
-        $placeInfo = $repository->getPlaceInfo($slug);
-        $logoName = $placeInfo['logo'];
+        $place = $repository->getPlaceInfo($slug);
 
-        $branches = $this->createPlaces($placeInfo['osmBranches'] ?? [ $placeInfo['osm'] ]);
-
-        $branchesInfo = $this->cachedFetchOsmInfo($branches);
+        $branchesInfo = $this->cachedFetchOsmInfo($place->branches);
         $main = $branchesInfo[0];
 
-        $logo = "assets/$repositoryName/$slug/media/$logoName";
+        $logoUrl = $place->getLogoUrl();
 
         return view('page.page')
-            ->with('logo', $logo)
+            ->with('place', $place)
+            ->with('logoUrl', $logoUrl)
             ->with('slug', $slug)
             ->with('main', $main)
+            ->with('gallery', $place->getProcessedGallery('en'))
             ->with('branches', $branchesInfo);
     }
 
     /**
-     * @param array<Place> $places
+     * @param array<Branch> $places
      * @return array<OsmInfo>
      */
     public function cachedFetchOsmInfo(array $places): mixed
     {
-        $cacheKey = implode('|', collect($places)->map(function (Place $place) {
+        $cacheKey = implode('|', collect($places)->map(function (Branch $place) {
             return $place->getKey();
         })->toArray());
 
@@ -49,27 +47,30 @@ class PageController extends Controller
         return $tags;
     }
 
-    /**
-     * @param array<array> $branches
-     * @return array<Place>
-     */
-    private function createPlaces(mixed $branches): array
-    {
-        return collect($branches)->map(function (array $branch) {
-            return new Place($branch['type'], $branch['id']);
-        })->toArray();
-    }
-
-    public function staticMapTest()
+    public function tripleZoomMap($lat, $lon, $text)
     {
         $colors = [
-            [ 0x00, 0x6B, 0x3F ],
-            [ 0xF9, 0xDD, 0x16 ],
-            [ 0xE2, 0x3D, 0x28 ],
+            [0x00, 0x6B, 0x3F],
+            [0xF9, 0xDD, 0x16],
+            [0xE2, 0x3D, 0x28],
         ];
 
-        $map = new TripleZoomMap(8.977596 ,38.76179, 700, 320, 'Bandira Addis Map', $colors, 'opg-pages');
+        $map = new TripleZoomMap(
+            $lat,
+            $lon,
+            700,
+            320,
+            $colors,
+            'https://a.africa.tiles.openplaceguide.org/styles/bright/{Z}/{X}/{Y}.png',
+            'opg-pages');
+        $map->addSignPost(
+            $text,
+            resource_path('images/signpost.png'),
+            resource_path('fonts/NotoSansWithEthiopic.ttf'),
+        );
         $map->sendHeader();
+
+
         return imagepng($map->getImage());
 
     }
