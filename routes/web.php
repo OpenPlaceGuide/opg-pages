@@ -13,4 +13,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/bandira', [\App\Http\Controllers\PageController::class, 'bandira']);
+Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'page']);
