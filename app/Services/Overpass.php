@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\OsmInfo;
 use App\Models\Place;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Log;
 
 class Overpass {
 
@@ -16,19 +17,24 @@ class Overpass {
     public function fetchOsmInfo(array $places) {
         $objectQuerys = '';
         foreach($places as $place) {
-            $objectQuerys .= sprintf('%s(id:%d);', $place->osmType, $place->osmId,) . PHP_EOL;
+            $objectQuerys .= sprintf('%s(id:%d);', $place->osmType, $place->osmId,);
             $result[$place->getKey()] = null;
         }
 
         $client = new \GuzzleHttp\Client(['base_uri' => 'https://overpass.kumi.systems/api/']);
         $query = $this->buildQuery($objectQuerys);
+
+        $requestStart = microtime(true);
         $response = $client->get('interpreter?data=' . urlencode($query));
+        $requestTime = microtime(true) - $requestStart;
+        Log::notice(sprintf('Overpass request for %s took %fs', $objectQuerys, $requestTime));
 
         $data = json_decode($response->getBody());
 
         foreach($data->elements as $element) {
             $result[$element->type . $element->id] = $this->createOsmInfoFromElement($element);;
         }
+
         return array_values($result);
     }
 
@@ -37,7 +43,8 @@ class Overpass {
         $query = <<<OVERPASS
 [out:json][timeout:25];
 (
-$objectQuerys);
+$objectQuerys
+);
 out center;
 >;
 OVERPASS;

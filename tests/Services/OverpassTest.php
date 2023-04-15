@@ -5,7 +5,7 @@ namespace Tests\Services;
 use App\Models\OsmInfo;
 use App\Models\Place;
 use App\Services\Overpass;
-use PHPUnit\Framework\TestCase;
+use Tests\TestCase;
 
 class OverpassTest extends TestCase
 {
