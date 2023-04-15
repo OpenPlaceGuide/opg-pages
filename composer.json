@@ -4,8 +4,15 @@
     "description": "The Laravel Framework.",
     "keywords": ["framework", "laravel"],
     "license": "MIT",
+    "repositories": {
+        "staticmaplite": {
+            "type": "vcs",
+            "url": "https://github.com/OpenPlaceGuide/staticmaplite"
+        }
+    },
     "require": {
         "php": "^8.1",
+        "dfacts/staticmaplite": "dev-master",
         "guzzlehttp/guzzle": "^7.2",
         "laravel/framework": "^10.0",
         "laravel/sanctum": "^3.2",

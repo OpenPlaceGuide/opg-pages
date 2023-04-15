@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Place;
 use App\Services\Overpass;
 use App\Services\Repository;
+use Bame\StaticMap\StaticMap;
+use Bame\StaticMap\TripleZoomMap;
 use Illuminate\Support\Facades\Cache;
 
 class PageController extends Controller
@@ -56,5 +58,19 @@ class PageController extends Controller
         return collect($branches)->map(function (array $branch) {
             return new Place($branch['type'], $branch['id']);
         })->toArray();
+    }
+
+    public function staticMapTest()
+    {
+        $colors = [
+            [ 0x00, 0x6B, 0x3F ],
+            [ 0xF9, 0xDD, 0x16 ],
+            [ 0xE2, 0x3D, 0x28 ],
+        ];
+
+        $map = new TripleZoomMap(8.977596 ,38.76179, 700, 320, 'Bandira Addis Map', $colors, 'opg-pages');
+        $map->sendHeader();
+        return imagepng($map->getImage());
+
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "622d23e7a8b42ab0f737489e3cda3da1",
+    "content-hash": "c68aa8bccc594d16a17a32ede4f917e6",
     "packages": [
         {
             "name": "brick/math",
@@ -61,6 +61,33 @@
                 }
             ],
             "time": "2022-08-10T22:54:19+00:00"
+        },
+        {
+            "name": "dfacts/staticmaplite",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/OpenPlaceGuide/staticmaplite.git",
+                "reference": "1ce73fcd38de5f5f1b658c8f7e47b5ce94b34784"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/OpenPlaceGuide/staticmaplite/zipball/1ce73fcd38de5f5f1b658c8f7e47b5ce94b34784",
+                "reference": "1ce73fcd38de5f5f1b658c8f7e47b5ce94b34784",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Bame\\StaticMap\\": "src/"
+                }
+            },
+            "description": "A library to build static map images based on openstreetmap.",
+            "support": {
+                "source": "https://github.com/OpenPlaceGuide/staticmaplite/tree/master"
+            },
+            "time": "2023-04-15T09:28:21+00:00"
         },
         {
             "name": "dflydev/dot-access-data",
@@ -7827,7 +7854,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "dfacts/staticmaplite": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
