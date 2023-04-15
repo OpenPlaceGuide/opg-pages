@@ -17,6 +17,6 @@ License: Undecided, please contact us if you are interested to use any of this.
   ethiopia -> ../../storage/app/repositories/opg-data-ethiopia/places
   ```
 
-## Installation
+## Fonts for Static Map
 
-* Install `/usr/share/fonts/truetype/freefont/FreeSansBold.ttf` (apt install ...)
+see `resources/fonts/README.md`
