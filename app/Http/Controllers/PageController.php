@@ -10,12 +10,25 @@ use Illuminate\Support\Facades\Cache;
 
 class PageController extends Controller
 {
-    public function page($slug)
+    private Repository $repository;
+
+    public function __construct()
     {
         $repositoryName = 'ethiopia';
+        $this->repository = new Repository($repositoryName);
+    }
 
-        $repository = new Repository($repositoryName);
-        $place = $repository->getPlaceInfo($slug);
+
+    /**
+     * Place page
+     */
+    public function page(string $slug)
+    {
+        if ($this->repository->isType($slug)) {
+            return $this->overview($slug);
+        }
+
+        $place = $this->repository->getPlaceInfo($slug);
 
         $branchesInfo = $this->cachedFetchOsmInfo($place->branches);
         $main = $branchesInfo[0];
@@ -29,6 +42,19 @@ class PageController extends Controller
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery('en'))
             ->with('branches', $branchesInfo);
+    }
+
+    /**
+     * POI overview page
+     */
+    public function overview(string $slug)
+    {
+        $type = $this->repository->getTypeInfo($slug);
+        $places = (new Overpass())->fetchOsmOverview($type);
+
+        return view('page.overview')
+            ->with('type', $type)
+            ->with('places', $places);
     }
 
     /**
