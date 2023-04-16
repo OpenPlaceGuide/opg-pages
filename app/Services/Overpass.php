@@ -26,50 +26,13 @@ class Overpass
 
         $data = $this->runQuery($objectQuerys);
         foreach ($data->elements as $element) {
+            if ($element->type === 'area') {
+                continue;
+            }
             $result[$element->type . $element->id] = $this->createOsmInfoFromElement($element);;
         }
 
         return array_values($result);
-    }
-
-    public function fetchOsmOverview(\App\Models\PoiType $type)
-    {
-        $key = $type->tags[0]['key']; // FIXME: support multiple tags, currently taking the first one
-        $value = $type->tags[0]['value'];
-//        $poly = implode(' ', $type->repository->getAreaPoly());
-        $innerQuery = sprintf('nwr["%s"="%s"];', $key, $value);
-
-        $result = [];
-        $data = $this->runQuery($innerQuery);
-
-        foreach ($data->elements as $element) {
-            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($element);;
-        }
-
-        return array_values($result);
-
-    }
-
-    protected function buildQuery(string $objectQuerys): string
-    {
-        $query = <<<OVERPASS
-[out:json][timeout:25];
-(
-$objectQuerys
-);
-out center 10;
->;
-OVERPASS;
-        return $query;
-    }
-
-    private function createOsmInfoFromElement(mixed $element)
-    {
-        if ($element->type === 'node') {
-            return new OsmInfo($element->lat, $element->lon, $element->tags);
-        }
-
-        return new OsmInfo($element->center->lat, $element->center->lon, $element->tags);
     }
 
     /**
@@ -80,17 +43,24 @@ OVERPASS;
     public function runQuery(string $objectQuerys): mixed
     {
         $client = new \GuzzleHttp\Client([
-                'base_uri' => 'https://overpass.kumi.systems/api/',
-                'headers' => ['user-agent' => $this->buildUserAgent()]
+            'base_uri' => 'https://overpass.kumi.systems/api/',
+            'headers' => ['user-agent' => $this->buildUserAgent()]
         ]);
 
         $query = $this->buildQuery($objectQuerys);
 
         $requestStart = microtime(true);
         try {
-            $response = $client->get('interpreter?data=' . urlencode($query));
+            $response = $client->post('interpreter',
+                [
+                    'form_params' =>
+                        [
+                            'data' => $query
+                        ]
+                ]
+            );
         } catch (ClientException $e) {
-            Log::error(sprintf(sprintf('Overpass error, time %fs full query:',  microtime(true) - $requestStart) . PHP_EOL . $query));
+            Log::error(sprintf(sprintf('Overpass error, time %fs full query:', microtime(true) - $requestStart) . PHP_EOL . $query));
             throw $e;
         }
         $requestTime = microtime(true) - $requestStart;
@@ -98,7 +68,7 @@ OVERPASS;
         $data = json_decode($response->getBody());
 
         if (isset($data->remark) && str_contains($data->remark, 'timed out')) {
-            Log::error(sprintf(sprintf('Overpass error, time %fs full query:',  microtime(true) - $requestStart) . PHP_EOL . $query));
+            Log::error(sprintf(sprintf('Overpass error, time %fs full query:', microtime(true) - $requestStart) . PHP_EOL . $query));
             throw new \Exception($data->remark);
         }
 
@@ -113,5 +83,49 @@ OVERPASS;
             throw new \InvalidArgumentException('Please configure APP_TECHNICAL_CONTACT in your environment file. This will be used to identify external requests');
         }
         return sprintf('opg-pages/%s (%s, %s)', $version, url(''), $contact);
+    }
+
+    protected function buildQuery(string $objectQuerys): string
+    {
+        $query = <<<OVERPASS
+[out:json][timeout:10];
+(
+$objectQuerys
+);
+out center;
+>;
+OVERPASS;
+        return $query;
+    }
+
+    private function createOsmInfoFromElement(mixed $element)
+    {
+        if ($element->type === 'node') {
+            return new OsmInfo($element->lat, $element->lon, $element->tags);
+        }
+
+        return new OsmInfo($element->center->lat, $element->center->lon, $element->tags);
+    }
+
+    public function fetchOsmOverview(\App\Models\PoiType $type)
+    {
+        $key = $type->tags[0]['key']; // FIXME: support multiple tags, currently taking the first one
+        $value = $type->tags[0]['value'];
+//        $poly = implode(' ', $type->repository->getAreaPoly());
+        $innerQuery = sprintf('area["%s"="%s"];', 'wikidata', 'Q14201325'); // FIXME: !!
+        $innerQuery .= sprintf('nwr["%s"="%s"](area);', $key, $value);
+
+        $result = [];
+        $data = $this->runQuery($innerQuery);
+
+        foreach ($data->elements as $element) {
+            if ($element->type === 'area') {
+                continue;
+            }
+            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($element);;
+        }
+
+        return array_values($result);
+
     }
 }
