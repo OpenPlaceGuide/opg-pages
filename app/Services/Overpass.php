@@ -36,11 +36,8 @@ class Overpass
     {
         $key = $type->tags[0]['key']; // FIXME: support multiple tags, currently taking the first one
         $value = $type->tags[0]['value'];
-        $poly = implode(' ', $type->repository->getAreaPoly());
-        $innerQuery = '';
-        foreach (['node', 'way', 'relation'] as $osmType) {
-            $innerQuery .= sprintf('%s["%s"="%s"](poly:"%s");', $osmType, $key, $value, $poly);
-        }
+//        $poly = implode(' ', $type->repository->getAreaPoly());
+        $innerQuery = sprintf('nwr["%s"="%s"];', $key, $value);
 
         $result = [];
         $data = $this->runQuery($innerQuery);
@@ -82,7 +79,11 @@ OVERPASS;
      */
     public function runQuery(string $objectQuerys): mixed
     {
-        $client = new \GuzzleHttp\Client(['base_uri' => 'https://overpass.kumi.systems/api/']);
+        $client = new \GuzzleHttp\Client([
+                'base_uri' => 'https://overpass.kumi.systems/api/',
+                'headers' => ['user-agent' => $this->buildUserAgent()]
+        ]);
+
         $query = $this->buildQuery($objectQuerys);
 
         $requestStart = microtime(true);
@@ -104,5 +105,13 @@ OVERPASS;
         return $data;
     }
 
-
+    private function buildUserAgent()
+    {
+        $contact = config('app.technical_contact');
+        $version = 'dev'; // FIXME: detect proper version
+        if (empty($contact)) {
+            throw new \InvalidArgumentException('Please configure APP_TECHNICAL_CONTACT in your environment file. This will be used to identify external requests');
+        }
+        return sprintf('opg-pages/%s (%s, %s)', $version, url(''), $contact);
+    }
 }

@@ -17,6 +17,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'technical_contact' => env('APP_TECHNICAL_CONTACT', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
