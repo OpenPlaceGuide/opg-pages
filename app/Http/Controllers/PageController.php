@@ -35,13 +35,21 @@ class PageController extends Controller
 
         $logoUrl = $place->getLogoUrl();
 
+        $newPlaceContent = <<<YAML
+osm:
+   id: {$place->branches[0]->osmId}
+   type: {$place->branches[0]->osmType}
+YAML;
+
+
         return view('page.page')
             ->with('place', $place)
             ->with('logoUrl', $logoUrl)
             ->with('slug', $slug)
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery('en'))
-            ->with('branches', $branchesInfo);
+            ->with('branches', $branchesInfo)
+            ->with('newPlaceContent', $newPlaceContent);
     }
 
     /**
