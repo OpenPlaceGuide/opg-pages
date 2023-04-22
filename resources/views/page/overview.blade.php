@@ -1,3 +1,5 @@
+@extends('layouts.index')
+
 {{ ucfirst($type->getPlural()) }} in XYZ
 
 <h2>Location(s)</h2>

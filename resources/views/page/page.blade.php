@@ -1,3 +1,6 @@
+@extends('layouts.index')
+
+
 <img height="100" src="{{ asset($logoUrl) }} ">
 
 {{ $main->tags->name }}

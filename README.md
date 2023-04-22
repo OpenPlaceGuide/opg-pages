@@ -33,13 +33,13 @@ such as logos, photos, extended descriptions, menu cards and so on.
 
 The following URL paths work:
 
-/name-of-place -> shows the place / business page of a place. This can be also a group of places (branches of a bank for example)
-/type-of-place -> shows the top places of this kind, links to the subdivisions
-/subdivision -> shows the top places in the subdivision and links to the type base subdivisions
-/subdivision/type-of-place -> show the top places but also all other places
-/n123456 -> OSM object with node ID 123456 (same as name-of-place), it redirects to the named place, if it is found in the places list
-/w123456 -> OSM object with way ID, same as above
-/r123456 -> OSM object with relation ID, same as above
+* `/name-of-place` -> shows the place or business page of a place. This can be also a group of places (branches of a bank for example)
+* `/type-of-place` -> shows the top places of this kind, links to the subdivisions
+* `/subdivision` -> shows the top places in the subdivision and links to the type base subdivisions
+* `/subdivision/type-of-place` -> show the top places but also all other places
+* `/n123456/{optional-slug}` -> OSM object with node ID 123456 (same as name-of-place), it redirects to the named place, if it is found in the places list
+* `/w123456/{optional-slug}` -> OSM object with way ID, same as above
+* `/r123456/{optional-slug}` -> OSM object with relation ID, same as above
 
 All types of pages can contain descriptive text, for example about the area or the type of place as well as a logo.
 
