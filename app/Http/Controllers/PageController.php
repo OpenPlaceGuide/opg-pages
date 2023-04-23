@@ -8,6 +8,7 @@ use App\Services\Language;
 use App\Services\Overpass;
 use App\Services\Repository;
 use Bame\StaticMap\TripleZoomMap;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Route;
 
@@ -124,8 +125,10 @@ YAML;
         return (new Overpass())->fetchOsmInfo($places);
     }
 
-    public function tripleZoomMap($lat, $lon, $text)
+    public function tripleZoomMap($lat, $lon, Request $request)
     {
+        $text = $request->query('text');
+
         $colors = [
             [0x00, 0x6B, 0x3F],
             [0xF9, 0xDD, 0x16],

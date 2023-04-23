@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/assets/static-map/{lat}/{lon}/{text}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
+Route::get('/assets/static-map/{lat}/{lon}/{slug}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
     ->name('tripleZoomMap');
 
 $routes = function($locale) {
