@@ -22,8 +22,8 @@ class PageController extends Controller
 
     public function page(string $slug)
     {
-        if ($this->repository->isType($slug)) {
-            return $this->overview($slug);
+        if ($this->repository->isArea($slug)) {
+            return $this->area($slug);
         }
 
         return $this->place($slug);
@@ -77,14 +77,14 @@ YAML;
     /**
      * POI overview page
      */
-    public function overview(string $slug)
+    public function area(string $slug)
     {
-        $type = $this->repository->getTypeInfo($slug);
-        $places = (new Overpass())->fetchOsmOverview($type);
+        $types = $this->repository->listTypes($slug);
+        $area = $this->repository->getAreaInfo($slug);
 
-        return view('page.overview')
-            ->with('type', $type)
-            ->with('places', $places);
+        return view('page.area')
+            ->with('area', $area)
+            ->with('types', $types);
     }
 
     /**

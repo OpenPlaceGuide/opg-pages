@@ -17,4 +17,4 @@ Route::get('/assets/static-map/{lat}/{lon}/{text}.png', [\App\Http\Controllers\P
     ->name('tripleZoomMap');
 
 Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'page']);
-Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage']);
+Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage'])->name('typesInArea');

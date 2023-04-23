@@ -1,6 +1,6 @@
 @extends('layouts.index')
 
-{{ ucfirst($type->getPlural()) }} in {{ $area->names['en'] }}
+<h1>{{ ucfirst($type->getPlural()) }} in {{ $area->names['en'] }}</h1>
 
 <h2>Location(s)</h2>
 

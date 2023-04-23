@@ -90,4 +90,16 @@ class Repository
 
         return new Area($this, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['tags']);
     }
+
+    public function listTypes(): array
+    {
+        $typeFiles = glob($this->getTypeFileName('*'));
+        $result = [];
+        foreach($typeFiles as $filename) {
+            $slug = basename(dirname($filename));
+            $result[] = $this->getTypeInfo($slug);
+        }
+
+        return $result;
+    }
 }
