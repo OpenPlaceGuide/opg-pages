@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/assets/static-map/{lat}/{lon}/{text}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
+Route::get('/assets/static-map/{lat}/{lon}/{text}.png', [\App\Http\Controllers\PageController::class, '#tripleZoomMap'] )
     ->name('tripleZoomMap');
+
 Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'page']);
+Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage']);

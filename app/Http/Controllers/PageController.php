@@ -19,15 +19,39 @@ class PageController extends Controller
     }
 
 
-    /**
-     * Place page
-     */
+
     public function page(string $slug)
     {
         if ($this->repository->isType($slug)) {
             return $this->overview($slug);
         }
 
+        return $this->place($slug);
+    }
+
+    public function typePage(string $areaSlug, string $typeSlug)
+    {
+        if (!$this->repository->isType($typeSlug)) {
+            throw new \InvalidArgumentException(sprintf('%s is not a valid place type', $typeSlug));
+        }
+
+        if (!$this->repository->isArea($areaSlug)) {
+            throw new \InvalidArgumentException(sprintf('%s is not a valid place type', $typeSlug));
+        }
+
+        $type = $this->repository->getTypeInfo($typeSlug);
+        $area = $this->repository->getAreaInfo($areaSlug);
+
+        $places = (new Overpass())->fetchOsmOverview($type, $area);
+
+        return view('page.overview')
+            ->with('area', $area)
+            ->with('type', $type)
+            ->with('places', $places);
+    }
+
+    public function place(string $slug)
+    {
         $place = $this->repository->getPlaceInfo($slug);
 
         $branchesInfo = $this->fetchOsmInfo($place->branches);
@@ -41,7 +65,6 @@ osm:
    type: {$place->branches[0]->osmType}
 YAML;
 
-
         return view('page.page')
             ->with('place', $place)
             ->with('logoUrl', $logoUrl)
@@ -51,7 +74,6 @@ YAML;
             ->with('branches', $branchesInfo)
             ->with('newPlaceContent', $newPlaceContent);
     }
-
     /**
      * POI overview page
      */

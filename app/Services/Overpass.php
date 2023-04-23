@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Area;
 use App\Models\Branch;
 use App\Models\OsmInfo;
 use GuzzleHttp\Exception\ClientException;
@@ -118,12 +119,12 @@ OVERPASS;
         return new OsmInfo($element->center->lat, $element->center->lon, $element->tags);
     }
 
-    public function fetchOsmOverview(\App\Models\PoiType $type)
+    public function fetchOsmOverview(\App\Models\PoiType $type, Area $area)
     {
         $key = $type->tags[0]['key']; // FIXME: support multiple tags, currently taking the first one
         $value = $type->tags[0]['value'];
-//        $poly = implode(' ', $type->repository->getAreaPoly());
-        $innerQuery = sprintf('area["%s"="%s"];', 'wikidata', 'Q14201325'); // FIXME: !!
+
+        $innerQuery = sprintf('area["%s"="%s"];', $area->tags[0]['key'], $area->tags[0]['value']); // FIXME: only first key/value supported
         $innerQuery .= sprintf('nwr["%s"="%s"](area);', $key, $value);
 
         $result = [];

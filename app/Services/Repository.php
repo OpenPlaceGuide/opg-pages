@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Area;
 use App\Models\Branch;
 use App\Models\Place;
 use App\Models\PoiType;
@@ -68,21 +69,25 @@ class Repository
         return new PoiType($this, $slug, $parsed['logo'] ?? null, $parsed['tags'], $parsed['name'], $parsed['plural']);
     }
 
-    public function getAreaPoly()
+    public function isArea(string $slug): bool
     {
-        $area = file_get_contents((storage_path(
-            sprintf('app/repositories/opg-data-%s/area.json', $this->name)
-        )));
+        return file_exists($this->getAreaFileName($slug));
 
-        $parsed = json_decode($area);
-        $polyCoordinates = $parsed->geometry->coordinates[0];
+    }
 
-        $result = [];
-        foreach($polyCoordinates as $tuple) {
-            $result[] = $tuple[0];
-            $result[] = $tuple[1];
-        }
+    private function getAreaFileName(string $slug): string
+    {
+        return (storage_path(
+            sprintf('app/repositories/opg-data-%s/places/%s/area.yaml', $this->name, $slug)
+        ));
+    }
 
-        return $result;
+    public function getAreaInfo(string $areaSlug)
+    {
+        $yamlSource = file_get_contents($this->getAreaFileName($areaSlug));
+
+        $parsed = Yaml::parse($yamlSource);
+
+        return new Area($this, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['tags']);
     }
 }
