@@ -10,6 +10,7 @@ use App\Services\Repository;
 use Bame\StaticMap\TripleZoomMap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Route;
 
 class PageController extends Controller
@@ -148,10 +149,14 @@ YAML;
             resource_path('images/signpost.png'),
             resource_path('fonts/NotoSansWithEthiopic.ttf'),
         );
-        $map->sendHeader();
 
+//        $map->sendHeader();
 
-        return imagepng($map->getImage());
+        $response = Response::stream(function() use($map) {
+            imagepng($map->getImage());
+        }, 200, ["Content-Type"=> 'image/png']);
+
+        return $response;
 
     }
 }
