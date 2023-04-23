@@ -2,22 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\Fallback;
 use App\Models\Branch;
+use App\Services\Language;
 use App\Services\Overpass;
 use App\Services\Repository;
 use Bame\StaticMap\TripleZoomMap;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 
 class PageController extends Controller
 {
-    public function page($slug)
+    private Repository $repository;
+
+    public function __construct()
     {
         $repositoryName = 'ethiopia';
+        $this->repository = new Repository($repositoryName);
 
-        $repository = new Repository($repositoryName);
-        $place = $repository->getPlaceInfo($slug);
+        if (Route::current()) {
+            $language = trim(Route::current()->getPrefix(), '/');
+            if (!empty($language)) {
+                App::setLocale($language);
+            }
+        }
+    }
 
-        $branchesInfo = $this->cachedFetchOsmInfo($place->branches);
+    public function page(string $slug)
+    {
+        if ($this->repository->isArea($slug)) {
+            return $this->area($slug);
+        }
+
+        return $this->place($slug);
+    }
+
+
+    public function place(string $slug)
+    {
+        $place = $this->repository->getPlaceInfo($slug);
+
+        $branchesInfo = $this->fetchOsmInfo($place->branches);
         $main = $branchesInfo[0];
 
         $logoUrl = $place->getLogoUrl();
@@ -28,27 +54,81 @@ class PageController extends Controller
             ->with('slug', $slug)
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery('en'))
-            ->with('branches', $branchesInfo);
+            ->with('branches', $branchesInfo)
+            ->with('newPlaceUrl', null);
+    }
+
+    public function osmPlace($type, $id)
+    {
+        $branch = new Branch($type, $id);
+        $main = $this->fetchOsmInfo([$branch])[0];
+
+        $newPlaceContent = <<<YAML
+osm:
+   id: {$branch->osmId}
+   type: {$branch->osmType}
+YAML;
+
+        $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
+        $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
+        return view('page.page')
+            ->with('place', null)
+            ->with('logoUrl', null)
+            ->with('slug', null)
+            ->with('main', $main)
+            ->with('gallery', [])
+            ->with('branches', [$main])
+            ->with('newPlaceUrl', $newPlaceUrl);
+
+    }
+
+    public function typePage(string $areaSlug, string $typeSlug)
+    {
+        if (!$this->repository->isType($typeSlug)) {
+            throw new \InvalidArgumentException(sprintf('%s is not a valid place type', $typeSlug));
+        }
+
+        if (!$this->repository->isArea($areaSlug)) {
+            throw new \InvalidArgumentException(sprintf('%s is not a valid place type', $typeSlug));
+        }
+
+        $type = $this->repository->getTypeInfo($typeSlug);
+        $area = $this->repository->getAreaInfo($areaSlug);
+
+        $places = (new Overpass())->fetchOsmOverview($type, $area);
+
+        return view('page.overview')
+            ->with('area', $area)
+            ->with('type', $type)
+            ->with('places', $places);
+    }
+
+    /**
+     * POI overview page
+     */
+    public function area(string $slug)
+    {
+        $types = $this->repository->listTypes($slug);
+        $area = $this->repository->getAreaInfo($slug);
+
+        return view('page.area')
+            ->with('area', $area)
+            ->with('types', $types);
     }
 
     /**
      * @param array<Branch> $places
      * @return array<OsmInfo>
      */
-    public function cachedFetchOsmInfo(array $places): mixed
+    private function fetchOsmInfo(array $places): array
     {
-        $cacheKey = implode('|', collect($places)->map(function (Branch $place) {
-            return $place->getKey();
-        })->toArray());
-
-        $tags = Cache::remember($cacheKey, 300, function () use ($places) {
-            return (new Overpass())->fetchOsmInfo($places);
-        });
-        return $tags;
+        return (new Overpass())->fetchOsmInfo($places);
     }
 
-    public function tripleZoomMap($lat, $lon, $text)
+    public function tripleZoomMap($lat, $lon, Request $request)
     {
+        $text = $request->query('text');
+
         $colors = [
             [0x00, 0x6B, 0x3F],
             [0xF9, 0xDD, 0x16],

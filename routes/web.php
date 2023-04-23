@@ -13,6 +13,27 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/assets/static-map/{lat}/{lon}/{text}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
+Route::get('/assets/static-map/{lat}/{lon}/{slug}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
     ->name('tripleZoomMap');
-Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'page']);
+
+$routes = function($locale) {
+    Route::get('/{osmTypeLetter}{osmId}/{slug?}', [\App\Http\Controllers\PageController::class, 'osmPlace'])
+        ->where('osmTypeLetter', '[nwr]')
+        ->where('osmId', '[0-9]*')
+        ->name('osmPlace' . '.' . $locale);
+
+    Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'page'])
+        ->where('slug', '[a-z-]{3,}')
+        ->name('page' . '.' . $locale);
+
+    Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage'])
+        ->where('typeSlug', '[a-z-]{3,}')
+        ->where('areaSlug', '[a-z-]{3,}')
+        ->name('typesInArea' . '.' . $locale);
+};
+
+foreach(config('app.additional_locales') as $locale) {
+    Route::prefix($locale. '/')->group(function() use ($locale, $routes) { $routes($locale); });
+}
+
+$routes(config('app.locale'));

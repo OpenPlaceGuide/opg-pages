@@ -17,6 +17,8 @@ return [
 
     'name' => env('APP_NAME', 'Laravel'),
 
+    'technical_contact' => env('APP_TECHNICAL_CONTACT', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
@@ -94,6 +96,8 @@ return [
     | the language folders that are provided through your application.
     |
     */
+
+    'additional_locales' => ['am', 'de'],
 
     'fallback_locale' => 'en',
 
@@ -209,7 +213,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'ExampleClass' => App\Example\ExampleClass::class,
+        'Fallback' => App\Facades\Fallback::class,
     ])->toArray(),
 
 ];

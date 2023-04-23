@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Facades\FallbackImplementation;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,7 +13,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        App::bind('fallback', function()
+        {
+            return new FallbackImplementation();
+        });
     }
 
     /**
