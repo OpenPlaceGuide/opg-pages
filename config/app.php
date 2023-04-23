@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'am',
 
     /*
     |--------------------------------------------------------------------------
@@ -211,7 +211,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Language' => App\Facades\Fallback::class,
+        'Fallback' => App\Facades\Fallback::class,
     ])->toArray(),
 
 ];

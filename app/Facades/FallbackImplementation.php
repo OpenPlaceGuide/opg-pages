@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\App;
 
 class FallbackImplementation
 {
-    public function resolve($objectOrArray): string
+    public function resolve($objectOrArray, $language = null): string
     {
-        $lang = App::currentLocale();
+        if (!$language) {
+            $language = App::currentLocale();
+        }
+
         $array = (array) $objectOrArray;
 
-        if (!empty($array[$lang])) {
-            return $array[$lang];
+        if (!empty($array[$language])) {
+            return $array[$language];
         }
 
         if (!empty($array['default'])) {
@@ -26,7 +29,7 @@ class FallbackImplementation
         return '(empty)';
     }
 
-    public function field($objectOrArray, $field, $delimiter = ':'): string
+    public function field($objectOrArray, $field, $delimiter = ':', $language = null): string
     {
         $array = (array) $objectOrArray;
 
@@ -37,11 +40,11 @@ class FallbackImplementation
         foreach($array as $key=>$value)
         {
             if (str_starts_with($key, $prefix)) {
-                $language = substr($key, strlen($prefix));
-                $result[$language] = $value;
+                $lang = substr($key, strlen($prefix));
+                $result[$lang] = $value;
             }
         }
 
-        return $this->resolve($result);
+        return $this->resolve($result, $language);
     }
 }

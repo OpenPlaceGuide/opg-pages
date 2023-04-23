@@ -1,17 +1,21 @@
 @extends('layouts.index')
 
-<img height="100" src="{{ asset($logoUrl) }} ">
+<h1>
+    @if($logoUrl)
+        <img height="100" src="{{ asset($logoUrl) }} ">
+    @endif
 
-{{ $main->tags->name }}
+    {{ Fallback::field($main->tags, 'name') }}
+</h1>
 
 
 <script>
     function start() {
         var name = window.prompt('Name')
-        window.open('https://github.com/OpenPlaceGuide/data/new/main/places/'+ name + '/place.yaml?value={!! urlencode($newPlaceContent) !!}');
+        window.open('');
     }
 </script>
-<a href="javascript:start()">Create short URL / start contributing</a>
+<a href="{{ $newPlaceUrl }}">Create short URL / start contributing</a>
 
 
 <h2>Gallery</h2>
@@ -23,9 +27,11 @@
 
 <h2>Location(s)</h2>
 @foreach($branches as $branch)
-    <h3>{{ Language::field($branch->tags, 'name') }}</h3>
+    <h3>{{ Fallback::field($branch->tags, 'name') }}</h3>
 
-    <img src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'text' => Language::field($branch->tags, 'name') }}">
-    <a href="{{ $branch->idInfo->getOsmUrl() }}">OSM Info</a>
-
+    <img src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'text' => Fallback::field($branch->tags, 'name')]) }}">
+    <ul>
+        <li><a href="{{ $branch->idInfo->getOsmUrl() }}" target="_blank">OSM Info</a></li>
+        <li><a href="{{ $branch->idInfo->getOsmUrl('https://osmapp.org') }}" target="_blank">OSM App</a></li>
+    </ul>
 @endforeach

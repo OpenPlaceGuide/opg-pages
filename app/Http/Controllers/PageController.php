@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Facades\Fallback;
 use App\Models\Branch;
+use App\Services\Language;
 use App\Services\Overpass;
 use App\Services\Repository;
 use Bame\StaticMap\TripleZoomMap;
@@ -31,7 +33,26 @@ class PageController extends Controller
 
     public function osmPlace($type, $id)
     {
-        return 'Not implemented yet';
+        $branch = new Branch($type, $id);
+        $main = $this->fetchOsmInfo([$branch])[0];
+
+        $newPlaceContent = <<<YAML
+osm:
+   id: {$branch->osmId}
+   type: {$branch->osmType}
+YAML;
+
+        $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
+        $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
+        return view('page.page')
+            ->with('place', null)
+            ->with('logoUrl', null)
+            ->with('slug', null)
+            ->with('main', $main)
+            ->with('gallery', [])
+            ->with('branches', [$main])
+            ->with('newPlaceUrl', $newPlaceUrl);
+
     }
 
     public function typePage(string $areaSlug, string $typeSlug)
@@ -55,6 +76,7 @@ class PageController extends Controller
             ->with('places', $places);
     }
 
+
     public function place(string $slug)
     {
         $place = $this->repository->getPlaceInfo($slug);
@@ -64,12 +86,6 @@ class PageController extends Controller
 
         $logoUrl = $place->getLogoUrl();
 
-        $newPlaceContent = <<<YAML
-osm:
-   id: {$place->branches[0]->osmId}
-   type: {$place->branches[0]->osmType}
-YAML;
-
         return view('page.page')
             ->with('place', $place)
             ->with('logoUrl', $logoUrl)
@@ -77,7 +93,7 @@ YAML;
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery('en'))
             ->with('branches', $branchesInfo)
-            ->with('newPlaceContent', $newPlaceContent);
+            ->with('newPlaceContent', null);
     }
     /**
      * POI overview page
