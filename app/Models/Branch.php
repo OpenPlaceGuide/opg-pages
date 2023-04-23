@@ -21,4 +21,9 @@ class Branch
         $slug = Str::slug(Language::transliterate($name));
         return route('osmPlace', ['osmTypeLetter' => $this->osmType[0], 'osmId' => $this->osmId, 'slug' => $slug]);
     }
+
+    public function getOsmUrl()
+    {
+        return sprintf('https://www.osm.org/%s/%s', $this->osmType, $this->osmId);
+    }
 }

@@ -1,6 +1,5 @@
 @extends('layouts.index')
 
-
 <img height="100" src="{{ asset($logoUrl) }} ">
 
 {{ $main->tags->name }}
@@ -24,8 +23,9 @@
 
 <h2>Location(s)</h2>
 @foreach($branches as $branch)
-    <h3>{{ $branch->tags->name ?? 'no default name' }}</h3>
+    <h3>{{ Language::field($branch->tags, 'name') }}</h3>
 
-    <img src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'text' => $branch->tags->name ?? 'no name']) }}">
+    <img src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'text' => Language::field($branch->tags, 'name') }}">
+    <a href="{{ $branch->idInfo->getOsmUrl() }}">OSM Info</a>
 
 @endforeach

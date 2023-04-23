@@ -10,11 +10,6 @@ class PoiType
     {
     }
 
-    public function getPlural($language = 'en')
-    {
-        return $this->plural[$language];
-    }
-
     public function getLogoUrl(): string
     {
         return $this->getMediaPath($this->logo);
