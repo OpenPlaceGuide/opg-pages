@@ -49,11 +49,3 @@ The place / business page features
 * the name
 * multiple or a single branch with location
 * optional: contact form
-
-### Installation
-
-** Draft - not sure if necessary **
-
-To make Amharic transliteration work (similar steps might be required for your local language)
-
-```sudo locale-gen am_ET && sudo locale-gen am_ET.UTF-8 && sudo update-locale```
