@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\Language;
+use Illuminate\Support\Facades\App;
 
 class Branch
 {
@@ -30,7 +31,7 @@ class Branch
     public function getUrl($name)
     {
         $slug = Language::slug($name);
-        return route('osmPlace', ['osmTypeLetter' => $this->osmType[0], 'osmId' => $this->osmId, 'slug' => $slug]);
+        return route('osmPlace.' . App::currentLocale(), ['osmTypeLetter' => $this->osmType[0], 'osmId' => $this->osmId, 'slug' => $slug]);
     }
 
     public function getOsmUrl($baseUrl = 'https://www.osm.org')

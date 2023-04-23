@@ -8,7 +8,8 @@ use App\Services\Language;
 use App\Services\Overpass;
 use App\Services\Repository;
 use Bame\StaticMap\TripleZoomMap;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Route;
 
 class PageController extends Controller
 {
@@ -18,9 +19,14 @@ class PageController extends Controller
     {
         $repositoryName = 'ethiopia';
         $this->repository = new Repository($repositoryName);
+
+        if (Route::current()) {
+            $language = trim(Route::current()->getPrefix(), '/');
+            if (!empty($language)) {
+                App::setLocale($language);
+            }
+        }
     }
-
-
 
     public function page(string $slug)
     {
@@ -29,6 +35,26 @@ class PageController extends Controller
         }
 
         return $this->place($slug);
+    }
+
+
+    public function place(string $slug)
+    {
+        $place = $this->repository->getPlaceInfo($slug);
+
+        $branchesInfo = $this->fetchOsmInfo($place->branches);
+        $main = $branchesInfo[0];
+
+        $logoUrl = $place->getLogoUrl();
+
+        return view('page.page')
+            ->with('place', $place)
+            ->with('logoUrl', $logoUrl)
+            ->with('slug', $slug)
+            ->with('main', $main)
+            ->with('gallery', $place->getProcessedGallery('en'))
+            ->with('branches', $branchesInfo)
+            ->with('newPlaceUrl', null);
     }
 
     public function osmPlace($type, $id)
@@ -76,25 +102,6 @@ YAML;
             ->with('places', $places);
     }
 
-
-    public function place(string $slug)
-    {
-        $place = $this->repository->getPlaceInfo($slug);
-
-        $branchesInfo = $this->fetchOsmInfo($place->branches);
-        $main = $branchesInfo[0];
-
-        $logoUrl = $place->getLogoUrl();
-
-        return view('page.page')
-            ->with('place', $place)
-            ->with('logoUrl', $logoUrl)
-            ->with('slug', $slug)
-            ->with('main', $main)
-            ->with('gallery', $place->getProcessedGallery('en'))
-            ->with('branches', $branchesInfo)
-            ->with('newPlaceContent', null);
-    }
     /**
      * POI overview page
      */

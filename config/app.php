@@ -84,7 +84,7 @@ return [
     |
     */
 
-    'locale' => 'am',
+    'locale' => 'en',
 
     /*
     |--------------------------------------------------------------------------
@@ -96,6 +96,8 @@ return [
     | the language folders that are provided through your application.
     |
     */
+
+    'additional_locales' => ['am', 'de'],
 
     'fallback_locale' => 'en',
 

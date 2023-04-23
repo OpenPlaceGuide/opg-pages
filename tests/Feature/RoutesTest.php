@@ -6,7 +6,7 @@ namespace Tests\Feature;
 use App\Http\Controllers\PageController;
 use Tests\TestCase;
 
-class TestRoutes extends TestCase
+class RoutesTest extends TestCase
 {
 
     /**

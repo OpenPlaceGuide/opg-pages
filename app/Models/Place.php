@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\Repository;
+use Illuminate\Support\Facades\App;
 
 class Place
 {
@@ -43,7 +44,7 @@ class Place
 
     public function getUrl(?Branch $branch)
     {
-        $url = route('page', ['slug' => $this->slug]);
+        $url = route('page.' . App::currentLocale(), ['slug' => $this->slug]);
         if ($branch !== null) {
             $url .= '#' . $branch->getKey();
         }

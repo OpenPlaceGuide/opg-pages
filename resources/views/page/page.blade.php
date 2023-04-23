@@ -8,15 +8,9 @@
     {{ Fallback::field($main->tags, 'name') }}
 </h1>
 
-
-<script>
-    function start() {
-        var name = window.prompt('Name')
-        window.open('');
-    }
-</script>
-<a href="{{ $newPlaceUrl }}">Create short URL / start contributing</a>
-
+@if($newPlaceUrl)
+    <a href="{{ $newPlaceUrl }}">Create short URL / start contributing</a>
+@endif
 
 <h2>Gallery</h2>
 
