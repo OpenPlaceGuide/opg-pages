@@ -6,6 +6,7 @@ use App\Models\Branch;
 use App\Models\OsmInfo;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 
 class Overpass
@@ -16,7 +17,7 @@ class Overpass
      * @return array<OsmInfo>
      * @throws GuzzleException
      */
-    public function fetchOsmInfo(array $places)
+    public function fetchOsmInfo(array $places): array
     {
         $objectQuerys = '';
         foreach ($places as $place) {
@@ -24,7 +25,7 @@ class Overpass
             $result[$place->getKey()] = null;
         }
 
-        $data = $this->runQuery($objectQuerys);
+        $data = $this->cachedRunQuery($objectQuerys);
         foreach ($data->elements as $element) {
             if ($element->type === 'area') {
                 continue;
@@ -35,19 +36,29 @@ class Overpass
         return array_values($result);
     }
 
+
+    protected function cachedRunQuery($objectQuerys)
+    {
+        $query = $this->buildQuery($objectQuerys);
+        $cacheKey = md5($query);
+
+        return Cache::remember($cacheKey, 300, function () use ($query) {
+            return $this->runQuery($query);
+        });
+    }
+
     /**
      * @param string $objectQuerys
      * @return \Psr\Http\Message\ResponseInterface
      * @throws GuzzleException
      */
-    public function runQuery(string $objectQuerys): mixed
+    protected function runQuery(string $query): mixed
     {
         $client = new \GuzzleHttp\Client([
             'base_uri' => 'https://overpass.kumi.systems/api/',
             'headers' => ['user-agent' => $this->buildUserAgent()]
         ]);
 
-        $query = $this->buildQuery($objectQuerys);
 
         $requestStart = microtime(true);
         try {
@@ -64,7 +75,7 @@ class Overpass
             throw $e;
         }
         $requestTime = microtime(true) - $requestStart;
-        Log::notice(sprintf('Overpass request for %s took %fs', $objectQuerys, $requestTime));
+        Log::notice(sprintf('Overpass request for %s took %fs', $query, $requestTime));
         $data = json_decode($response->getBody());
 
         if (isset($data->remark) && str_contains($data->remark, 'timed out')) {
@@ -116,7 +127,7 @@ OVERPASS;
         $innerQuery .= sprintf('nwr["%s"="%s"](area);', $key, $value);
 
         $result = [];
-        $data = $this->runQuery($innerQuery);
+        $data = $this->cachedRunQuery($innerQuery);
 
         foreach ($data->elements as $element) {
             if ($element->type === 'area') {

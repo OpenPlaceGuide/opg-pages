@@ -30,7 +30,7 @@ class PageController extends Controller
 
         $place = $this->repository->getPlaceInfo($slug);
 
-        $branchesInfo = $this->cachedFetchOsmInfo($place->branches);
+        $branchesInfo = $this->fetchOsmInfo($place->branches);
         $main = $branchesInfo[0];
 
         $logoUrl = $place->getLogoUrl();
@@ -69,16 +69,9 @@ YAML;
      * @param array<Branch> $places
      * @return array<OsmInfo>
      */
-    public function cachedFetchOsmInfo(array $places): mixed
+    private function fetchOsmInfo(array $places): array
     {
-        $cacheKey = implode('|', collect($places)->map(function (Branch $place) {
-            return $place->getKey();
-        })->toArray());
-
-        $tags = Cache::remember($cacheKey, 300, function () use ($places) {
-            return (new Overpass())->fetchOsmInfo($places);
-        });
-        return $tags;
+        return (new Overpass())->fetchOsmInfo($places);
     }
 
     public function tripleZoomMap($lat, $lon, $text)
