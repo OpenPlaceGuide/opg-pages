@@ -7,5 +7,5 @@
 <p>There are {{ count($places) }} {{ $type->getPlural() }} found.</p>
 
 @foreach($places as $place)
-    <li>{{ $place->tags->name ?? 'no name' }}</li>
+    <li><a href="{{ \App\Services\Repository::getInstance()->getUrl($place) }}">{{ $place->tags->name ?? 'no name' }}</a></li>
 @endforeach

@@ -31,7 +31,9 @@ class Overpass
             if ($element->type === 'area') {
                 continue;
             }
-            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($element);;
+            $idInfo = new Branch($element->type, $element->id);
+
+            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($idInfo, $element);;
         }
 
         return array_values($result);
@@ -110,13 +112,13 @@ OVERPASS;
         return $query;
     }
 
-    private function createOsmInfoFromElement(mixed $element)
+    private function createOsmInfoFromElement(Branch $idInfo, mixed $element)
     {
         if ($element->type === 'node') {
-            return new OsmInfo($element->lat, $element->lon, $element->tags);
+            return new OsmInfo($idInfo, $element->lat, $element->lon, $element->tags);
         }
 
-        return new OsmInfo($element->center->lat, $element->center->lon, $element->tags);
+        return new OsmInfo($idInfo, $element->center->lat, $element->center->lon, $element->tags);
     }
 
     public function fetchOsmOverview(\App\Models\PoiType $type, Area $area)
@@ -134,7 +136,8 @@ OVERPASS;
             if ($element->type === 'area') {
                 continue;
             }
-            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($element);;
+            $idInfo = new Branch($element->type, $element->id);
+            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($idInfo, $element);;
         }
 
         return array_values($result);

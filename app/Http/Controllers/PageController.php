@@ -29,6 +29,11 @@ class PageController extends Controller
         return $this->place($slug);
     }
 
+    public function osmPlace($type, $id)
+    {
+        return 'Not implemented yet';
+    }
+
     public function typePage(string $areaSlug, string $typeSlug)
     {
         if (!$this->repository->isType($typeSlug)) {

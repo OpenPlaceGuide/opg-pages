@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Area;
 use App\Models\Branch;
+use App\Models\OsmInfo;
 use App\Models\Place;
 use App\Models\PoiType;
 use Symfony\Component\Yaml\Yaml;
@@ -12,6 +13,11 @@ class Repository
 {
     public function __construct(public readonly string $name)
     {
+    }
+
+    public static function getInstance(): Repository
+    {
+        return (new self('ethiopia'));
     }
 
     public function getPlaceInfo($slug): Place
@@ -101,5 +107,46 @@ class Repository
         }
 
         return $result;
+    }
+
+    /**
+     * @return array<string, Place>
+     */
+    public function listPlaceIndex(): array
+    {
+        $typeFiles = glob($this->getPlaceFileName('*'));
+        $result = [];
+        foreach($typeFiles as $filename) {
+            $slug = basename(dirname($filename));
+            $placeInfo = $this->getPlaceInfo($slug);
+            foreach($placeInfo->getKeys() as $key) {
+                $result[$key] = $placeInfo;
+            }
+
+        }
+        return $result;
+    }
+
+    public function resolvePlace(Branch $branch): ?Place
+    {
+        // FIXME: add caching
+        $places = $this->listPlaceIndex();
+
+        if (isset($places[$branch->getKey()])) {
+            return $places[$branch->getKey()];
+        }
+
+        return null;
+    }
+
+    public function getUrl(OsmInfo $osmInfo)
+    {
+        $place = $this->resolvePlace($osmInfo->idInfo);
+
+        if ($place !== null) {
+            return $place->getUrl($osmInfo->idInfo);
+        }
+
+        return $osmInfo->idInfo->getUrl($osmInfo->tags->name ?? '');
     }
 }

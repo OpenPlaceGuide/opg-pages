@@ -6,6 +6,9 @@ use App\Services\Repository;
 
 class Place
 {
+    /**
+     * @param array<Branch> $branches
+     */
     public function __construct(public readonly Repository $repository, public readonly string $slug, public readonly string $logo, public readonly array $branches, public readonly array $gallery = [])
     {
     }
@@ -28,4 +31,24 @@ class Place
         }
         return $pictures;
     }
+
+    public function getKeys()
+    {
+        $keys = [];
+        foreach($this->branches as $branch) {
+            $keys[] = $branch->getKey();
+        }
+        return $keys;
+    }
+
+    public function getUrl(?Branch $branch)
+    {
+        $url = route('page', ['slug' => $this->slug]);
+        if ($branch !== null) {
+            $url .= '#' . $branch->getKey();
+        }
+
+        return $url;
+    }
+
 }

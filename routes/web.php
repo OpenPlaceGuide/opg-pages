@@ -13,8 +13,19 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/assets/static-map/{lat}/{lon}/{text}.png', [\App\Http\Controllers\PageController::class, '#tripleZoomMap'] )
+Route::get('/assets/static-map/{lat}/{lon}/{text}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
     ->name('tripleZoomMap');
 
-Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'page']);
-Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage'])->name('typesInArea');
+Route::get('/{osmTypeLetter}{osmId}/{slug?}', [\App\Http\Controllers\PageController::class, 'osmPlace'])
+    ->where('osmTypeLetter', '[nwr]')
+    ->where('osmId', '[0-9]*')
+    ->name('osmPlace');
+
+Route::get('/{slug}', [\App\Http\Controllers\PageController::class, 'page'])
+    ->where('slug', '[a-z-]*')
+    ->name('page');
+
+Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage'])
+    ->where('typeSlug', '[a-z-]*')
+    ->where('areaSlug', '[a-z-]*')
+    ->name('typesInArea');
