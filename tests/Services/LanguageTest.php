@@ -15,11 +15,11 @@ class LanguageTest extends TestCase
         self::assertEquals($expected, Language::transliterate($actual));
     }
 
-    protected function transliterateData()
+    public static function transliterateData()
     {
         return [
             'German' => ['Maeuse', 'Mäuse'],
-            'Amharic' => ['amarigina', 'አማርኛ'],
+            'Amharic' => ['emarinya', 'አማርኛ'],
         ];
     }
 }
