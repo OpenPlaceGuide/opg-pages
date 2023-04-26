@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    @apply m-4;
+}
+h1 {
+    @apply text-2xl font-bold my-4;
+}
+
+h2 {
+    @apply text-xl font-bold my-3;
+}
+
+li {
+    @apply mt-1 ml-4;
+}
+
+a {
+    @apply underline;
+}
