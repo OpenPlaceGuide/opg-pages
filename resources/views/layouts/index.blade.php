@@ -6,7 +6,7 @@
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
 </head>
-<body>
+<body class="bg-gradient-to-br from-white to-green-100 border-t-2 border-green-900">
     @yield('content')
 
     <p>(C) OdBL OpenStreetMap Contributors, OpenPlaceGuide data repository contributors</p>

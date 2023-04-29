@@ -2,15 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
-    @apply m-4;
-}
 h1 {
     @apply text-2xl font-bold my-4;
 }
 
 h2 {
     @apply text-xl font-bold my-3;
+}
+
+h3 {
+    @apply text-lg font-bold my-2;
 }
 
 li {
@@ -20,3 +21,5 @@ li {
 a {
     @apply underline;
 }
+
+
