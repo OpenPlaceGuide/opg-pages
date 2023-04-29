@@ -10,7 +10,7 @@ module.exports = {
     },
     safelist: [
         {
-            pattern: /bg-|text-|to-|from-|border-|text-/,
+            pattern: /to-[a-z]*-100|border-[a-z]*-900|text-[a-z]*-900/,
         }
     ],
     plugins: [],
