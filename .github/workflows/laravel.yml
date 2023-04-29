@@ -30,7 +30,8 @@ jobs:
       run: |
         cd storage/app/repositories/
         git clone https://github.com/OpenPlaceGuide/data/ opg-data-ethiopia
-        npm run build
+    - name: Build
+      run: npm run build
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
         DB_CONNECTION: sqlite
