@@ -3,7 +3,7 @@
 @section('content')
     <header>
         <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
-            <x-icon-bank_11 class="h-20 w-20 mr-5 mb-4 inline aspect-square fill-current text-{{ $color }}-900"/>
+            @svg("icon-${icon}_11","h-20 w-20 mr-5 mb-4 inline aspect-square fill-current text-$color-900" )
             <div class="hyphens-auto">
                 {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::resolve($area->names) }}
             </div>

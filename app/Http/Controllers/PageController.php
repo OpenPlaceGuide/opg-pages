@@ -106,7 +106,8 @@ YAML;
             ->with('area', $area)
             ->with('type', $type)
             ->with('places', $places)
-            ->with('color', $type->color);
+            ->with('color', $type->color)
+            ->with('icon', $type->icon);
     }
 
     /**

@@ -10,6 +10,7 @@ class PoiType
         public readonly Repository $repository,
         public readonly string $slug,
         public readonly ?string $logo,
+        public readonly ?string $icon,
         public readonly ?string $color,
         public readonly array $tags,
         public readonly array $name = [],
