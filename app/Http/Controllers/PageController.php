@@ -46,6 +46,7 @@ class PageController extends Controller
 
         $branchesInfo = $this->fetchOsmInfo($place->branches);
         $main = $branchesInfo[0];
+        $type = Repository::getInstance()->resolveType($main);
 
         $logoUrl = $place->getLogoUrl();
 
@@ -57,11 +58,14 @@ class PageController extends Controller
             ->with('gallery', $place->getProcessedGallery('en'))
             ->with('branches', $branchesInfo)
             ->with('newPlaceUrl', null)
-            ->with('color', $place->color);
+            ->with('color', $place->color ?? $type->color ?? 'gray')
+            ->with('icon', $place->icon ?? $type->icon);
+
     }
 
     public function osmPlace($type, $id)
     {
+        // FIXME: forward to slug based page if existing
         $branch = new Branch($type, $id);
         $main = $this->fetchOsmInfo([$branch])[0];
 
@@ -74,7 +78,8 @@ YAML;
         $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
         $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
 
-        $color = 'gray'; // FIXME: get color from POI Type
+        $type = Repository::getInstance()->resolveType($main);
+
         return view('page.page')
             ->with('place', null)
             ->with('logoUrl', null)
@@ -83,7 +88,8 @@ YAML;
             ->with('gallery', [])
             ->with('branches', [$main])
             ->with('newPlaceUrl', $newPlaceUrl)
-            ->with('color', $color);
+            ->with('color', $type->color ?? 'gray')
+            ->with('icon', $type->icon);
 
     }
 

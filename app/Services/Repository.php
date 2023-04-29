@@ -7,6 +7,7 @@ use App\Models\Branch;
 use App\Models\OsmInfo;
 use App\Models\Place;
 use App\Models\PoiType;
+use Nette\Utils\Type;
 use Symfony\Component\Yaml\Yaml;
 
 class Repository
@@ -109,14 +110,29 @@ class Repository
         return $result;
     }
 
+    public function resolveType(OsmInfo $osmInfo): ?PoiType
+    {
+        $types = $this->listTypes();
+
+        // FIXME: sort by priority
+        foreach($types as $type)
+        {
+            if ($osmInfo->matches($type)) {
+                return $type;
+            }
+        }
+
+        return null;
+    }
+
     /**
      * @return array<string, Place>
      */
     public function listPlaceIndex(): array
     {
-        $typeFiles = glob($this->getPlaceFileName('*'));
+        $placeFiles = glob($this->getPlaceFileName('*'));
         $result = [];
-        foreach($typeFiles as $filename) {
+        foreach($placeFiles as $filename) {
             $slug = basename(dirname($filename));
             $placeInfo = $this->getPlaceInfo($slug);
             foreach($placeInfo->getKeys() as $key) {
