@@ -6,9 +6,13 @@ module.exports = {
         "./resources/**/*.vue",
     ],
     theme: {
-    extend: {},
-    safelist: [/^bg-/, /^text-/]
-  },
-  plugins: [],
+        extend: {}
+    },
+    safelist: [
+        {
+            pattern: /bg-|text-|to-|from-|border-|text-/,
+        }
+    ],
+    plugins: [],
 }
 
