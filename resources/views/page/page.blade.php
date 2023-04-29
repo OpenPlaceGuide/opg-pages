@@ -44,7 +44,7 @@
                 @foreach($gallery as $text => $mediaPath)
                     <div class="flex-none">
                         <figure class="inline-grid grid-cols-1 auto-rows-auto">
-                            <img class="md:h-80 h-48 w-auto" src="{{ asset($mediaPath) }}">
+                            <img class="shadow-lg p-1 bg-white md:h-80 h-48 w-auto" src="{{ asset($mediaPath) }}">
                             <figcaption class="py-3 w-0 min-w-full">{{ $text }}</figcaption>
                         </figure>
                     </div>
@@ -56,7 +56,7 @@
                 <section id="{{ $branch->idInfo->getKey() }}">
                     <h3>{{ Fallback::field($branch->tags, 'name') }}</h3>
 
-                    <img
+                    <img class="shadow-lg"
                         src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'slug' => \App\Services\Language::slug(Fallback::field($branch->tags, 'name', language: 'en')), 'text' => Fallback::field($branch->tags, 'name')]) }}">
                     <ul class="flex">
                         <li><a href="{{ $branch->idInfo->getOsmUrl() }}" target="_blank">OSM Info</a></li>
@@ -68,7 +68,7 @@
 
             <h2>Contact</h2>
 
-            <label>Name:</label> <input type="text" placeholder="Enter your name">
+            <label>Name:</label> <input type="text" placeholder="Enter your name"> <button class="bg-blue-500 text-white font-semibold p-2 rounded-md">Submit</button>
         </div>
 
 
