@@ -10,7 +10,13 @@ class Place
     /**
      * @param array<Branch> $branches
      */
-    public function __construct(public readonly Repository $repository, public readonly string $slug, public readonly string $logo, public readonly array $branches, public readonly array $gallery = [])
+    public function __construct(
+        public readonly Repository $repository,
+        public readonly string $slug,
+        public readonly string $logo,
+        public readonly string $color,
+        public readonly array $branches,
+        public readonly array $gallery = [])
     {
     }
 

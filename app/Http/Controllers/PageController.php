@@ -56,7 +56,8 @@ class PageController extends Controller
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery('en'))
             ->with('branches', $branchesInfo)
-            ->with('newPlaceUrl', null);
+            ->with('newPlaceUrl', null)
+            ->with('color', $place->color);
     }
 
     public function osmPlace($type, $id)
@@ -72,6 +73,8 @@ YAML;
 
         $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
         $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
+
+        $color = 'gray'; // FIXME: get color from POI Type
         return view('page.page')
             ->with('place', null)
             ->with('logoUrl', null)
@@ -79,7 +82,8 @@ YAML;
             ->with('main', $main)
             ->with('gallery', [])
             ->with('branches', [$main])
-            ->with('newPlaceUrl', $newPlaceUrl);
+            ->with('newPlaceUrl', $newPlaceUrl)
+            ->with('color', $color);
 
     }
 
@@ -101,7 +105,8 @@ YAML;
         return view('page.overview')
             ->with('area', $area)
             ->with('type', $type)
-            ->with('places', $places);
+            ->with('places', $places)
+            ->with('color', $type->color);
     }
 
     /**
@@ -114,7 +119,9 @@ YAML;
 
         return view('page.area')
             ->with('area', $area)
-            ->with('types', $types);
+            ->with('types', $types)
+            ->with('color', $area->color);
+
     }
 
     /**

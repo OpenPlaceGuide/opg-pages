@@ -30,7 +30,7 @@ class Repository
 
         $gallery = $parsed['gallery'] ?? [];
 
-        return new Place($this, $slug, $parsed['logo'], $branches, $gallery);
+        return new Place($this, $slug, $parsed['logo'], $parsed['color'], $branches, $gallery);
     }
 
     private function getPlaceFileName($slug): string
@@ -72,7 +72,7 @@ class Repository
 
         $parsed = Yaml::parse($yamlSource);
 
-        return new PoiType($this, $slug, $parsed['logo'] ?? null, $parsed['tags'], $parsed['name'], $parsed['plural']);
+        return new PoiType($this, $slug, $parsed['logo'] ?? null, $parsed['color'] ?? null, $parsed['tags'], $parsed['name'], $parsed['plural']);
     }
 
     public function isArea(string $slug): bool
@@ -94,7 +94,7 @@ class Repository
 
         $parsed = Yaml::parse($yamlSource);
 
-        return new Area($this, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['tags']);
+        return new Area($this, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['tags'], $parsed['color'] ?? 'gray');
     }
 
     public function listTypes(): array

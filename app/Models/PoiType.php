@@ -6,7 +6,15 @@ use App\Services\Repository;
 
 class PoiType
 {
-    public function __construct(public readonly Repository $repository, public readonly string $slug, public readonly ?string $logo, public readonly array $tags, public readonly array $name = [], public readonly array $plural = [])
+    public function __construct(
+        public readonly Repository $repository,
+        public readonly string $slug,
+        public readonly ?string $logo,
+        public readonly ?string $color,
+        public readonly array $tags,
+        public readonly array $name = [],
+        public readonly array $plural = []
+    )
     {
     }
 

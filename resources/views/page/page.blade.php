@@ -23,6 +23,8 @@
         <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
             @if($logoUrl)
                 <img class="h-20 mr-5 mb-4 inline aspect-square" src="{{ asset($logoUrl) }} ">
+            @else
+                <x-icon-bank_11 class="h-20 w-20 mr-5 mb-4 inline aspect-square fill-current text-{{ $color }}-900"/>
             @endif
 
             <div class="hyphens-auto">
