@@ -66,13 +66,18 @@ class PageController extends Controller
     public function osmPlace($type, $id)
     {
         // FIXME: forward to slug based page if existing
-        $branch = new OsmId($type, $id);
-        $main = $this->fetchOsmInfo([$branch])[0];
+        $idInfo = new OsmId($type, $id);
+
+        if ($place = Repository::getInstance()->resolvePlace($idInfo)) {
+            return redirect()->to($place->getUrl($idInfo));
+        }
+
+        $main = $this->fetchOsmInfo([$idInfo])[0];
 
         $newPlaceContent = <<<YAML
 osm:
-   id: {$branch->osmId}
-   type: {$branch->osmType}
+   id: {$idInfo->osmId}
+   type: {$idInfo->osmType}
 YAML;
 
         $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
