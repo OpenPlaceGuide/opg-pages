@@ -34,10 +34,15 @@
     </header>
     <section>
         <div class="px-5 py-2 max-w-5xl mx-auto">
+            <p class="float-right">
+                @if($newPlaceUrl)
+                    <a href="{{ $newPlaceUrl }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center no-underline">
+                        <x-ri-github-line class="fill-current w-5 h-5 mr-2"/>
+                        <span>Create URL / Add content</span>
+                    </a>
+                @endif
+            </p>
             Welcome to the page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>.
-            @if($newPlaceUrl)
-                <a href="{{ $newPlaceUrl }}">Create short URL / start contributing</a>
-            @endif
 
             <h2>Media</h2>
 
