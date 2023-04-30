@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Services\Language;
 use Illuminate\Support\Facades\App;
 
-class Branch
+class OsmId
 {
     const SHORT_OSM_TYPES = [
         'n' => 'node',

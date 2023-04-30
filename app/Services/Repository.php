@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Area;
-use App\Models\Branch;
+use App\Models\OsmId;
 use App\Models\OsmInfo;
 use App\Models\Place;
 use App\Models\PoiType;
@@ -43,12 +43,12 @@ class Repository
 
     /**
      * @param array<array> $branches
-     * @return array<Branch>
+     * @return array<OsmId>
      */
     private function createPlaces(mixed $branches): array
     {
         return collect($branches)->map(function (array $branch) {
-            return new Branch($branch['type'], $branch['id']);
+            return new OsmId($branch['type'], $branch['id']);
         })->toArray();
     }
 
@@ -158,7 +158,7 @@ class Repository
         return $result;
     }
 
-    public function resolvePlace(Branch $branch): ?Place
+    public function resolvePlace(OsmId $branch): ?Place
     {
         // FIXME: add caching
         $places = $this->listPlaceIndex();

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\App;
 class Place
 {
     /**
-     * @param array<Branch> $branches
+     * @param array<OsmId> $branches
      */
     public function __construct(
         public readonly Repository $repository,
@@ -48,7 +48,7 @@ class Place
         return $keys;
     }
 
-    public function getUrl(?Branch $branch)
+    public function getUrl(?OsmId $branch)
     {
         $url = route('page.' . App::currentLocale(), ['slug' => $this->slug]);
         if ($branch !== null) {

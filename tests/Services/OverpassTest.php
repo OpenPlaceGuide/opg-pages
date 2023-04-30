@@ -3,7 +3,7 @@
 namespace Tests\Services;
 
 use App\Models\OsmInfo;
-use App\Models\Branch;
+use App\Models\OsmId;
 use App\Services\Overpass;
 use Tests\TestCase;
 
@@ -20,7 +20,7 @@ class OverpassTest extends TestCase
     }
     public function testOsmInfoOne()
     {
-        $place = new Branch('way', 162817836);
+        $place = new OsmId('way', 162817836);
         $osmInfo = $this->getInstance()->fetchOsmInfo([ $place ])[0];
         self::assertInstanceOf(OsmInfo::class, $osmInfo);
         self::assertEquals('Bandira Addis Map Entertainment PLC', $osmInfo->tags->name);
@@ -28,8 +28,8 @@ class OverpassTest extends TestCase
 
     public function testOsmInfoMany()
     {
-        $place1 = new Branch('node', 3959878839);
-        $place2 = new Branch('way', 798092378);
+        $place1 = new OsmId('node', 3959878839);
+        $place2 = new OsmId('way', 798092378);
         $osmInfo = $this->getInstance()->fetchOsmInfo([ $place1, $place2 ]);
 
         self::assertInstanceOf(OsmInfo::class, $osmInfo[0]);

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Facades\Fallback;
-use App\Models\Branch;
+use App\Models\OsmId;
 use App\Services\Language;
 use App\Services\Overpass;
 use App\Services\Repository;
@@ -66,7 +66,7 @@ class PageController extends Controller
     public function osmPlace($type, $id)
     {
         // FIXME: forward to slug based page if existing
-        $branch = new Branch($type, $id);
+        $branch = new OsmId($type, $id);
         $main = $this->fetchOsmInfo([$branch])[0];
 
         $newPlaceContent = <<<YAML
@@ -133,7 +133,7 @@ YAML;
     }
 
     /**
-     * @param array<Branch> $places
+     * @param array<OsmId> $places
      * @return array<OsmInfo>
      */
     private function fetchOsmInfo(array $places): array

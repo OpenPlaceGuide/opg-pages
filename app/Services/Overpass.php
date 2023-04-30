@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Models\Area;
-use App\Models\Branch;
+use App\Models\OsmId;
 use App\Models\OsmInfo;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
@@ -14,7 +14,7 @@ class Overpass
 {
 
     /**
-     * @param array<Branch> $places
+     * @param array<OsmId> $places
      * @return array<OsmInfo>
      * @throws GuzzleException
      */
@@ -31,7 +31,7 @@ class Overpass
             if ($element->type === 'area') {
                 continue;
             }
-            $idInfo = new Branch($element->type, $element->id);
+            $idInfo = new OsmId($element->type, $element->id);
 
             $result[$element->type . $element->id] = $this->createOsmInfoFromElement($idInfo, $element);;
         }
@@ -112,7 +112,7 @@ OVERPASS;
         return $query;
     }
 
-    private function createOsmInfoFromElement(Branch $idInfo, mixed $element)
+    private function createOsmInfoFromElement(OsmId $idInfo, mixed $element)
     {
         if ($element->type === 'node') {
             return new OsmInfo($idInfo, $element->lat, $element->lon, $element->tags);
@@ -136,7 +136,7 @@ OVERPASS;
             if ($element->type === 'area') {
                 continue;
             }
-            $idInfo = new Branch($element->type, $element->id);
+            $idInfo = new OsmId($element->type, $element->id);
             $result[$element->type . $element->id] = $this->createOsmInfoFromElement($idInfo, $element);;
         }
 
