@@ -36,7 +36,7 @@
         <div class="px-5 py-2 max-w-5xl mx-auto">
             <p class="float-right">
                 @if($newPlaceUrl)
-                    <a href="{{ $newPlaceUrl }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center no-underline">
+                    <a href="{{ $newPlaceUrl }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center no-underline" target="_blank">
                         <x-ri-github-line class="fill-current w-5 h-5 mr-2"/>
                         <span>Create URL / Add content</span>
                     </a>
@@ -57,6 +57,11 @@
                     </div>
                 @endforeach
             </div>
+
+            <a href="{{ $newPlaceUrl ?? $githubUrl }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center no-underline" target="_blank">
+                <x-ri-github-line class="fill-current w-5 h-5 mr-2"/>
+                <span>Add media</span>
+            </a>
 
             <h2>Location(s)</h2>
             @foreach($branches as $branch)

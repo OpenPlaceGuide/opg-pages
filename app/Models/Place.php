@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Facades\Fallback;
 use App\Services\Repository;
 use Illuminate\Support\Facades\App;
 
@@ -30,11 +31,11 @@ class Place
         return sprintf('assets/%s/%s/media/%s', $this->repository->name, $this->slug, $fileName);
     }
 
-    public function getProcessedGallery($language): array
+    public function getProcessedGallery(): array
     {
         $pictures = [];
         foreach ($this->gallery as $item) {
-            $pictures[$item[$language]] = $this->getMediaPath($item['file']);
+            $pictures[Fallback::resolve($item)] = $this->getMediaPath($item['file']);
         }
         return $pictures;
     }

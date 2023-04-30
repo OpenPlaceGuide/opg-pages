@@ -48,6 +48,8 @@ class PageController extends Controller
         $main = $branchesInfo[0];
         $type = Repository::getInstance()->resolveType($main);
 
+        $githubUrl = sprintf('https://github.com/OpenPlaceGuide/data/tree/main/places/%s/', $slug);
+
         $logoUrl = $place->getLogoUrl();
 
         return view('page.place')
@@ -55,9 +57,10 @@ class PageController extends Controller
             ->with('logoUrl', $logoUrl)
             ->with('slug', $slug)
             ->with('main', $main)
-            ->with('gallery', $place->getProcessedGallery('en'))
+            ->with('gallery', $place->getProcessedGallery())
             ->with('branches', $branchesInfo)
             ->with('newPlaceUrl', null)
+            ->with('githubUrl', $githubUrl)
             ->with('type', $type)
             ->with('color', $place->color ?? $type->color ?? 'gray')
             ->with('icon', $place->icon ?? $type->icon);
@@ -84,6 +87,7 @@ YAML;
         $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
         // FIXME: don't hard code the data repository
         $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
+
 
         $type = Repository::getInstance()->resolveType($main);
 
