@@ -54,3 +54,19 @@ The place / business page features
 
 The data from OpenStreetMap and the data repository is cached. If you changed something, wait 5 minute and use Ctrl+F5 to refresh
 the necessary page from the source.
+
+## Development
+
+### PHPUnit
+
+```bash
+vendor/bin/phpunit
+```
+
+PHPunit tests are automatically executed in the GitHub action.
+
+### Cypress
+
+```bash
+npx cypress open --e2e --browser chrome
+```
