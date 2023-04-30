@@ -50,7 +50,7 @@ class PageController extends Controller
 
         $logoUrl = $place->getLogoUrl();
 
-        return view('page.page')
+        return view('page.place')
             ->with('place', $place)
             ->with('logoUrl', $logoUrl)
             ->with('slug', $slug)
@@ -81,7 +81,7 @@ YAML;
 
         $type = Repository::getInstance()->resolveType($main);
 
-        return view('page.page')
+        return view('page.place')
             ->with('place', null)
             ->with('logoUrl', null)
             ->with('slug', null)
