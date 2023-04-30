@@ -36,10 +36,7 @@
         <div class="px-5 py-2 max-w-5xl mx-auto">
             <p class="float-right">
                 @if($newPlaceUrl)
-                    <a href="{{ $newPlaceUrl }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center no-underline" target="_blank">
-                        <x-ri-github-line class="fill-current w-5 h-5 mr-2"/>
-                        <span>Create URL / Add content</span>
-                    </a>
+                    <x-github-button :href="$newPlaceUrl">Create URL / Add content</x-github-button>
                 @endif
             </p>
             Welcome to the page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>, a <strong>{{ Fallback::resolve($type->name) }}</strong> in Addis Ababa, Ethiopia</strong>.
@@ -58,10 +55,7 @@
                 @endforeach
             </div>
 
-            <a href="{{ $newPlaceUrl ?? $githubUrl }}" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center no-underline" target="_blank">
-                <x-ri-github-line class="fill-current w-5 h-5 mr-2"/>
-                <span>Add media</span>
-            </a>
+            <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
 
             <h2>Location(s)</h2>
             @foreach($branches as $branch)
