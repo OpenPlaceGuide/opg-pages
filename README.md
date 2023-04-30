@@ -49,3 +49,8 @@ The place / business page features
 * the name
 * multiple or a single branch with location
 * optional: contact form
+
+## Caching
+
+The data from OpenStreetMap and the data repository is cached. If you changed something, wait 5 minute and use Ctrl+F5 to refresh
+the necessary page from the source.

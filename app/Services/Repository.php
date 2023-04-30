@@ -100,6 +100,13 @@ class Repository
 
     public function listTypes(): array
     {
+        return Cache::remember('types', function() {
+            return $this->listTypesUncached();
+        });
+    }
+
+    private function listTypesUncached(): array
+    {
         $typeFiles = glob($this->getTypeFileName('*'));
         $result = [];
         foreach($typeFiles as $filename) {
@@ -109,6 +116,7 @@ class Repository
 
         return $result;
     }
+
 
     public function resolveType(OsmInfo $osmInfo): ?PoiType
     {
@@ -125,10 +133,17 @@ class Repository
         return null;
     }
 
+    public function listPlaceIndex(): array
+    {
+        return Cache::remember('place', function() {
+            return $this->listPlaceIndexUncached();
+        });
+    }
+
     /**
      * @return array<string, Place>
      */
-    public function listPlaceIndex(): array
+    private function listPlaceIndexUncached(): array
     {
         $placeFiles = glob($this->getPlaceFileName('*'));
         $result = [];

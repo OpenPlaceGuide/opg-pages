@@ -7,7 +7,7 @@ use App\Models\Branch;
 use App\Models\OsmInfo;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Cache;
+use App\Services\Cache;
 use Illuminate\Support\Facades\Log;
 
 class Overpass
@@ -45,7 +45,7 @@ class Overpass
         $query = $this->buildQuery($objectQuerys);
         $cacheKey = md5($query);
 
-        return Cache::remember($cacheKey, 300, function () use ($query) {
+        return Cache::remember($cacheKey, function () use ($query) {
             return $this->runQuery($query);
         });
     }

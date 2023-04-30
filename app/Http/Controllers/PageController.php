@@ -76,6 +76,7 @@ osm:
 YAML;
 
         $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
+        // FIXME: don't hard code the data repository
         $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
 
         $type = Repository::getInstance()->resolveType($main);
