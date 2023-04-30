@@ -42,7 +42,7 @@
                     </a>
                 @endif
             </p>
-            Welcome to the page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>.
+            Welcome to the page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>, a <strong>{{ Fallback::resolve($type->name) }}</strong> in Addis Ababa, Ethiopia</strong>.
 
             <h2>Media</h2>
 

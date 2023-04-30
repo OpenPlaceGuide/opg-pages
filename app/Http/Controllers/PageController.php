@@ -58,6 +58,7 @@ class PageController extends Controller
             ->with('gallery', $place->getProcessedGallery('en'))
             ->with('branches', $branchesInfo)
             ->with('newPlaceUrl', null)
+            ->with('type', $type)
             ->with('color', $place->color ?? $type->color ?? 'gray')
             ->with('icon', $place->icon ?? $type->icon);
 
@@ -94,6 +95,7 @@ YAML;
             ->with('gallery', [])
             ->with('branches', [$main])
             ->with('newPlaceUrl', $newPlaceUrl)
+            ->with('type', $type)
             ->with('color', $type->color ?? 'gray')
             ->with('icon', $type->icon);
 
