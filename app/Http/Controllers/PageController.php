@@ -134,6 +134,7 @@ YAML;
     public function area(string $slug)
     {
         $types = $this->repository->listTypes($slug);
+
         $area = $this->repository->getAreaInfo($slug);
 
         return view('page.area')
