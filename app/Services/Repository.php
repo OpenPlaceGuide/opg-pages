@@ -197,6 +197,8 @@ class Repository
             $areaInfo = $this->getAreaInfo($slug);
             $result[$areaInfo->getKey()] = $areaInfo;
         }
+
+        (new Overpass())->addTagsForAreas($result);
         return $result;
     }
 

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Facades\Fallback;
 use App\Services\Repository;
 use Illuminate\Support\Facades\App;
 
 class Area
 {
+    public \stdClass $tags;
+
     public function __construct(
         public readonly Repository $repository,
         readonly public ?OsmId $idInfo,
@@ -28,5 +31,14 @@ class Area
     {
         $url = route('page.' . App::currentLocale(), ['slug' => $this->slug]);
         return $url;
+    }
+
+    public function getFullName()
+    {
+        return sprintf('%s - %s, %s',
+            Fallback::field($this->tags, 'name'),
+            Fallback::field($this->tags, 'is_in:state'),
+            Fallback::field($this->tags, 'is_in:country')
+        );
     }
 }

@@ -63,7 +63,7 @@
                     <h3>{{ Fallback::field($branch->tags, 'name') }}</h3>
                     <strong>{{ ucfirst(Fallback::resolve($type->name)) }}</strong>
                     @if($branch->area)
-                        in <strong><a href="<?php echo $branch->area->getUrl() ?>">{{ Fallback::resolve($branch->area->names) }}</a></strong>
+                        in <strong><a href="<?php echo $branch->area->getUrl() ?>">{{ $branch->area->getFullName() }}</a></strong>
                     @endif
                     <img class="shadow-lg"
                         src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'slug' => \App\Services\Language::slug(Fallback::field($branch->tags, 'name', language: 'en')), 'text' => Fallback::field($branch->tags, 'name')]) }}">

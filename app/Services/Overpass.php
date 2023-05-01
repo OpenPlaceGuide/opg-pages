@@ -186,4 +186,24 @@ OVERPASS;
         return $result;
 
     }
+
+
+    /**
+     * @param array<Area> $area
+     */
+    public function addTagsForAreas(array $areas): void
+    {
+        $objectQuerys = '';
+        foreach ($areas as $area) {
+            if ($area->idInfo) {
+                $objectQuerys .= sprintf('area(%d);', $area->idInfo->getAreaId());
+            }
+        }
+
+        $data = $this->cachedRunQuery($objectQuerys);
+
+        foreach ($data->elements as $element) {
+            $areas[$element->id]->tags = $element->tags;
+        }
+    }
 }
