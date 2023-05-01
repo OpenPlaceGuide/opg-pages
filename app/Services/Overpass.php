@@ -70,7 +70,7 @@ class Overpass
     protected function runQuery(string $query): mixed
     {
         $client = new \GuzzleHttp\Client([
-            'base_uri' => 'https://overpass.kumi.systems/api/',
+            'base_uri' => 'https://overpass-api.de/api/',
             'headers' => ['user-agent' => $this->buildUserAgent()]
         ]);
 
