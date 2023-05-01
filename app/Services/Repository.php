@@ -94,8 +94,9 @@ class Repository
         $yamlSource = file_get_contents($this->getAreaFileName($areaSlug));
 
         $parsed = Yaml::parse($yamlSource);
+        $osmId = isset($parsed['osm']) ? new OsmId($parsed['osm']['type'], $parsed['osm']['id'], ) : null;
 
-        return new Area($this, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['tags'], $parsed['color'] ?? 'gray');
+        return new Area($this, $osmId, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['color'] ?? 'gray');
     }
 
     public function listTypes(): array
@@ -179,5 +180,24 @@ class Repository
         }
 
         return $osmInfo->idInfo->getUrl($osmInfo->tags->name ?? '');
+    }
+
+    public function listAreas()
+    {
+        return Cache::remember('areas', function() {
+            return $this->listAreasUncached();
+        });
+    }
+
+    private function listAreasUncached()
+    {
+        $areaFiles = glob($this->getAreaFileName('*'));
+        $result = [];
+        foreach($areaFiles as $filename) {
+            $slug = basename(dirname($filename));
+            $areaInfo = $this->getAreaInfo($slug);
+            $result[$areaInfo->getKey()] = $areaInfo;
+        }
+        return $result;
     }
 }

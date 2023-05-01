@@ -15,7 +15,7 @@ class OsmInfo
         foreach($type->tags as $tag) {
             $key = $tag['key'];
             $value = $tag['value'];
-            if (!isset($this->tags->{$key}) || mb_Strtolower($this->tags->{$key}) != mb_strtolower($value)) {
+            if (!isset($this->tags->{$key}) || mb_strtolower($this->tags->{$key}) != mb_strtolower($value)) {
                 return false;
             }
         }

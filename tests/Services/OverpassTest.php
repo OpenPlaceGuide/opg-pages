@@ -5,6 +5,7 @@ namespace Tests\Services;
 use App\Models\OsmInfo;
 use App\Models\OsmId;
 use App\Services\Overpass;
+use App\Services\Repository;
 use Tests\TestCase;
 
 class OverpassTest extends TestCase
@@ -30,7 +31,7 @@ class OverpassTest extends TestCase
     {
         $place1 = new OsmId('node', 3959878839);
         $place2 = new OsmId('way', 798092378);
-        $osmInfo = $this->getInstance()->fetchOsmInfo([ $place1, $place2 ]);
+        $osmInfo = $this->getInstance()->fetchOsmInfo([ $place1, $place2 ], Repository::getInstance()->listAreas());
 
         self::assertInstanceOf(OsmInfo::class, $osmInfo[0]);
         self::assertEquals('Zemen Bank', $osmInfo[0]->tags->name);

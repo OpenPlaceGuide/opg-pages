@@ -18,7 +18,7 @@ class Overpass
      * @return array<OsmInfo>
      * @throws GuzzleException
      */
-    public function fetchOsmInfo(array $places): array
+    public function fetchOsmInfo(array $places, array $areas = null): array
     {
         $objectQuerys = '';
         foreach ($places as $place) {
@@ -26,7 +26,8 @@ class Overpass
             $result[$place->getKey()] = null;
         }
 
-        $data = $this->cachedRunQuery($objectQuerys);
+
+        $data = $this->cachedRunQuery($objectQuerys, $areas);
         foreach ($data->elements as $element) {
             if ($element->type === 'area') {
                 continue;
@@ -40,9 +41,9 @@ class Overpass
     }
 
 
-    protected function cachedRunQuery($objectQuerys)
+    protected function cachedRunQuery(string $objectQueries, array $areas = null)
     {
-        $query = $this->buildQuery($objectQuerys);
+        $query = $this->buildQuery($objectQueries, $areas);
         $cacheKey = md5($query);
 
         return Cache::remember($cacheKey, function () use ($query) {
@@ -99,14 +100,45 @@ class Overpass
         return sprintf('opg-pages/%s (%s, %s)', $version, url(''), $contact);
     }
 
-    protected function buildQuery(string $objectQuerys): string
+    /**
+     * @param string $objectQuerys
+     * @param array<Area>|null $areas
+     * @return string
+     */
+    protected function buildQuery(string $objectQuerys, array $areas = null): string
     {
+        if ($areas !== null) {
+            $areasQuery = '';
+            foreach($areas as $area) {
+                if ($area->idInfo === null) {
+                    continue;
+                }
+                $areasQuery .= sprintf('area(%d).areas;', $area->idInfo->getAreaId());
+            }
+            $outputQuery = <<<OVERPASS
+foreach->.d(
+  .d out center;
+  (.d;.d >;)->.d;
+  .d is_in -> .areas;
+  (
+    $areasQuery
+  );
+  out;
+);
+OVERPASS;
+
+        } else {
+            $outputQuery = <<<OVERPASS
+out center;
+OVERPASS;
+        }
+
         $query = <<<OVERPASS
 [out:json][timeout:10];
 (
 $objectQuerys
 );
-out center;
+$outputQuery
 >;
 OVERPASS;
         return $query;
@@ -126,7 +158,7 @@ OVERPASS;
         $key = $type->tags[0]['key']; // FIXME: support multiple tags, currently taking the first one
         $value = $type->tags[0]['value'];
 
-        $innerQuery = sprintf('area["%s"="%s"];', $area->tags[0]['key'], $area->tags[0]['value']); // FIXME: only first key/value supported
+        $innerQuery = sprintf('area(%d);', $area->idInfo->getAreaId());
         $innerQuery .= sprintf('nwr["%s"="%s"](area);', $key, $value);
 
         $result = [];
