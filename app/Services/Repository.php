@@ -89,14 +89,14 @@ class Repository
         ));
     }
 
-    public function getAreaInfo(string $areaSlug)
+    public function getAreaInfo(string $areaSlug, bool $canEnrich = true)
     {
         $yamlSource = file_get_contents($this->getAreaFileName($areaSlug));
 
         $parsed = Yaml::parse($yamlSource);
         $osmId = isset($parsed['osm']) ? new OsmId($parsed['osm']['type'], $parsed['osm']['id'], ) : null;
 
-        if ($osmId !== null) {
+        if ($canEnrich && $osmId !== null) {
             $area = $this->resolveArea($osmId->getAreaId());
 
             if ($area !== null) {
@@ -202,7 +202,7 @@ class Repository
         $result = [];
         foreach($areaFiles as $filename) {
             $slug = basename(dirname($filename));
-            $areaInfo = $this->getAreaInfo($slug);
+            $areaInfo = $this->getAreaInfo($slug, false);
             $result[$areaInfo->getKey()] = $areaInfo;
         }
 
