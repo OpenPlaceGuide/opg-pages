@@ -105,7 +105,3 @@ PHPunit tests are automatically executed in the GitHub action.
 ```bash
 npx cypress open --e2e --browser chrome
 ```
-
-## OSM Background
-
-* Relation ID for Overpass: http://osmlab.github.io/learnoverpass/en/docs/filters/area/ "By convention the area id can be calculated from an existing OSM way by adding 2400000000 to its OSM id, or in case of a relation by adding 3600000000 respectively"
