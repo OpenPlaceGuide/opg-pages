@@ -39,7 +39,7 @@
                     <x-github-button :href="$newPlaceUrl">Create URL / Add content</x-github-button>
                 @endif
             </p>
-            Welcome to the page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>, a <strong>{{ Fallback::resolve($type->name) }}</strong> in Addis Ababa, Ethiopia</strong>.
+            Welcome to the page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>, a <strong>{{ Fallback::resolve($type->name) }}</strong></strong>.
 
             <h2>Media</h2>
 
@@ -61,7 +61,10 @@
             @foreach($branches as $branch)
                 <section id="{{ $branch->idInfo->getKey() }}">
                     <h3>{{ Fallback::field($branch->tags, 'name') }}</h3>
-
+                    <strong>{{ ucfirst(Fallback::resolve($type->name)) }}</strong>
+                    @if($branch->area)
+                        in <strong><a href="<?php echo $branch->area->getUrl() ?>">{{ Fallback::resolve($branch->area->names) }}</a></strong>
+                    @endif
                     <img class="shadow-lg"
                         src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'slug' => \App\Services\Language::slug(Fallback::field($branch->tags, 'name', language: 'en')), 'text' => Fallback::field($branch->tags, 'name')]) }}">
                     <ul class="flex">

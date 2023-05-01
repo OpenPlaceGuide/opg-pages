@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Services\Repository;
+use Illuminate\Support\Facades\App;
 
 class Area
 {
@@ -20,7 +21,12 @@ class Area
 
     public function getKey()
     {
-        return $this->idInfo?->getKey() ?? $this->slug;
+        return $this->idInfo?->getAreaId() ?? $this->slug;
     }
 
+    public function getUrl()
+    {
+        $url = route('page.' . App::currentLocale(), ['slug' => $this->slug]);
+        return $url;
+    }
 }

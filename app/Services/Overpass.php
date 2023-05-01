@@ -23,21 +23,32 @@ class Overpass
         $objectQuerys = '';
         foreach ($places as $place) {
             $objectQuerys .= sprintf('%s(id:%d);', $place->osmType, $place->osmId,);
-            $result[$place->getKey()] = null;
         }
-
 
         $data = $this->cachedRunQuery($objectQuerys, $areas);
+
+        $currentObject = null;
         foreach ($data->elements as $element) {
             if ($element->type === 'area') {
-                continue;
+                if ($currentObject === null) {
+                    throw new \Exception('Area found but no element');
+                }
+                $currentArea = Repository::getInstance()->resolveArea($element->id);
+                $result[] = $this->createOsmInfoFromElement($currentObject, $currentArea);;
+                $currentObject = null;
+            } else {
+                if ($currentObject !== null) {
+                    $result[] = $this->createOsmInfoFromElement($currentObject);;
+                }
+                $currentObject = $element;
             }
-            $idInfo = new OsmId($element->type, $element->id);
-
-            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($idInfo, $element);;
         }
 
-        return array_values($result);
+        if ($currentObject !== null) {
+            $result[] = $this->createOsmInfoFromElement($currentObject);;
+        }
+
+        return $result;
     }
 
 
@@ -144,13 +155,14 @@ OVERPASS;
         return $query;
     }
 
-    private function createOsmInfoFromElement(OsmId $idInfo, mixed $element)
+    private function createOsmInfoFromElement(mixed $element, Area $area = null)
     {
+        $idInfo = new OsmId($element->type, $element->id);
         if ($element->type === 'node') {
-            return new OsmInfo($idInfo, $element->lat, $element->lon, $element->tags);
+            return new OsmInfo($idInfo, $element->lat, $element->lon, $element->tags, $area);
         }
 
-        return new OsmInfo($idInfo, $element->center->lat, $element->center->lon, $element->tags);
+        return new OsmInfo($idInfo, $element->center->lat, $element->center->lon, $element->tags, $area);
     }
 
     public function fetchOsmOverview(\App\Models\PoiType $type, Area $area)
@@ -168,11 +180,10 @@ OVERPASS;
             if ($element->type === 'area') {
                 continue;
             }
-            $idInfo = new OsmId($element->type, $element->id);
-            $result[$element->type . $element->id] = $this->createOsmInfoFromElement($idInfo, $element);;
+            $result[] = $this->createOsmInfoFromElement($element);;
         }
 
-        return array_values($result);
+        return $result;
 
     }
 }

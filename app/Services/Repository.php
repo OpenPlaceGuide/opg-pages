@@ -161,7 +161,6 @@ class Repository
 
     public function resolvePlace(OsmId $branch): ?Place
     {
-        // FIXME: add caching
         $places = $this->listPlaceIndex();
 
         if (isset($places[$branch->getKey()])) {
@@ -199,5 +198,12 @@ class Repository
             $result[$areaInfo->getKey()] = $areaInfo;
         }
         return $result;
+    }
+
+    public function resolveArea($id)
+    {
+        $areas = $this->listAreas();
+
+        return $areas[$id] ?? null;
     }
 }

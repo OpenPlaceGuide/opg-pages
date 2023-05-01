@@ -149,7 +149,7 @@ YAML;
      */
     private function fetchOsmInfo(array $places): array
     {
-        return (new Overpass())->fetchOsmInfo($places);
+        return (new Overpass())->fetchOsmInfo($places, Repository::getInstance()->listAreas());
     }
 
     public function tripleZoomMap($lat, $lon, Request $request)
