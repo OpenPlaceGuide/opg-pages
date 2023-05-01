@@ -6,6 +6,7 @@
 /public/assets/*
 /storage/*.key
 /vendor
+/tests/cypress/screenshots
 .env
 .env.backup
 .env.production

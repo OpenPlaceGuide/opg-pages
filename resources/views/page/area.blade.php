@@ -1,6 +1,6 @@
 @extends('layouts.index')
 
-<h1>{{ Fallback::resolve($area->names) }}</h1>
+<h1>{{ $area->getFullName() }}</h1>
 <h2>Types</h2>
 
 @foreach($types as $type)
