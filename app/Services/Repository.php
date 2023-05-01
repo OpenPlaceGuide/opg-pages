@@ -96,9 +96,14 @@ class Repository
         $parsed = Yaml::parse($yamlSource);
         $osmId = isset($parsed['osm']) ? new OsmId($parsed['osm']['type'], $parsed['osm']['id'], ) : null;
 
-        if ($osmId) {
-            return $this->resolveArea($osmId->getAreaId());
+        if ($osmId !== null) {
+            $area = $this->resolveArea($osmId->getAreaId());
+
+            if ($area !== null) {
+                return $area;
+            }
         }
+
         return new Area($this, $osmId, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['color'] ?? 'gray');
     }
 
