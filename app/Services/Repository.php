@@ -94,7 +94,7 @@ class Repository
         $yamlSource = file_get_contents($this->getAreaFileName($areaSlug));
 
         $parsed = Yaml::parse($yamlSource);
-        $osmId = isset($parsed['osm']) ? new OsmId($parsed['osm']['type'], $parsed['osm']['id'], ) : null;
+        $osmId = isset($parsed['osm']) ? new OsmId($parsed['osm']['type'], $parsed['osm']['id']) : null;
 
         if ($canEnrich && $osmId !== null) {
             $area = $this->resolveArea($osmId->getAreaId());
@@ -104,7 +104,7 @@ class Repository
             }
         }
 
-        return new Area($this, $osmId, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['color'] ?? 'gray');
+        return new Area($this, $osmId, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['color'] ?? 'gray', $parsed['sub_areas'] ?? []);
     }
 
     public function listTypes(): array
@@ -194,6 +194,14 @@ class Repository
         return Cache::remember('areas', function() {
             return $this->listAreasUncached();
         });
+    }
+
+    public function listLeafAreas()
+    {
+        $leafAreas = array_filter($this->listAreas(), function(Area $area) {
+            return count($area->subAreas) === 0;
+        });
+        return $leafAreas;
     }
 
     private function listAreasUncached()

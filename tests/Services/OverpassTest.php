@@ -31,7 +31,7 @@ class OverpassTest extends TestCase
     {
         $place1 = new OsmId('node', 3959878839);
         $place2 = new OsmId('way', 798092378);
-        $osmInfo = $this->getInstance()->fetchOsmInfo([ $place1, $place2 ], Repository::getInstance()->listAreas());
+        $osmInfo = $this->getInstance()->fetchOsmInfo([ $place1, $place2 ], Repository::getInstance()->listLeafAreas());
 
         self::assertInstanceOf(OsmInfo::class, $osmInfo[0]);
         self::assertEquals('Zemen Bank', $osmInfo[0]->tags->name);

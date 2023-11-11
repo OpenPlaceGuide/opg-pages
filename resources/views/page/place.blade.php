@@ -62,7 +62,7 @@
                 <section id="{{ $branch->idInfo->getKey() }}">
                     <h3>{{ Fallback::field($branch->tags, 'name') }}</h3>
                     <strong>{{ ucfirst(Fallback::resolve($type->name)) }}</strong>
-                    @if($branch->area)
+                    @if($branch->area !== null)
                         in <strong><a href="<?php echo $branch->area->getUrl() ?>">{{ $branch->area->getFullName() }}</a></strong>
                     @endif
                     <img class="shadow-lg"

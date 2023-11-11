@@ -133,7 +133,7 @@ YAML;
      */
     public function area(string $slug)
     {
-        $types = $this->repository->listTypes($slug);
+        $types = $this->repository->listTypes();
 
         $area = $this->repository->getAreaInfo($slug);
 
@@ -141,7 +141,6 @@ YAML;
             ->with('area', $area)
             ->with('types', $types)
             ->with('color', $area->color);
-
     }
 
     /**
@@ -150,7 +149,7 @@ YAML;
      */
     private function fetchOsmInfo(array $places): array
     {
-        return (new Overpass())->fetchOsmInfo($places, Repository::getInstance()->listAreas());
+        return (new Overpass())->fetchOsmInfo($places, Repository::getInstance()->listLeafAreas());
     }
 
     public function tripleZoomMap($lat, $lon, Request $request)

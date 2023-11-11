@@ -16,7 +16,8 @@ class Area
         readonly public string $slug,
         readonly public array $names,
         readonly public array $descriptions,
-        readonly public string $color
+        readonly public string $color,
+        readonly public array $subAreas
     )
     {
 
