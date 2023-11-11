@@ -134,7 +134,7 @@ foreach->.d(
   (
     $areasQuery
   );
-  out ids;
+  out ids 1;
 );
 OVERPASS;
 
