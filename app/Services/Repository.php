@@ -178,6 +178,11 @@ class Repository
         return null;
     }
 
+    public function isFeatured(OsmId $branch): bool
+    {
+        return $this->resolvePlace($branch) !== null;
+    }
+
     public function getUrl(OsmInfo $osmInfo)
     {
         $place = $this->resolvePlace($osmInfo->idInfo);

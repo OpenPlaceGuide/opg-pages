@@ -28,7 +28,7 @@ class Place
 
     private function getMediaPath($fileName): string
     {
-        return sprintf('assets/%s/%s/media/%s', $this->repository->name, $this->slug, $fileName);
+        return sprintf('/assets/%s/%s/media/%s', $this->repository->name, $this->slug, $fileName);
     }
 
     public function getProcessedGallery(): array
