@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+    opg-pages:
+        image: opg-pages
+        environment:
+            - APP_KEY
+            - APP_URL=http://localhost:3000/
+            - ASSET_URL=http://localhost:3000/
+
+    web:
+        image: osmapp
+        ports:
+            - "3000:3000"
