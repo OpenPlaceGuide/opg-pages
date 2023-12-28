@@ -5,7 +5,7 @@ namespace App\Models;
 use App\Services\Language;
 use Illuminate\Support\Facades\App;
 
-class Branch
+class OsmId
 {
     const SHORT_OSM_TYPES = [
         'n' => 'node',
@@ -37,5 +37,19 @@ class Branch
     public function getOsmUrl($baseUrl = 'https://www.osm.org')
     {
         return sprintf('%s/%s/%s', $baseUrl, $this->osmType, $this->osmId);
+    }
+
+    public function getAreaId()
+    {
+        if ($this->osmType === 'node') {
+            return $this->osmId;
+        }
+        // @see http://osmlab.github.io/learnoverpass/en/docs/filters/area/
+        if ($this->osmType === 'way') {
+            return $this->osmId + 2400000000;
+        }
+        if ($this->osmType === 'relation') {
+            return $this->osmId + 3600000000;
+        }
     }
 }

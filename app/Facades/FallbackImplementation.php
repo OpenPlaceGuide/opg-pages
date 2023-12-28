@@ -26,7 +26,7 @@ class FallbackImplementation
             return $array[App::getFallbackLocale()];
         }
 
-        return '(empty)';
+        return '';
     }
 
     public function field($objectOrArray, $field, $delimiter = ':', $language = null): string
