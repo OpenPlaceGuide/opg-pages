@@ -74,10 +74,6 @@
                     </ul>
                 </section>
             @endforeach
-
-            <h2>Contact</h2>
-
-            <label>Name:</label> <input type="text" placeholder="Enter your name"> <button class="bg-blue-500 text-white font-semibold p-2 rounded-md">Submit</button>
         </div>
 
 
