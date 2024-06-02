@@ -22,8 +22,6 @@ RUN apt-get install -y \
 
 RUN a2enmod rewrite
 
-RUN curl https://robo.li/robo.phar -o /usr/bin/robo && chmod +x /usr/bin/robo
-
 ENV LOG_CHANNEL=stderr
 
 RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
