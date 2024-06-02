@@ -1,6 +1,6 @@
 FROM composer:2.6.6 as composer
 
-FROM php:8.1-apache-buster
+FROM php:8.1-apache-bookworm
 
 RUN apt-get update && apt-get install -y zip
 
@@ -10,6 +10,7 @@ RUN apt-get -y update \
   && docker-php-ext-install intl
 
 RUN apt-get install -y \
+    nodejs npm \
     libfreetype6-dev \
     libjpeg62-turbo-dev \
     libpng-dev \
@@ -35,3 +36,5 @@ RUN chown -R www-data:www-data /var/www/html/bootstrap/cache || true
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev
+RUN npm install
+RUN npm run build
