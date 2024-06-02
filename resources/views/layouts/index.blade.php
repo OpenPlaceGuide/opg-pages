@@ -11,7 +11,7 @@
 <div class="pb-10">
     @yield('content')
 </div>
-<p class="h-12 text-xs absolute bottom-0 right-0 px-5 py-5">(C) OdBL <a href="https://openstreetmap.org/>">OpenStreetMap Contributors</a>, <a href="https://openplaceguide.org">OpenPlaceGuide</a> data
+<p class="h-12 text-xs absolute bottom-0 right-0 px-5 py-5">(C) OdBL <a href="https://openstreetmap.org/">OpenStreetMap</a> contributors & <a href="https://openplaceguide.org">OpenPlaceGuide</a> data
     repository contributors</p>
 </body>
 </html>

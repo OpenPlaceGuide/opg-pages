@@ -65,11 +65,14 @@
                     @if($branch->area !== null)
                         in <strong><a href="<?php echo $branch->area->getUrl() ?>">{{ $branch->area->getFullName() }}</a></strong>
                     @endif
-                    <img class="shadow-lg"
-                        src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'slug' => \App\Services\Language::slug(Fallback::field($branch->tags, 'name', language: 'en')), 'text' => Fallback::field($branch->tags, 'name')]) }}">
+                    @php($mainUrl = $branch->idInfo->getOsmUrl(url('/')))
+                    <a href="{{ $mainUrl }}" target="_blank">
+                        <img class="shadow-lg"
+                            src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'slug' => \App\Services\Language::slug(Fallback::field($branch->tags, 'name', language: 'en')), 'text' => Fallback::field($branch->tags, 'name')]) }}">
+                    </a>
                     <ul class="flex">
                         <li><a href="{{ $branch->idInfo->getOsmUrl() }}" target="_blank">OSM Info</a></li>
-                        <li><a href="{{ $branch->idInfo->getOsmUrl('https://osmapp.org') }}" target="_blank">OSM App</a>
+                        <li><a href="{{ $mainUrl }}" target="_blank">Main page {{ config('app.name') }}</a>
                         </li>
                     </ul>
                 </section>
