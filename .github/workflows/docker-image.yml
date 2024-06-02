@@ -19,7 +19,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_PAT }}
     - name: Build the Docker image
-      if: github.ref == 'refs/heads/opg-master'
       run: |
         docker build . --file Dockerfile --tag ghcr.io/openplaceguide/opg-pages:latest
         docker push ghcr.io/openplaceguide/opg-pages:latest
