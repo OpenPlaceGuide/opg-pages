@@ -106,3 +106,26 @@ PHPunit tests are automatically executed in the GitHub action.
 npx cypress open --e2e --browser chrome
 ```
 
+## Deployment blended together with osmapp via Docker
+
+This is meant to work together with [OsmApp, OpenPlaceGuide fork](https://github.com/OpenPlaceGuide/osmapp) which runs
+on the root path of the page and proxies all other requests to opg-pages.
+
+* build osmapp and Docker-Tag as `osmapp` (in the osmapp folder)
+
+```bash
+cd ../osmapp && docker build --build-arg PROXY_BACKEND=http://opg-pages/ . -t osmapp
+```
+
+* build this app
+```bash
+docker build . -t opg-pages
+```
+
+Start 
+```bash
+docker compose up -d
+```
+
+Access http://localhost:3000
+
