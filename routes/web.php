@@ -33,7 +33,9 @@ $routes = function($locale) {
 };
 
 foreach(config('app.additional_locales') as $locale) {
-    Route::prefix($locale. '/')->group(function() use ($locale, $routes) { $routes($locale); });
+    Route::middleware(\App\Services\Cache::getCacheMiddleware())
+        ->prefix($locale. '/')->group(function() use ($locale, $routes) { $routes($locale); });
 }
 
-$routes(config('app.locale'));
+Route::middleware(\App\Services\Cache::getCacheMiddleware())
+    ->group(function() use ($routes) { $routes(config('app.locale')); });

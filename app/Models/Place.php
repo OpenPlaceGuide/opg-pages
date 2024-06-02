@@ -2,15 +2,22 @@
 
 namespace App\Models;
 
+use App\Facades\Fallback;
 use App\Services\Repository;
 use Illuminate\Support\Facades\App;
 
 class Place
 {
     /**
-     * @param array<Branch> $branches
+     * @param array<OsmId> $branches
      */
-    public function __construct(public readonly Repository $repository, public readonly string $slug, public readonly string $logo, public readonly array $branches, public readonly array $gallery = [])
+    public function __construct(
+        public readonly Repository $repository,
+        public readonly string $slug,
+        public readonly string $logo,
+        public readonly string $color,
+        public readonly array $branches,
+        public readonly array $gallery = [])
     {
     }
 
@@ -21,14 +28,14 @@ class Place
 
     private function getMediaPath($fileName): string
     {
-        return sprintf('assets/%s/%s/media/%s', $this->repository->name, $this->slug, $fileName);
+        return sprintf('/assets/%s/%s/media/%s', $this->repository->name, $this->slug, $fileName);
     }
 
-    public function getProcessedGallery($language): array
+    public function getProcessedGallery(): array
     {
         $pictures = [];
         foreach ($this->gallery as $item) {
-            $pictures[$item[$language]] = $this->getMediaPath($item['file']);
+            $pictures[Fallback::resolve($item)] = $this->getMediaPath($item['file']);
         }
         return $pictures;
     }
@@ -42,7 +49,7 @@ class Place
         return $keys;
     }
 
-    public function getUrl(?Branch $branch)
+    public function getUrl(?OsmId $branch)
     {
         $url = route('page.' . App::currentLocale(), ['slug' => $this->slug]);
         if ($branch !== null) {

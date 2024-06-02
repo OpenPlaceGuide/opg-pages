@@ -9,14 +9,6 @@ License: Undecided, please contact us if you are interested to use any of this.
 * Laravel 10
 * PHP 8.1
 
-## Symlinking repository
-
-* Checkout data repository to storage/app/repositories, for example https://github.com/OpenPlaceGuide/data
-* Link to assets
-* ```opg-pages/public/assets$ ls -al
-  ethiopia -> ../../storage/app/repositories/opg-data-ethiopia/places
-  ```
-
 ## Fonts for Static Map
 
 see `resources/fonts/README.md`
@@ -49,3 +41,91 @@ The place / business page features
 * the name
 * multiple or a single branch with location
 * optional: contact form
+
+## Caching
+
+The data from OpenStreetMap and the data repository is cached. If you changed something, wait 5 minute and use Ctrl+F5 to refresh
+the necessary page from the source.
+
+## Development
+
+### Local Setup
+
+Clone this repository (`git clone https://github.com/OpenPlaceGuide/opg-pages.git`) and `cd opg-pages`
+
+Clone the data repository and symlink to public assets
+
+```bash
+cd storage/app/repositories/
+git clone https://github.com/OpenPlaceGuide/data/ opg-data-ethiopia
+cd ../../../public/assets
+ln -s  ../../storage/app/repositories/opg-data-ethiopia/places ethiopia
+```
+
+Install dependencies
+
+```bash
+composer install
+npm install
+```
+
+Open vite
+
+```bash
+npm run dev
+```
+
+or build with
+
+```bash
+npm run build
+```
+
+Possible pages:
+
+* /bole/
+* /bole/banks
+* /nefas-silk/businesses
+* /bandira
+* /am/bandira
+* /zemen-bank
+
+Warning: The root page (/) is currently not existing.
+
+### PHPUnit
+
+```bash
+vendor/bin/phpunit
+```
+
+PHPunit tests are automatically executed in the GitHub action.
+
+### Cypress
+
+```bash
+npx cypress open --e2e --browser chrome
+```
+
+## Deployment blended together with osmapp via Docker
+
+This is meant to work together with [OsmApp, OpenPlaceGuide fork](https://github.com/OpenPlaceGuide/osmapp) which runs
+on the root path of the page and proxies all other requests to opg-pages.
+
+* build osmapp and Docker-Tag as `osmapp` (in the osmapp folder)
+
+```bash
+cd ../osmapp && docker build --build-arg PROXY_BACKEND=http://opg-pages/ . -t osmapp
+```
+
+* build this app
+```bash
+docker build . -t opg-pages
+```
+
+Start 
+```bash
+docker compose up -d
+```
+
+Access http://localhost:3000
+

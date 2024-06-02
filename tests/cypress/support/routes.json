@@ -1,0 +1,223 @@
+{
+  "cypress.factory": {
+    "name": "cypress.factory",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@factory",
+    "uri": "__cypress__/factory",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.login": {
+    "name": "cypress.login",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@login",
+    "uri": "__cypress__/login",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.logout": {
+    "name": "cypress.logout",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@logout",
+    "uri": "__cypress__/logout",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.artisan": {
+    "name": "cypress.artisan",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@artisan",
+    "uri": "__cypress__/artisan",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.run-php": {
+    "name": "cypress.run-php",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@runPhp",
+    "uri": "__cypress__/run-php",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.csrf-token": {
+    "name": "cypress.csrf-token",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@csrfToken",
+    "uri": "__cypress__/csrf_token",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "cypress.routes": {
+    "name": "cypress.routes",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@routes",
+    "uri": "__cypress__/routes",
+    "method": [
+      "POST"
+    ]
+  },
+  "cypress.current-user": {
+    "name": "cypress.current-user",
+    "domain": null,
+    "action": "Laracasts\\Cypress\\Controllers\\CypressController@currentUser",
+    "uri": "__cypress__/current-user",
+    "method": [
+      "POST"
+    ]
+  },
+  "sanctum.csrf-cookie": {
+    "name": "sanctum.csrf-cookie",
+    "domain": null,
+    "action": "Laravel\\Sanctum\\Http\\Controllers\\CsrfCookieController@show",
+    "uri": "sanctum/csrf-cookie",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "ignition.healthCheck": {
+    "name": "ignition.healthCheck",
+    "domain": null,
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\HealthCheckController",
+    "uri": "_ignition/health-check",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "ignition.executeSolution": {
+    "name": "ignition.executeSolution",
+    "domain": null,
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\ExecuteSolutionController",
+    "uri": "_ignition/execute-solution",
+    "method": [
+      "POST"
+    ]
+  },
+  "ignition.updateConfig": {
+    "name": "ignition.updateConfig",
+    "domain": null,
+    "action": "Spatie\\LaravelIgnition\\Http\\Controllers\\UpdateConfigController",
+    "uri": "_ignition/update-config",
+    "method": [
+      "POST"
+    ]
+  },
+  "": {
+    "name": null,
+    "domain": null,
+    "action": "Closure",
+    "uri": "api/user",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "tripleZoomMap": {
+    "name": "tripleZoomMap",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@tripleZoomMap",
+    "uri": "assets/static-map/{lat}/{lon}/{slug}.png",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "osmPlace.am": {
+    "name": "osmPlace.am",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@osmPlace",
+    "uri": "am/{osmTypeLetter}{osmId}/{slug?}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "page.am": {
+    "name": "page.am",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@page",
+    "uri": "am/{slug}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "typesInArea.am": {
+    "name": "typesInArea.am",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@typePage",
+    "uri": "am/{areaSlug}/{typeSlug}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "osmPlace.de": {
+    "name": "osmPlace.de",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@osmPlace",
+    "uri": "de/{osmTypeLetter}{osmId}/{slug?}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "page.de": {
+    "name": "page.de",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@page",
+    "uri": "de/{slug}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "typesInArea.de": {
+    "name": "typesInArea.de",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@typePage",
+    "uri": "de/{areaSlug}/{typeSlug}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "osmPlace.en": {
+    "name": "osmPlace.en",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@osmPlace",
+    "uri": "{osmTypeLetter}{osmId}/{slug?}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "page.en": {
+    "name": "page.en",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@page",
+    "uri": "{slug}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "typesInArea.en": {
+    "name": "typesInArea.en",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@typePage",
+    "uri": "{areaSlug}/{typeSlug}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  }
+}

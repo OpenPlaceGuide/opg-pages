@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Facades\Fallback;
-use App\Models\Branch;
+use App\Models\OsmId;
 use App\Services\Language;
 use App\Services\Overpass;
 use App\Services\Repository;
@@ -46,40 +46,63 @@ class PageController extends Controller
 
         $branchesInfo = $this->fetchOsmInfo($place->branches);
         $main = $branchesInfo[0];
+        $type = Repository::getInstance()->resolveType($main);
+
+        $githubUrl = sprintf('https://github.com/OpenPlaceGuide/data/tree/main/places/%s/', $slug);
 
         $logoUrl = $place->getLogoUrl();
 
-        return view('page.page')
+        return view('page.place')
             ->with('place', $place)
             ->with('logoUrl', $logoUrl)
             ->with('slug', $slug)
             ->with('main', $main)
-            ->with('gallery', $place->getProcessedGallery('en'))
+            ->with('gallery', $place->getProcessedGallery())
             ->with('branches', $branchesInfo)
-            ->with('newPlaceUrl', null);
+            ->with('newPlaceUrl', null)
+            ->with('githubUrl', $githubUrl)
+            ->with('type', $type)
+            ->with('color', $place->color ?? $type->color ?? 'gray')
+            ->with('icon', $place->icon ?? $type->icon);
+
     }
 
     public function osmPlace($type, $id)
     {
-        $branch = new Branch($type, $id);
-        $main = $this->fetchOsmInfo([$branch])[0];
+        // FIXME: forward to slug based page if existing
+        $idInfo = new OsmId($type, $id);
+
+        if ($place = Repository::getInstance()->resolvePlace($idInfo)) {
+            return redirect()->to($place->getUrl($idInfo));
+        }
+
+        $main = $this->fetchOsmInfo([$idInfo])[0];
 
         $newPlaceContent = <<<YAML
 osm:
-   id: {$branch->osmId}
-   type: {$branch->osmType}
+   id: {$idInfo->osmId}
+   type: {$idInfo->osmType}
 YAML;
 
         $name = Language::slug(Fallback::field($main->tags, 'name', language: 'en'));
+        // FIXME: don't hard code the data repository
         $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
-        return view('page.page')
+
+        $type = Repository::getInstance()->resolveType($main);
+
+        $logoUrl = $type->getLogoUrl();
+
+        return view('page.place')
             ->with('place', null)
-            ->with('logoUrl', null)
+            ->with('logoUrl', $logoUrl)
             ->with('slug', null)
             ->with('main', $main)
             ->with('gallery', [])
             ->with('branches', [$main])
-            ->with('newPlaceUrl', $newPlaceUrl);
+            ->with('newPlaceUrl', $newPlaceUrl)
+            ->with('type', $type)
+            ->with('color', $type->color ?? 'gray')
+            ->with('icon', $type->icon);
 
     }
 
@@ -98,10 +121,16 @@ YAML;
 
         $places = (new Overpass())->fetchOsmOverview($type, $area);
 
+        $logoUrl = $type->getLogoUrl();
+
+
         return view('page.overview')
             ->with('area', $area)
             ->with('type', $type)
-            ->with('places', $places);
+            ->with('logoUrl', $logoUrl)
+            ->with('places', $places)
+            ->with('color', $type->color)
+            ->with('logo', $type->logo);
     }
 
     /**
@@ -109,21 +138,23 @@ YAML;
      */
     public function area(string $slug)
     {
-        $types = $this->repository->listTypes($slug);
+        $types = $this->repository->listTypes();
+
         $area = $this->repository->getAreaInfo($slug);
 
         return view('page.area')
             ->with('area', $area)
-            ->with('types', $types);
+            ->with('types', $types)
+            ->with('color', $area->color);
     }
 
     /**
-     * @param array<Branch> $places
+     * @param array<OsmId> $places
      * @return array<OsmInfo>
      */
     private function fetchOsmInfo(array $places): array
     {
-        return (new Overpass())->fetchOsmInfo($places);
+        return (new Overpass())->fetchOsmInfo($places, Repository::getInstance()->listLeafAreas());
     }
 
     public function tripleZoomMap($lat, $lon, Request $request)
