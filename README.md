@@ -51,7 +51,7 @@ the necessary page from the source.
 
 ### Local Setup
 
-Clone this respository (`git clone https://github.com/OpenPlaceGuide/opg-pages.git`) and `cd opg-pages`
+Clone this repository (`git clone https://github.com/OpenPlaceGuide/opg-pages.git`) and `cd opg-pages`
 
 Clone the data repository and symlink to public assets
 
