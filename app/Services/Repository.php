@@ -73,7 +73,7 @@ class Repository
 
         $parsed = Yaml::parse($yamlSource);
 
-        return new PoiType($this, $slug, $parsed['logo'] ?? null, $parsed['icon'] ?? null, $parsed['color'] ?? null, $parsed['tags'], $parsed['name'], $parsed['plural']);
+        return new PoiType($this, $slug, $parsed['logo'] ?? null, $parsed['icon'] ?? null, $parsed['color'] ?? null, $parsed['tags'], $parsed['name'], $parsed['description'] ?? [], $parsed['plural']);
     }
 
     public function isArea(string $slug): bool

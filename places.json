@@ -1,0 +1,1193 @@
+{
+    "version": 0.6,
+    "generator": "Overpass API 0.7.62.1 084b4234",
+    "osm3s": {
+        "timestamp_osm_base": "2024-06-01T17:37:13Z",
+        "timestamp_areas_base": "2024-06-01T13:23:30Z",
+        "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+    },
+    "elements": [
+
+        {
+            "type": "node",
+            "id": 462248362,
+            "lat": 9.0114105,
+            "lon": 38.7621296,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "100120",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115512184",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 726512060,
+            "lat": 8.9870836,
+            "lon": 38.7488699,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "255",
+                "name": "Commercial Bank of Ethiopia (Gofa Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ጎፋ ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251114669703;+251114669704;+251114669705;+251114669706;+251114169727",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 732447961,
+            "lat": 9.0127767,
+            "lon": 38.7486874,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank Of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "name:zh": "埃塞商业银行",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115512300",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 790008120,
+            "lat": 9.0345240,
+            "lon": 38.7439983,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Arada",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "22862",
+                "name": "Commercial Bank of Ethiopia (Habte Giorgis branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ሃብተጊዮርጊስ ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251111557591/1569019, +251111562619/1569085/1569062",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 838787498,
+            "lat": 8.9754715,
+            "lon": 38.6818500,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank Of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 849596902,
+            "lat": 8.9236720,
+            "lon": 38.7647700,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 849596990,
+            "lat": 8.9522060,
+            "lon": 38.7630600,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 912018451,
+            "lat": 8.9883831,
+            "lon": 38.7918562,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1435256474,
+            "lat": 8.9947688,
+            "lon": 38.7473938,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:kebele": "11/12",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "3480",
+                "name": "Commercial Bank Of Ethiopia",
+                "name:am": "የኮንስትራክሽንና ቢዝነስ ባንክ (ቡልጋሪያ ማዞሪያ ቅርንጫፍ)",
+                "name:en": "Commercial Bank Of Ethiopia (Bulgaria Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251 (0) 115 541601",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1435262296,
+            "lat": 9.0044707,
+            "lon": 38.7466288,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:kebele": "13/14",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "fax": "+251115503982",
+                "name": "Commercial Bank of Ethiopia (Kirkos Kebele Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ቂርቆስ ቀበሌ ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115525642, +251115524327, +251115533307/39",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1691647781,
+            "lat": 8.9994709,
+            "lon": 38.7191541,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia- Ayer Tena Branch",
+                "name:am": "የ ኢትዮጲያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1697757571,
+            "lat": 8.9986095,
+            "lon": 38.7715081,
+            "tags": {
+                "addr:subcity": "Kirkos",
+                "addr:woreda": "04",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "3480",
+                "name": "Commercial Bank Of Ethiopia (Peacock)",
+                "name:am": "የኮንስትራክሽንና ቢዝነስ ባንክ (አፍሪካ ጎዳና ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115158083",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1700234295,
+            "lat": 8.9949871,
+            "lon": 38.7390686,
+            "tags": {
+                "addr:housenumber": "21234",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "255",
+                "fax": "+251113726174",
+                "name": "Commercial Bank of Ethiopia (Sarbet Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ሳርቤት ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251113726144/28/27",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1700234296,
+            "lat": 9.0121420,
+            "lon": 38.7467390,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "1208",
+                "fax": "+251115543663",
+                "name": "Commercial Bank of Ethiopia (Senga Tera Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ሰንጋተራ ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115 150127/75/70/26",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1700234297,
+            "lat": 9.0115262,
+            "lon": 38.7325134,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:kebele": "01/18",
+                "addr:subcity": "Ledeta",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "1274",
+                "name": "Commercial Bank of Ethiopia (Lideta Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251 (0) 115 504247",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1701465207,
+            "lat": 9.0167950,
+            "lon": 38.7649191,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "62272",
+                "fax": "+251115505167",
+                "name": "Commercial Bank of Ethiopia (Andinet Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (አንድነት ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115518213/14/15/16",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1701465208,
+            "lat": 9.0148302,
+            "lon": 38.7642867,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "60091",
+                "fax": "+251 (0) 115 524298",
+                "name": "Commercial Bank of Ethiopia (ECA Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ኢሲኤ ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251 (0) 115 444145/63/32/25",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1701593715,
+            "lat": 8.9814378,
+            "lon": 38.7636345,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "fax": "+251114420556",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251114424269/72/70/68",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1701593730,
+            "lat": 9.0052333,
+            "lon": 38.7672751,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "fax": "+251 (0) 115 531656",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251 (0) 115 531652/50/41/42/54/57",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 1701729793,
+            "lat": 8.9820586,
+            "lon": 38.7562402,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2041750980,
+            "lat": 8.9811553,
+            "lon": 38.7744595,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank Of Ethiopia (Bole Michael Branch)",
+                "name:am": "ኮንስትራክሽንና ቢዝነስ ባንክ",
+                "name:zh": "埃塞商业银行",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2041750981,
+            "lat": 8.9820757,
+            "lon": 38.7738546,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Ayer Amba Michael Branch)",
+                "name:am": "የኢትዮጲያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2047651254,
+            "lat": 9.0257771,
+            "lon": 38.7761581,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Ethiopian commercial Bank",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ - አዋሬ ቅርንጫፍ",
+                "name:en": "Commercial Bank of Ethiopia",
+                "name:zh": "埃塞商业银行",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2087200962,
+            "lat": 8.9840389,
+            "lon": 38.7496497,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኮንስትራክሽን እና ቢዝነስ ባንክ (ቄራ ቅርንጫፍ)",
+                "name:en": "Commercial Bank of Ethiopia (Goffa Mazoriya Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 2348685486,
+            "lat": 9.0326954,
+            "lon": 38.7545031,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Arvada Giorgis Branch)",
+                "name:en": "Commercial Bank of Ethiopia (Arada Giorgis Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4295718962,
+            "lat": 8.9702534,
+            "lon": 38.7230185,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Jemo Mikael Branch)",
+                "name:en": "Commercial Bank of Ethiopia (Jemo Mikael Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4305934091,
+            "lat": 9.0009318,
+            "lon": 38.8139801,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia Gerji Branch",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4319747696,
+            "lat": 9.0151703,
+            "lon": 38.8526797,
+            "tags": {
+                "addr:street": "Summit Street",
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial bank of Ethiopia Summit branch",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4319761191,
+            "lat": 9.0010318,
+            "lon": 38.8138998,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial bank of Ethiopia Gerji branch",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4369176789,
+            "lat": 9.0153633,
+            "lon": 38.7867827,
+            "tags": {
+                "addr:street": "Haile Gebresellasie Avenue",
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "commercial bank of Ethiopia",
+                "name:zh": "埃塞商业银行",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4452903089,
+            "lat": 8.9500000,
+            "lon": 38.7190947,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial bank of Ethiopia",
+                "name:am": "Commercial bank of Ethiopia",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4564459889,
+            "lat": 9.0331311,
+            "lon": 38.7625586,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:en": "Commercial Bank of Ethiopia (Arat Killo Branch)",
+                "name:zh": "埃塞商业银行",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4739170222,
+            "lat": 9.0377673,
+            "lon": 38.7555456,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia Mehal Ketama Branch",
+                "name:en": "Commercial Bank of Ethiopia Mehal Ketama Branch",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 4967280573,
+            "lat": 9.0165980,
+            "lon": 38.7918858,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:street": "Equatorial Guinea Street",
+                "amenity": "bank",
+                "atm": "yes",
+                "branch": "Lem Area",
+                "brand": "Commercial Bank of Ethiopia",
+                "brand:wikidata": "Q495172",
+                "drive_through": "no",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "name:en": "Commercial Bank of Ethiopia",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 5074887923,
+            "lat": 9.0325168,
+            "lon": 38.7469821,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia Somale Tera Branch",
+                "name:en": "Commercial Bank of Ethiopia Somale Tera Branch",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 5225071323,
+            "lat": 8.9965026,
+            "lon": 38.6833317,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial bank of Ethiopia (Tropical Branch)",
+                "name:en": "Commercial bank of Ethiopia (Tropical Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 5227845523,
+            "lat": 8.9802672,
+            "lon": 38.7347694,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:en": "Commercial Bank of Ethiopia (Abo Mazoria Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 5926298142,
+            "lat": 9.0173028,
+            "lon": 38.7754547,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (CBE)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6066764275,
+            "lat": 8.9969355,
+            "lon": 38.7872103,
+            "tags": {
+                "addr:street": "ቦሌ መድሀኒያለም ወደ ብራስ መንገድ",
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Bole Medhanialem Branch)",
+                "name:en": "comercial bank of ethiopia bole branch",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6310685318,
+            "lat": 9.0571843,
+            "lon": 38.7771425,
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:street": "Omedla Street",
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6622572042,
+            "lat": 9.0645584,
+            "lon": 38.7713433,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank Of Ethiopia",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6622593882,
+            "lat": 9.0534771,
+            "lon": 38.7630414,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank Of Ethiopia",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6622593887,
+            "lat": 9.0446115,
+            "lon": 38.7630173,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank Of Ethiopia",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6715621478,
+            "lat": 8.9531269,
+            "lon": 38.6962219,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial bank of Ethiopia (Furi Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6716252373,
+            "lat": 8.9482832,
+            "lon": 38.7445622,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Lafto Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6716252419,
+            "lat": 8.9407484,
+            "lon": 38.7347607,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Kotari Condominium Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6718462622,
+            "lat": 9.0121168,
+            "lon": 38.7464190,
+            "tags": {
+                "addr:kebele": "07/14",
+                "addr:subcity": "Lideta",
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Sengatera Sub branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6718462644,
+            "lat": 9.0327792,
+            "lon": 38.7526061,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Piassa Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6718462646,
+            "lat": 9.0308898,
+            "lon": 38.7515634,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Theodros Square Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6718462652,
+            "lat": 9.0301825,
+            "lon": 38.7510833,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Cherchill Godana Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6718484012,
+            "lat": 9.0425047,
+            "lon": 38.7652870,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Yared Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6718712763,
+            "lat": 9.0252760,
+            "lon": 38.7391019,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Berebere Tera Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6718712770,
+            "lat": 9.0270680,
+            "lon": 38.7399991,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Goma Tera Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6753068483,
+            "lat": 8.9649042,
+            "lon": 38.7326522,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Mekanisa Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ - መካኒሳ ቅርንጫፍ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6759973732,
+            "lat": 8.9304392,
+            "lon": 38.7428186,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial bank of Ethiopia (Hana Tena tabia branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6759975629,
+            "lat": 8.9395124,
+            "lon": 38.7487678,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial bank of Ethiopia (Saris 58 mazoria Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6782265155,
+            "lat": 8.9839209,
+            "lon": 38.7817532,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Bole Cargo Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 6782306225,
+            "lat": 8.9986775,
+            "lon": 38.7853895,
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia (Tele Medhanialem Branch)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "node",
+            "id": 7179536169,
+            "lat": 9.0078701,
+            "lon": 38.7436040,
+            "tags": {
+                "amenity": "bank",
+                "name": "Commercial Bank of Ethiopia"
+            }
+        },
+        {
+            "type": "node",
+            "id": 7179536265,
+            "lat": 9.0191339,
+            "lon": 38.7696408,
+            "tags": {
+                "amenity": "bank",
+                "name": "Commercial Bank of Ethiopia"
+            }
+        },
+        {
+            "type": "node",
+            "id": 7226588011,
+            "lat": 9.0411146,
+            "lon": 38.7818674,
+            "tags": {
+                "amenity": "bank",
+                "name": "Commercial Bank of Ethiopia"
+            }
+        },
+        {
+            "type": "node",
+            "id": 7835650301,
+            "lat": 9.0572008,
+            "lon": 38.7404636,
+            "tags": {
+                "amenity": "bank",
+                "name": "Commercial bank of Ethiopia (sheger branch)"
+            }
+        },
+        {
+            "type": "node",
+            "id": 9132055937,
+            "lat": 9.0226687,
+            "lon": 38.7812516,
+            "tags": {
+                "amenity": "bank",
+                "name": "Commercial Bank of Ethiopia"
+            }
+        },
+        {
+            "type": "node",
+            "id": 11508014151,
+            "lat": 8.9832136,
+            "lon": 38.7959750,
+            "tags": {
+                "airside": "yes",
+                "amenity": "bank",
+                "check_date": "2024-01-09",
+                "level": "2",
+                "name": "Commercial Bank of Ethiopia",
+                "wheelchair": "yes"
+            }
+        },
+        {
+            "type": "way",
+            "id": 42553521,
+            "center": {
+                "lat": 8.9980375,
+                "lon": 38.7720568
+            },
+            "nodes": [
+                531342294,
+                531342292,
+                531342290,
+                531342288,
+                1788523673,
+                531342294
+            ],
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "addr:woreda": "04",
+                "amenity": "bank",
+                "atm": "yes",
+                "building": "yes",
+                "contact:p.o.box": "2938",
+                "name": "Commercial Bank of Ethiopia (Bole Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ቦሌ ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115501946;+251115501947;+251115501948;+251115501949;+251115501950;+251115501951",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "way",
+            "id": 42974929,
+            "center": {
+                "lat": 9.0493339,
+                "lon": 38.7258447
+            },
+            "nodes": [
+                538240199,
+                538240197,
+                538240198,
+                2123561463,
+                2123561469,
+                538240193,
+                538240199
+            ],
+            "tags": {
+                "amenity": "bank",
+                "atm": "yes",
+                "name": "Commercial Bank of Ethiopia Gulele Branch",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "way",
+            "id": 42981890,
+            "center": {
+                "lat": 9.0320623,
+                "lon": 38.7405790
+            },
+            "nodes": [
+                538352347,
+                538352357,
+                538352350,
+                538352351,
+                538352347
+            ],
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Addis Ketema",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "22020",
+                "fax": "+251112134466",
+                "name": "Commercial Bank of Ethiopia (Anwar Mesgid Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (አንዋር መስጊድ ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251112753073;+251112753072;+251112773000;+251112773087;+ 251112754624;",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "way",
+            "id": 42981891,
+            "center": {
+                "lat": 9.0335346,
+                "lon": 38.7397853
+            },
+            "nodes": [
+                538352363,
+                538352364,
+                538352348,
+                538352349,
+                538352363
+            ],
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Addis Ketema",
+                "amenity": "bank",
+                "atm": "yes",
+                "contact:p.o.box": "50240",
+                "fax": "+251112753191",
+                "name": "Commercial Bank of Ethiopia (Abakoran Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (አባኮራን ቅርንጫፍ)",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251112781109, +251112763391/94,+251112783944",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "way",
+            "id": 48893697,
+            "center": {
+                "lat": 9.0140713,
+                "lon": 38.7532865
+            },
+            "nodes": [
+                620401810,
+                620401806,
+                620401805,
+                620401795,
+                620401810
+            ],
+            "tags": {
+                "addr:city": "Addis Ababa",
+                "addr:subcity": "Kirkos",
+                "amenity": "bank",
+                "atm": "yes",
+                "building": "yes",
+                "contact:p.o.box": "5656",
+                "fax": "+251115504054",
+                "name": "Commercial Bank of Ethiopia (Finfine Branch)",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ (ፊንፊኔ ቅርንጫፍ)",
+                "name:zh": "埃塞商业银行 Finfine 支行",
+                "opening_hours": "Mo-Sa 08:30-18:00",
+                "operator": "Government",
+                "phone": "+251115 512879/80/55/58",
+                "website": "http://www.combanketh.et/"
+            }
+        },
+        {
+            "type": "way",
+            "id": 51548011,
+            "center": {
+                "lat": 9.0177746,
+                "lon": 38.7518176
+            },
+            "nodes": [
+                11154741171,
+                11154741172,
+                11154741173,
+                659036968,
+                659036969,
+                659036970,
+                2117585658,
+                659036959,
+                659036955,
+                11154741168,
+                11154741169,
+                11154741170,
+                659036962,
+                659036960,
+                659036965,
+                648315686,
+                659036952,
+                659036954,
+                659036951,
+                11154741171
+            ],
+            "tags": {
+                "addr:description": "Next to Ethiopian Radio and Television Agency Building",
+                "addr:description:am": "ከኢትዮጵያ ሬድዮና ቴሌቪዥን ድርጅት ህንፃ አጠገብ",
+                "amenity": "bank",
+                "atm": "yes",
+                "building": "yes",
+                "name": "Commercial Bank Main Branch የኢትዮጵያ ንግድ ባንክ ዋና መ/ቤት",
+                "name:am": "የኢትዮጵያ ንግድ ባንክ",
+                "name:en": "Commercial Bank Addis Ababa Branch",
+                "name:zh": "埃塞商业银行 Addis Ababa 分行",
+                "phone": "+251115515000"
+            }
+        }
+
+    ]
+}

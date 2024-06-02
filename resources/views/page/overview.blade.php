@@ -3,11 +3,22 @@
 @section('content')
     <header>
         <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
-            @svg("icon-${icon}_11","h-20 w-20 mr-5 mb-4 inline aspect-square fill-current text-$color-900" )
+            @if($logoUrl)
+                <img class="h-20 mr-5 mb-4 inline aspect-square" src="{{ asset($logoUrl) }} ">
+            @endif
             <div class="hyphens-auto">
                 {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::resolve($area->names) }}
             </div>
         </h1>
+        @php($typeDescription = Fallback::resolve($type->descriptions))
+        @if($typeDescription)
+            <p class="px-5 mt-5 max-w-5xl mx-auto">{{ $typeDescription }}</p>
+        @endif
+
+        @php($description = Fallback::resolve($area->descriptions))
+        @if($description)
+            <p class="px-5 mt-5 max-w-5xl mx-auto">{{ $description }}</p>
+        @endif
     </header>
 
     <section>

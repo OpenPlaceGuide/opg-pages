@@ -88,12 +88,13 @@ YAML;
         // FIXME: don't hard code the data repository
         $newPlaceUrl = sprintf('https://github.com/OpenPlaceGuide/data/new/main?filename=places/%s/place.yaml&value=%s', $name, urlencode($newPlaceContent));
 
-
         $type = Repository::getInstance()->resolveType($main);
+
+        $logoUrl = $type->getLogoUrl();
 
         return view('page.place')
             ->with('place', null)
-            ->with('logoUrl', null)
+            ->with('logoUrl', $logoUrl)
             ->with('slug', null)
             ->with('main', $main)
             ->with('gallery', [])
@@ -120,12 +121,16 @@ YAML;
 
         $places = (new Overpass())->fetchOsmOverview($type, $area);
 
+        $logoUrl = $type->getLogoUrl();
+
+
         return view('page.overview')
             ->with('area', $area)
             ->with('type', $type)
+            ->with('logoUrl', $logoUrl)
             ->with('places', $places)
             ->with('color', $type->color)
-            ->with('icon', $type->icon);
+            ->with('logo', $type->logo);
     }
 
     /**

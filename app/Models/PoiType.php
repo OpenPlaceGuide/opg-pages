@@ -14,6 +14,7 @@ class PoiType
         public readonly ?string $color,
         public readonly array $tags,
         public readonly array $name = [],
+        public readonly array $descriptions,
         public readonly array $plural = []
     )
     {

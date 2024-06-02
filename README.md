@@ -105,3 +105,4 @@ PHPunit tests are automatically executed in the GitHub action.
 ```bash
 npx cypress open --e2e --browser chrome
 ```
+

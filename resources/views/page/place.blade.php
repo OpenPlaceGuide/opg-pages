@@ -24,7 +24,7 @@
             @if($logoUrl)
                 <img class="h-20 mr-5 mb-4 inline aspect-square" src="{{ asset($logoUrl) }} ">
             @else
-                @svg("icon-${icon}_11","h-20 w-20 mr-5 mb-4 inline aspect-square fill-current text-$color-900" )
+{{--                @svg("icon-${icon}_11","h-20 w-20 mr-5 mb-4 inline aspect-square fill-current text-$color-900" )--}}
             @endif
 
             <div class="hyphens-auto">
