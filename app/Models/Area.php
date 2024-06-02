@@ -36,10 +36,16 @@ class Area
 
     public function getFullName()
     {
-        return sprintf('%s - %s, %s',
-            Fallback::field($this->tags, 'name'),
-            Fallback::field($this->tags, 'is_in:state'),
-            Fallback::field($this->tags, 'is_in:country')
-        );
+        $result = Fallback::field($this->tags, 'name');
+
+        if ($part = Fallback::field($this->tags, 'is_in:state')) {
+            $result .= ' - ' . $part;
+        }
+
+        if ($part = Fallback::field($this->tags, 'is_in:country')) {
+            $result .= ', ' . $part;
+        }
+
+        return $result;
     }
 }

@@ -7,7 +7,7 @@
                 <img class="h-20 mr-5 mb-4 inline aspect-square" src="{{ asset($logoUrl) }} ">
             @endif
             <div class="hyphens-auto">
-                {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::resolve($area->names) }}
+                {{ ucfirst(Fallback::resolve($type->plural)) }} in <a href="{{ route('page.' . App::currentLocale(), ['slug' => $area->slug]) }}">{{ Fallback::resolve($area->names) }}</a>
             </div>
         </h1>
         @php($typeDescription = Fallback::resolve($type->descriptions))
@@ -29,9 +29,6 @@
                 @foreach($places as $place)
                     <a class="no-underline px-4 flex flex-row justify-between items-center border text-card-foreground max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4"
                        href="{{ \App\Services\Repository::getInstance()->getUrl($place) }}">
-                        <div class="flex-grow">
-                            <h3 class="tracking-tight text-lg font-bold">{{ Fallback::field($place->tags, 'name') }}</h3>
-                        </div>
                         @if (\App\Services\Repository::getInstance()->isFeatured($place->idInfo))
                             <div class="flex-shrink-0">
                                 <span
@@ -44,6 +41,9 @@
                               </span>
                             </div>
                         @endif
+                        <div class="flex-grow">
+                            <h3 class="tracking-tight text-lg font-bold">{{ Fallback::field($place->tags, 'name') }}</h3>
+                        </div>
                     </a>
                 @endforeach
             </div>

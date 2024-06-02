@@ -20,8 +20,11 @@ class PoiType
     {
     }
 
-    public function getLogoUrl(): string
+    public function getLogoUrl(): ?string
     {
+        if (empty($this->logo)) {
+            return null;
+        }
         return $this->getMediaPath($this->logo);
     }
 

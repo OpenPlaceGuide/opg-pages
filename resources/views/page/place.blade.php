@@ -39,7 +39,7 @@
                     <x-github-button :href="$newPlaceUrl">Create URL / Add content</x-github-button>
                 @endif
             </p>
-            Welcome to the page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>, a <strong>{{ Fallback::resolve($type->name) }}</strong></strong>.
+            Welcome to the <a href="{{ url('/') }}">{{ config('app.name') }}</a> page of <strong>{{ Fallback::field($main->tags, 'name') }}</strong>, a <strong>{{ Fallback::resolve($type->name) }}</strong></strong>.
 
             <h2>Media</h2>
 
