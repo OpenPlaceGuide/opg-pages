@@ -6,7 +6,8 @@ services:
             - APP_KEY
             - APP_URL=http://localhost:3000/
             - ASSET_URL=http://localhost:3000/
-
+        volumes:
+            - ./storage/app/repositories/opg-data-ethiopia:/var/www/html/storage/app/repositories/opg-data-ethiopia/
     web:
         image: osmapp
         ports:

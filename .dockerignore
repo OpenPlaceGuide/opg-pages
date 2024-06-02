@@ -1,3 +1,7 @@
 Dockerfile
 vendor/
 .git
+public/build/
+storage/app/repositories/*
+storage/framework/*/*
+storage/logs/*
