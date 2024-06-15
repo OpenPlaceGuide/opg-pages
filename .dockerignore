@@ -3,6 +3,6 @@ vendor/
 .git
 public/build/
 public/assets/
-storage/app/repositories/*
-storage/framework/*/*
-storage/logs/*
+storage/app/repositories/**
+storage/framework/**/*
+storage/logs/**

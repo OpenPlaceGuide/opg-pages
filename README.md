@@ -129,3 +129,7 @@ docker compose up -d
 
 Access http://localhost:3000
 
+
+## Credits
+
+* Parts of Wolfi-PHP based Dockerfile taken from https://github.com/shyim/wolfi-php/
