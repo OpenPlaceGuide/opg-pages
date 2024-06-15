@@ -38,3 +38,5 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN composer install --no-dev
 RUN npm install
 RUN npm run build
+RUN mkdir -p public/assets \
+    ln -s storage/app/repositories/opg-data-ethiopia/places public/assets/ethiopia
