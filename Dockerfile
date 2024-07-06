@@ -3,6 +3,14 @@ FROM composer:latest as composer
 COPY . /var/www/html
 RUN cd /var/www/html && composer install --no-dev --no-scripts
 
+
+FROM node:22 as node
+
+COPY . /var/www/html
+WORKDIR /var/www/html
+RUN npm install && npm run build
+
+
 FROM cgr.dev/chainguard/wolfi-base:latest
 
 ARG PHP_VERSION=8.1
@@ -66,6 +74,7 @@ RUN chown -R www-data:www-data /var/www/html/bootstrap/cache || true
 
 COPY --from=composer /var/www/html/vendor /var/www/html/vendor
 COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=node /var/www/html/public/build /var/www/html/public/build
 
 RUN composer dump-autoload
 
