@@ -171,7 +171,7 @@ OVERPASS;
         $value = $type->tags[0]['value'];
 
         $innerQuery = sprintf('area(%d);', $area->idInfo->getAreaId());
-        $innerQuery .= sprintf('nwr["%s"="%s"](area);', $key, $value);
+        $innerQuery .= sprintf('nwr["%s"="%s"][name](area);', $key, $value);
 
         $result = [];
         $data = $this->cachedRunQuery($innerQuery);
