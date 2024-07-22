@@ -1,40 +1,87 @@
-FROM composer:2.6.6 as composer
-
-FROM php:8.1-apache-bookworm
-
-RUN apt-get update && apt-get install -y zip
-
-RUN apt-get -y update \
-  && apt-get install -y libicu-dev \
-  && docker-php-ext-configure intl \
-  && docker-php-ext-install intl
-
-RUN apt-get install -y \
-    nodejs npm \
-    libfreetype6-dev \
-    libjpeg62-turbo-dev \
-    libpng-dev \
-    libwebp-dev \
-    libxpm-dev \
-    zlib1g-dev && \
-    docker-php-ext-configure gd --enable-gd --with-webp --with-jpeg \
-    --with-xpm --with-freetype && \
-    docker-php-ext-install gd
-
-RUN a2enmod rewrite
-
-ENV LOG_CHANNEL=stderr
-
-RUN sed -ri -e 's!/var/www/html!/var/www/html/public!g' /etc/apache2/sites-available/*.conf
-RUN sed -ri -e 's!/var/www/!/var/www/html/public!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
-
-RUN sed -ri -e 's!^</!<Directory "/var/www/html/public">\nAllowOverride all\n</Directory>\n</!g' /etc/apache2/sites-available/*.conf
+FROM composer:latest as composer
 
 COPY . /var/www/html
+RUN cd /var/www/html && composer install --no-dev --no-scripts
+
+
+FROM node:22 as node
+
+COPY . /var/www/html
+WORKDIR /var/www/html
+RUN npm install && npm run build
+
+
+FROM cgr.dev/chainguard/wolfi-base:latest
+
+ARG PHP_VERSION=8.1
+
+RUN <<EOF
+set -eo pipefail
+apk add --no-cache \
+    php-${PHP_VERSION}-fpm
+adduser -u 82 www-data -D
+mkdir -p /var/www/html
+chown www-data:www-data /var/www/html
+EOF
+
+WORKDIR /var/www/html
+ENV PHP_FPM_USER=www-data \
+    PHP_FPM_GROUP=www-data \
+    PHP_FPM_ACCESS_LOG=/proc/self/fd/2 \
+    PHP_FPM_LISTEN=[::]:9000 \
+    PHP_FPM_PM=dynamic \
+    PHP_FPM_PM_MAX_CHILDREN=5 \
+    PHP_FPM_PM_START_SERVERS=2 \
+    PHP_FPM_PM_MIN_SPARE_SERVERS=1 \
+    PHP_FPM_PM_MAX_SPARE_SERVERS=3 \
+    PHP_FPM_PM_MAX_REQUESTS=0 \
+    PHP_FPM_PM_STATUS_PATH=/-/fpm/status \
+    PHP_FPM_PING_PATH=/-/fpm/ping \
+    PHP_ERROR_REPORTING=E_ALL\
+    PHP_UPLOAD_MAX_FILESIZE=2M \
+    PHP_POST_MAX_SIZE=2M \
+    PHP_MAX_EXECUTION_TIME=30 \
+    PHP_MEMORY_LIMIT=128M \
+    PHP_SESSION_HANDLER=files \
+    PHP_SESSION_SAVE_PATH= \
+    PHP_SESSION_GC_PROBABILITY=1
+
+COPY --link docker/rootfs /
+
+
+ENV PHP_FPM_LISTEN=/tmp/php-fpm.sock \
+    PHP_FPM_ACCESS_LOG=/dev/null
+
+RUN <<EOF
+set -eo pipefail
+apk add --no-cache \
+    hivemind \
+    nginx
+EOF
+
+EXPOSE 8000
+
+
+RUN apk add --no-cache zip php-8.1 php-8.1-intl php-8.1-gd php-8.1-cgi php-8.1-phar php-8.1-iconv php-8.1-mbstring php-8.1-openssl php-8.1-dom
+
+#ENV LOG_CHANNEL=stderr
+
+COPY . /var/www/html
+
+RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views
 RUN chown -R www-data:www-data /var/www/html/storage || true
 RUN chown -R www-data:www-data /var/www/html/bootstrap/cache || true
 
+COPY --from=composer /var/www/html/vendor /var/www/html/vendor
 COPY --from=composer /usr/bin/composer /usr/bin/composer
-RUN composer install --no-dev
-RUN npm install
-RUN npm run build
+COPY --from=node /var/www/html/public/build /var/www/html/public/build
+
+RUN composer dump-autoload
+
+# RUN npm install
+# RUN npm run build
+# RUN mkdir -p public/assets \
+#    ln -s storage/app/repositories/opg-data-ethiopia/places public/assets/ethiopia
+
+CMD ["/usr/bin/hivemind", "/etc/Procfile"]
+# CMD ["php", "artisan"]
