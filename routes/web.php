@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\DetailRedirectController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -39,3 +40,10 @@ foreach(config('app.additional_locales') as $locale) {
 
 Route::middleware(\App\Services\Cache::getCacheMiddleware())
     ->group(function() use ($routes) { $routes(config('app.locale')); });
+
+Route::get('/detail/node/{osmId}', [DetailRedirectController::class, 'node'])
+    ->where('osmId', '[0-9]*');
+Route::get('/detail/way/{osmId}', [DetailRedirectController::class, 'way'])
+    ->where('osmId', '[0-9]*');
+Route::get('/detail/relation/{osmId}', [DetailRedirectController::class, 'relation'])
+    ->where('osmId', '[0-9]*');

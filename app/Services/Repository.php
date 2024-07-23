@@ -109,9 +109,17 @@ class Repository
 
     public function listTypes(): array
     {
+        $types = $this->listTypesIncludingFallback();
+        unset($types['~fallback_type']);
+        return $types;
+    }
+
+    public function listTypesIncludingFallback(): array
+    {
         return Cache::remember('types', function() {
             return $this->listTypesUncached();
         });
+
     }
 
     private function listTypesUncached(): array
@@ -120,7 +128,7 @@ class Repository
         $result = [];
         foreach($typeFiles as $filename) {
             $slug = basename(dirname($filename));
-            $result[] = $this->getTypeInfo($slug);
+            $result[$slug] = $this->getTypeInfo($slug);
         }
 
         return $result;
@@ -129,7 +137,7 @@ class Repository
 
     public function resolveType(OsmInfo $osmInfo): ?PoiType
     {
-        $types = $this->listTypes();
+        $types = $this->listTypesIncludingFallback();
 
         // FIXME: sort by priority
         foreach($types as $type)
