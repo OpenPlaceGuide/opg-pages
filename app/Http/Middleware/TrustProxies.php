@@ -25,4 +25,13 @@ class TrustProxies extends Middleware
         Request::HEADER_X_FORWARDED_PORT |
         Request::HEADER_X_FORWARDED_PROTO |
         Request::HEADER_X_FORWARDED_AWS_ELB;
+
+
+    protected function setTrustedProxyIpAddresses(Request $request)
+    {
+        $this->proxies = config('trust-proxies.proxies');
+
+        parent::setTrustedProxyIpAddresses($request);
+    }
+
 }
