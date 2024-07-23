@@ -1,10 +1,10 @@
-FROM composer:latest as composer
+FROM composer:latest AS composer
 
 COPY . /var/www/html
 RUN cd /var/www/html && composer install --no-dev --no-scripts
 
 
-FROM node:22 as node
+FROM node:22 AS node
 
 COPY . /var/www/html
 WORKDIR /var/www/html
@@ -61,8 +61,7 @@ EOF
 
 EXPOSE 8000
 
-
-RUN apk add --no-cache zip php-8.1 php-8.1-intl php-8.1-gd php-8.1-cgi php-8.1-phar php-8.1-iconv php-8.1-mbstring php-8.1-openssl php-8.1-dom
+RUN apk add --no-cache zip php-8.1 php-8.1-intl php-8.1-gd php-8.1-cgi php-8.1-phar php-8.1-iconv php-8.1-mbstring php-8.1-openssl php-8.1-dom php-8.1-curl
 
 #ENV LOG_CHANNEL=stderr
 
