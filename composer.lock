@@ -70,12 +70,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/OpenPlaceGuide/staticmap.git",
-                "reference": "5316d4d22b9c2b5e4c3a92ad68bd77da83944a93"
+                "reference": "37a4bbdd599f7c9c52f00db083f6e54c8ac55560"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/OpenPlaceGuide/staticmap/zipball/5316d4d22b9c2b5e4c3a92ad68bd77da83944a93",
-                "reference": "5316d4d22b9c2b5e4c3a92ad68bd77da83944a93",
+                "url": "https://api.github.com/repos/OpenPlaceGuide/staticmap/zipball/37a4bbdd599f7c9c52f00db083f6e54c8ac55560",
+                "reference": "37a4bbdd599f7c9c52f00db083f6e54c8ac55560",
                 "shasum": ""
             },
             "default-branch": true,
@@ -94,7 +94,7 @@
                 "issues": "https://github.com/OpenPlaceGuide/staticmap/issues",
                 "source": "https://github.com/OpenPlaceGuide/staticmap/tree/master"
             },
-            "time": "2023-04-15T16:17:29+00:00"
+            "time": "2024-07-23T11:23:22+00:00"
         },
         {
             "name": "blade-ui-kit/blade-icons",
