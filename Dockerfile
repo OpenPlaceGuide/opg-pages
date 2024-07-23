@@ -1,10 +1,10 @@
-FROM composer:latest as composer
+FROM composer:latest AS composer
 
 COPY . /var/www/html
 RUN cd /var/www/html && composer install --no-dev --no-scripts
 
 
-FROM node:22 as node
+FROM node:22 AS node
 
 COPY . /var/www/html
 WORKDIR /var/www/html
