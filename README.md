@@ -100,7 +100,7 @@ Possible pages:
 * /am/bandira
 * /zemen-bank
 
-Warning: The root page (/) is currently not existing.
+Warning: The root page (/) is reserved for the interactive map (see below)
 
 ### PHPUnit
 
