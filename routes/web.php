@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\DetailRedirectController;
+use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -47,3 +48,8 @@ Route::get('/detail/way/{osmId}', [DetailRedirectController::class, 'way'])
     ->where('osmId', '[0-9]*');
 Route::get('/detail/relation/{osmId}', [DetailRedirectController::class, 'relation'])
     ->where('osmId', '[0-9]*');
+
+Route::middleware(\App\Services\Cache::getCacheMiddleware())
+    ->group(function() {
+        Route::get('/sitemap.xml', [SitemapController::class, 'index']);
+});

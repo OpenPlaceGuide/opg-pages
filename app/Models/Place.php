@@ -49,7 +49,7 @@ class Place
         return $keys;
     }
 
-    public function getUrl(?OsmId $branch)
+    public function getUrl(?OsmId $branch = null)
     {
         $url = route('page.' . App::currentLocale(), ['slug' => $this->slug]);
         if ($branch !== null) {
