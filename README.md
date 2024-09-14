@@ -2,8 +2,18 @@
 
 *WIP*
 
-License: Undecided, please contact us if you are interested to use any of this.
+License: Undecided, currently *proprietary* but it will be opened. Please contact us if you are interested to use any of this.
 
+## Instances
+
+A beta of this is hosted on [map.et](https://map.et/)
+
+Example URLs:
+
+1. [map.et/bandira](https://map.et/bandira)
+2. [map.et/addis-ababa](https://map.et/addis-ababa)
+3. [map.et/bole/banks](https://map.et/bole/banks)
+   
 ## Stack
 
 * Laravel 10
