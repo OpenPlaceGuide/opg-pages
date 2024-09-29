@@ -1,7 +1,7 @@
 @extends('layouts.index')
 
 @section('pageTitle')
-    {{ Fallback::field($main->tags, 'name') }} - {{ Fallback::resolve($type->name) }} in {{ $branches[0]->area->getFullName() }}
+    {{ Fallback::field($main->tags, 'name') }} - {{ Fallback::resolve($type->name) }} in {{ $branches[0]?->area?->getFullName() ?? '...' }}
 @endsection
 
 @section('content')
