@@ -1,5 +1,8 @@
+@section('pageTitle')
+    Places in {{ $area->getFullName() }}
+@endsection
+
 @extends('layouts.index')
-<h1></h1>
 
 <header>
     <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
@@ -13,10 +16,6 @@
         <p class="px-5 mt-5 max-w-5xl mx-auto">{{ $description }}</p>
     @endif
 </header>
-
-
-
-
 
 <section>
     <div class="px-5 py-2 max-w-5xl mx-auto">

@@ -1,5 +1,9 @@
 @extends('layouts.index')
 
+@section('pageTitle')
+    {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::resolve($area->names) }}
+@endsection
+
 @section('content')
     <header>
         <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
