@@ -1,8 +1,6 @@
 # OpenPlaceGuide Pages (opg-pages)
 
-*WIP*
-
-License: Undecided, currently *proprietary* but it will be opened. Please contact us if you are interested to use any of this.
+License: AGPL - Please set a link to www.OpenPlaceGuide.org when providing a service with this code and share changes.
 
 ## Instances
 
