@@ -23,6 +23,7 @@ jobs:
     - name: Build the Docker image
       run: |
         docker build . --file Dockerfile --tag ghcr.io/openplaceguide/opg-pages:latest
+        CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
         if [ "$CURRENT_BRANCH" = "main" ]; then
           echo "On the 'main' branch. Pushing the Docker image..."
           docker push ghcr.io/openplaceguide/opg-pages:latest
