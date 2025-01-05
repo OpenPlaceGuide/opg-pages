@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "84fdaad21d20e2e534b18d249bba0e37",
+    "content-hash": "3b0e3650e543ec7f94fe93db1fc20fc0",
     "packages": [
         {
             "name": "andreiio/blade-remix-icon",
@@ -3347,60 +3347,6 @@
             "time": "2024-04-27T21:32:50+00:00"
         },
         {
-            "name": "spatie/opening-hours",
-            "version": "2.41.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/opening-hours.git",
-                "reference": "2113e289b16340b24ea0743a7179ebc9dcbe5e64"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/spatie/opening-hours/zipball/2113e289b16340b24ea0743a7179ebc9dcbe5e64",
-                "reference": "2113e289b16340b24ea0743a7179ebc9dcbe5e64",
-                "shasum": ""
-            },
-            "require": {
-                "php": "^7.0 || ^8.0"
-            },
-            "require-dev": {
-                "kylekatarnls/multi-tester": "^1.1",
-                "phpunit/phpunit": "^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Spatie\\OpeningHours\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Sebastian De Deyne",
-                    "email": "sebastian@spatie.be",
-                    "homepage": "https://spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A helper to query and format a set of opening hours",
-            "homepage": "https://github.com/spatie/opening-hours",
-            "keywords": [
-                "hours",
-                "opening",
-                "opening-hours",
-                "schedule",
-                "spatie"
-            ],
-            "support": {
-                "issues": "https://github.com/spatie/opening-hours/issues",
-                "source": "https://github.com/spatie/opening-hours/tree/2.41.0"
-            },
-            "time": "2023-06-12T19:54:57+00:00"
-        },
-        {
             "name": "symfony/console",
             "version": "v6.4.11",
             "source": {
@@ -5682,54 +5628,6 @@
                 "source": "https://github.com/tijsverkoyen/CssToInlineStyles/tree/v2.2.7"
             },
             "time": "2023-12-08T13:03:43+00:00"
-        },
-        {
-            "name": "ujamii/osm-opening-hours",
-            "version": "v1.0.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ujamii/osm-opening-hours.git",
-                "reference": "ac6b959d7c04f0cf1e86f666a9d5277a7b75c2cf"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ujamii/osm-opening-hours/zipball/ac6b959d7c04f0cf1e86f666a9d5277a7b75c2cf",
-                "reference": "ac6b959d7c04f0cf1e86f666a9d5277a7b75c2cf",
-                "shasum": ""
-            },
-            "require": {
-                "ext-calendar": "*",
-                "php": ">=8.0",
-                "spatie/opening-hours": "^2.11"
-            },
-            "require-dev": {
-                "friendsofphp/php-cs-fixer": "^3.8",
-                "infection/infection": "^0.26.8",
-                "phpstan/phpstan": "^1.6 || ^2.0",
-                "phpunit/phpunit": "^9.5"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "Ujamii\\OsmOpeningHours\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Grundkötter",
-                    "email": "mg@ujamii.com"
-                }
-            ],
-            "description": "Parser for Openstreetmap opening hours format",
-            "support": {
-                "issues": "https://github.com/ujamii/osm-opening-hours/issues",
-                "source": "https://github.com/ujamii/osm-opening-hours/tree/v1.0.0"
-            },
-            "time": "2024-12-06T07:53:35+00:00"
         },
         {
             "name": "vlucas/phpdotenv",
