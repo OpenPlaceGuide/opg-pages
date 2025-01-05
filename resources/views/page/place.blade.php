@@ -71,7 +71,7 @@
                     @endif
                     @php($mainUrl = $branch->idInfo->getOsmUrl(url('/')))
                     <a href="{{ $mainUrl }}" target="_blank">
-                        <img class="shadow-lg"
+                        <img class="shadow-lg" width="699" height="300" alt="Map showing the address of {{  Fallback::field($branch->tags, 'name') }} in three different zoom levels."
                             src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'slug' => \App\Services\Language::slug(Fallback::field($branch->tags, 'name', language: 'en')), 'text' => Fallback::field($branch->tags, 'name')]) }}">
                     </a>
                     <ul class="flex">
