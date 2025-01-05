@@ -32,9 +32,9 @@ jobs:
         git clone https://github.com/OpenPlaceGuide/data/ opg-data-ethiopia
     - name: Build
       run: npm run build
+    - name: Download TagInfo
+      run: curl https://taginfo.openstreetmap.org/download/taginfo-wiki.db.bz2 | bunzip2 > database/taginfo-wiki.db
     - name: Execute tests (Unit and Feature tests) via PHPUnit
       env:
-        DB_CONNECTION: sqlite
-        DB_DATABASE: database/database.sqlite
         APP_TECHNICAL_CONTACT: alex@addismap.com?subject=CI-Runner
       run: vendor/bin/phpunit

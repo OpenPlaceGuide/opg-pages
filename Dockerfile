@@ -61,7 +61,7 @@ EOF
 
 EXPOSE 8000
 
-RUN apk add --no-cache zip php-8.1 php-8.1-intl php-8.1-gd php-8.1-cgi php-8.1-phar php-8.1-iconv php-8.1-mbstring php-8.1-openssl php-8.1-dom php-8.1-curl php-8.1-simplexml
+RUN apk add --no-cache zip php-8.1 php-8.1-intl php-8.1-gd php-8.1-cgi php-8.1-phar php-8.1-iconv php-8.1-mbstring php-8.1-openssl php-8.1-dom php-8.1-curl php-8.1-simplexml curl
 
 #ENV LOG_CHANNEL=stderr
 
@@ -70,6 +70,7 @@ COPY . /var/www/html
 RUN mkdir -p storage/framework/cache/data storage/framework/sessions storage/framework/views
 RUN chown -R www-data:www-data /var/www/html/storage || true
 RUN chown -R www-data:www-data /var/www/html/bootstrap/cache || true
+RUN curl https://taginfo.openstreetmap.org/download/taginfo-wiki.db.bz2 | bunzip2 > database/taginfo-wiki.db
 
 COPY --from=composer /var/www/html/vendor /var/www/html/vendor
 COPY --from=composer /usr/bin/composer /usr/bin/composer

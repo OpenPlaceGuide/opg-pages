@@ -19,7 +19,7 @@ class LanguageTest extends TestCase
     {
         return [
             'German' => ['Maeuse', 'Mäuse'],
-            'Amharic' => ['emarinya', 'አማርኛ'],
+            'Amharic' => ['amarna', 'አማርኛ'],
         ];
     }
 }

@@ -3,6 +3,8 @@ name: Docker Image CI
 on:
   push:
     branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 
 jobs:
 
@@ -21,4 +23,9 @@ jobs:
     - name: Build the Docker image
       run: |
         docker build . --file Dockerfile --tag ghcr.io/openplaceguide/opg-pages:latest
-        docker push ghcr.io/openplaceguide/opg-pages:latest
+        if [ "$CURRENT_BRANCH" = "main" ]; then
+          echo "On the 'main' branch. Pushing the Docker image..."
+          docker push ghcr.io/openplaceguide/opg-pages:latest
+        else
+          echo "Not on the 'main' branch. Skipping Docker push."
+        fi
