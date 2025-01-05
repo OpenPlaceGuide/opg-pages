@@ -8,7 +8,7 @@
     @vite('resources/js/app.js')
 </head>
 <body
-    class="relative text-gray-700 bg-gradient-to-br from-white to-{{ $color }}-100 border-t-2 border-{{ $color }}-900 min-h-screen">
+    class="relative text-gray-700 bg-gradient-to-br from-white to-{{ $color ?? 'black' }}-100 border-t-2 border-{{ $color ?? 'black' }}-900 min-h-screen">
 <div class="pb-10">
     @yield('content')
 </div>
