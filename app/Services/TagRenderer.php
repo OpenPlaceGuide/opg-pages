@@ -3,10 +3,15 @@
 namespace App\Services;
 use App\Models\OsmInfo;
 use DateTimeZone;
+use Illuminate\Support\Facades\DB;
 use Ujamii\OsmOpeningHours\OsmStringToOpeningHoursConverter;
 
 class TagRenderer
 {
+    public function __construct(private readonly OsmInfo $osmInfo)
+    {
+    }
+
 
     // phone: as is
     // atm=yes taginfo
@@ -16,24 +21,30 @@ class TagRenderer
     // operator: print
     // website: print
 
-    public static function getTagText(OsmInfo $osmInfo): array
+    public function getTagTexts(): array
     {
-        $tags = $osmInfo->tags;
+        $tags = $this->osmInfo->tags;
         $lines = [];
         foreach ($tags as $key=>$value) {
             if ($key === 'opening_hours') {
                 $key = 'Opening Times';
-                $value = $value . ' - ' . self::parseOpeningHours($value, $osmInfo);
+                $value = $value . ' - ' . self::parseOpeningHours($value);
                 $lines[] = $key . ": " . $value;
+                continue;
+            }
+
+            $tagInfo = $this->queryTagInfo($key, $value);
+            if ($tagInfo !== null) {
+                $lines[] = $tagInfo;
             }
         }
 
         return $lines;
     }
 
-    private static function parseOpeningHours($value, OsmInfo $osmInfo)
+    private function parseOpeningHours($value)
     {
-        $timeZone = self::getTimeZone($osmInfo->lat, $osmInfo->lon);
+        $timeZone = $this->getTimeZone($this->osmInfo->lat, $this->osmInfo->lon);
 
         $now = (new \DateTimeImmutable('now'))->setTimezone(new DateTimeZone($timeZone));
         $hours = OsmStringToOpeningHoursConverter::openingHoursFromOsmString($value);
@@ -47,7 +58,7 @@ class TagRenderer
     /**
      * @source https://stackoverflow.com/a/15535345
      */
-    public static function getTimeZone($cur_lat, $cur_long, $country_code = '')
+    private function getTimeZone($cur_lat, $cur_long, $country_code = '')
     {
         $timezone_ids = ($country_code) ? DateTimeZone::listIdentifiers(DateTimeZone::PER_COUNTRY, $country_code)
             : DateTimeZone::listIdentifiers();
@@ -85,5 +96,22 @@ class TagRenderer
             return  $time_zone;
         }
         return 'unknown';
+    }
+
+    private function queryTagInfo($key, $value)
+    {
+        $row = DB::connection('sqlite_taginfo')
+            ->table('wikipages')
+            ->select('description')
+            ->where('lang', 'en')
+            ->where('key', $key)
+            ->where('value', $value)
+            ->get()->first();
+
+        if ($row === null) {
+            return null;
+        }
+
+        return $row->description;
     }
 }

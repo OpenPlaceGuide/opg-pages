@@ -6,7 +6,7 @@ use stdClass;
 
 class OsmInfo
 {
-    public function __construct(public readonly OsmId $idInfo, public readonly float $lat, public readonly float $lon, public readonly stdClass $tags, public readonly ?Area $area)
+    public function __construct(public readonly OsmId $idInfo, public readonly float $lat, public readonly float $lon, public readonly stdClass $tags, public readonly ?Area $area = null)
     {
     }
 

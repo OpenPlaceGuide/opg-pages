@@ -34,13 +34,12 @@ return [
     */
 
     'connections' => [
-
-        'sqlite' => [
+        'sqlite_taginfo' => [
             'driver' => 'sqlite',
-            'url' => env('DATABASE_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'url' => '',
+            'database' => database_path('taginfo-wiki.db'),
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
+            'foreign_key_constraints' => true,
         ],
 
         'mysql' => [
