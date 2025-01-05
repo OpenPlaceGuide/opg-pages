@@ -23,6 +23,9 @@ class Repository
 
     public function getPlaceInfo($slug): Place
     {
+        if (!file_exists($this->getPlaceFileName($slug))) {
+            abort(404);
+        }
         $yamlSource = file_get_contents($this->getPlaceFileName($slug));
 
         $parsed = Yaml::parse($yamlSource);
