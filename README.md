@@ -129,7 +129,7 @@ cd ../osmapp && docker build --build-arg PROXY_BACKEND=http://opg-pages/ . -t os
 
 * build this app
 ```bash
-docker build . -t opg-pages
+docker build . --progress=plain -t opg-pages
 ```
 
 Start 
