@@ -69,6 +69,13 @@
                     @if($branch->area !== null)
                         in <strong><a href="<?php echo $branch->area->getUrl() ?>">{{ $branch->area->getFullName() }}</a></strong>
                     @endif
+
+                    <ul>
+                    @foreach(\App\Services\TagRenderer::getTagText($branch) as $line)
+                        <li>{{ $line }}</li>
+                    @endforeach
+                    </ul>
+
                     @php($mainUrl = $branch->idInfo->getOsmUrl(url('/')))
                     <a href="{{ $mainUrl }}" target="_blank">
                         <img class="shadow-lg" width="699" height="300" alt="Map showing the address of {{  Fallback::field($branch->tags, 'name') }} in three different zoom levels."
