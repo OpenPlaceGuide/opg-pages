@@ -14,11 +14,10 @@ class TagRendererTest extends TestCase
     public function testRender()
     {
         $zemen = $this->createOsmInfo();
-        $texts = (new TagRenderer($zemen))->getTagTexts();
+        $texts = (new TagRenderer($zemen->tags))->getTagTexts();
         self::assertNotEmpty($texts);
         self::assertStringContainsString('Mo-Sa 08:00-18:00', implode("\n", $texts));
         self::assertStringContainsString('A cash point/ATM (Automated Teller Machine) is available at this location.', implode("\n", $texts));
-
     }
 
     private function createOsmInfo()

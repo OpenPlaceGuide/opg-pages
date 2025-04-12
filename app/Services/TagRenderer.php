@@ -1,17 +1,26 @@
 <?php
 
 namespace App\Services;
-use App\Models\OsmInfo;
 use DateTimeZone;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 use Ujamii\OsmOpeningHours\OsmStringToOpeningHoursConverter;
 
 class TagRenderer
 {
-    public function __construct(private readonly OsmInfo $osmInfo)
+    public function __construct(private readonly stdClass $tags)
     {
     }
 
+
+    public static function tagListToObject($array)
+    {
+        $keyedArray = [];
+        foreach($array as $tag) {
+            $keyedArray[$tag['key']] = $tag['value'];
+        }
+        return (object)$keyedArray;
+    }
 
     // phone: as is
     // atm=yes taginfo
@@ -23,7 +32,7 @@ class TagRenderer
 
     public function getTagTexts(): array
     {
-        $tags = $this->osmInfo->tags;
+        $tags = $this->tags;
         $lines = [];
         foreach ($tags as $key=>$value) {
             if ($key === 'opening_hours') {
