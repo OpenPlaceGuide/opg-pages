@@ -74,7 +74,7 @@
                     @endif
 
                     <ul class="space-y-2 list-disc pl-2">
-                        @foreach((new \App\Services\TagRenderer($branch))->getTagTexts() as $line)
+                        @foreach((new \App\Services\TagRenderer($branch->tags))->getTagTexts() as $line)
                             <li>{{ $line }}</li>
                         @endforeach
                     </ul>
