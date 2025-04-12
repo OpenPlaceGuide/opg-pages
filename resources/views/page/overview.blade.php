@@ -55,7 +55,7 @@
                                     <img
                                         class="aspect-square h-full w-full"
                                         alt="Business Logo"
-                                        src="{{  \App\Services\Repository::getInstance()->resolvePlace($place->idInfo)?->getLogoUrl() }}"
+                                        src="{{ \App\Services\Repository::getInstance()->resolvePlace($place->idInfo)?->getLogoUrl() }}"
                                     />
                               </span>
                             </div>
@@ -63,6 +63,19 @@
                         <div class="flex-grow">
                             <h3 class="tracking-tight text-lg font-bold">{{ Fallback::field($place->tags, 'name') }}</h3>
                         </div>
+                        @php($logo = $type->getLogoUrl())
+                        @if($logo && !\App\Services\Repository::getInstance()->isFeatured($place->idInfo))
+                            <div class="flex-shrink-0">
+                            <span
+                                class="relative flex h-10 w-10 shrink-0 mr-4">
+                                <img
+                                    class="aspect-square h-full w-full"
+                                    alt="Type Logo"
+                                    src="{{ $logo }}"
+                                />
+                            </span>
+                            </div>
+                        @endif
                     </a>
                 @endforeach
             </div>

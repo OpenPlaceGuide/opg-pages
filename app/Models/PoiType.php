@@ -25,7 +25,7 @@ class PoiType
         if (empty($this->logo)) {
             return null;
         }
-        return $this->getMediaPath($this->logo);
+        return url($this->getMediaPath($this->logo));
     }
 
     private function getMediaPath($fileName): string
