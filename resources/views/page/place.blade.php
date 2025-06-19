@@ -63,52 +63,11 @@
 
             <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
 
-            <h2>Community Street View Images</h2>
-
-            @if(!empty($mapillaryImages))
-                <div class="overflow-x-auto flex space-x-4 flex-row w-full mb-6">
-                    @foreach($mapillaryImages as $image)
-                        <div class="flex-none">
-                            <figure class="inline-grid grid-cols-1 auto-rows-auto">
-                                <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener">
-                                    <img class="shadow-lg p-1 bg-white md:h-80 h-48 w-auto"
-                                         src="{{ $image['large_thumbnail_url'] }}"
-                                         alt="Street view image from Mapillary"
-                                         loading="lazy">
-                                </a>
-                                <figcaption class="py-3 w-0 min-w-full text-sm text-gray-600">
-                                    <div>
-                                        @if($image['captured_at_formatted'])
-                                            {{ $image['captured_at_formatted'] }}
-                                        @endif
-                                        @if($image['creator']['username'])
-                                            by {{ $image['creator']['username'] }}
-                                        @endif
-
-                                        <span class="text-xs">
-                                            <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">({{ $image['attribution'] }})</a>
-                                        </span>
-
-                                        @if($image['distance_formatted'])
-                                            <span class="text-xs text-gray-500">
-                                                📍  {{ $image['distance_formatted'] }} away
-                                                @if(isset($image['branch_key']) && (count($branches) > 1) && isset($image['branch_name']))
-                                                    from
-                                                    <a href="#{{ $image['branch_key'] }}" class="text-blue-600 hover:underline">{{ $image['branch_name'] }}</a>
-                                                @endif
-                                            </span>
-                                        @endif
-                                    </div>
-                                </figcaption>
-                            </figure>
-                        </div>
-                    @endforeach
-                </div>
-            @endif
-
-            <a href="https://www.mapillary.com/mobile-apps" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold mt-2 py-1 px-2 rounded inline-flex items-center no-underline" target="_blank">
-                <span class="text-sm">Contribute to Mapillary</span>
-            </a>
+            <x-mapillary-gallery
+                :images="$mapillaryImages"
+                :branches="$branches"
+                container-class=""
+            />
 
             <h2>Location(s)</h2>
             @foreach($branches as $branch)

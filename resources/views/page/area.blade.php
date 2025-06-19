@@ -18,6 +18,13 @@
         @endif
     </header>
 
+    <!-- Mapillary Images Section -->
+    <x-mapillary-gallery
+        :images="$area->getMapillaryImages()"
+        :title="'Community Street View Images from ' . $area->getFullName()"
+        :location-name="$area->getFullName()"
+    />
+
     <section>
         <div class="px-5 py-2 max-w-5xl mx-auto">
             <div class="grid md:grid-cols-2 lg:grid-cols-3 grid-flow-row auto-rows-fr mt-6 w-full">

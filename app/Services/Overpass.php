@@ -200,10 +200,129 @@ OVERPASS;
             }
         }
 
-        $data = $this->cachedRunQuery($objectQuerys);
+        $data = $this->cachedRunQueryWithBoundingBox($objectQuerys);
 
         foreach ($data->elements as $element) {
-            $areas[$element->id]->tags = $element->tags;
+            // Convert OSM object ID back to area ID
+            $areaId = null;
+            if ($element->type === 'relation') {
+                $areaId = $element->id + 3600000000;
+            } elseif ($element->type === 'way') {
+                $areaId = $element->id + 2400000000;
+            } elseif ($element->type === 'node') {
+                $areaId = $element->id;
+            }
+
+            if ($areaId && isset($areas[$areaId])) {
+                $areas[$areaId]->tags = $element->tags;
+
+                // Store bounding box information if available
+                if (isset($element->bounds)) {
+                    $areas[$areaId]->boundingBox = [
+                        'north' => $element->bounds->maxlat,
+                        'south' => $element->bounds->minlat,
+                        'east' => $element->bounds->maxlon,
+                        'west' => $element->bounds->minlon
+                    ];
+                }
+            }
         }
+    }
+
+    /**
+     * Run query with bounding box information
+     */
+    protected function cachedRunQueryWithBoundingBox(string $objectQueries)
+    {
+        $query = $this->buildQueryWithBoundingBox($objectQueries);
+        $cacheKey = md5($query);
+
+        return Cache::remember($cacheKey, function () use ($query) {
+            return $this->runQuery($query);
+        });
+    }
+
+    /**
+     * Build query that includes bounding box information
+     * For areas, we need to query the original OSM objects (ways/relations) to get bounding boxes
+     */
+    protected function buildQueryWithBoundingBox(string $objectQuerys): string
+    {
+        // Convert area queries to their original OSM object queries to get bounding boxes
+        $osmObjectQueries = '';
+        $lines = explode(';', $objectQuerys);
+
+        foreach ($lines as $line) {
+            $line = trim($line);
+            if (empty($line)) continue;
+
+            // Extract area ID from area(ID) format
+            if (preg_match('/area\((\d+)\)/', $line, $matches)) {
+                $areaId = (int)$matches[1];
+
+                // Convert area ID back to original OSM object
+                if ($areaId >= 3600000000) {
+                    // Relation
+                    $osmId = $areaId - 3600000000;
+                    $osmObjectQueries .= "relation(id:$osmId);";
+                } elseif ($areaId >= 2400000000) {
+                    // Way
+                    $osmId = $areaId - 2400000000;
+                    $osmObjectQueries .= "way(id:$osmId);";
+                } else {
+                    // Node (though nodes don't usually have areas)
+                    $osmObjectQueries .= "node(id:$areaId);";
+                }
+            }
+        }
+
+        $query = <<<OVERPASS
+[out:json][timeout:10];
+(
+$osmObjectQueries
+);
+out bb;
+OVERPASS;
+
+        return $query;
+    }
+
+    /**
+     * Fetch Mapillary images for areas using their bounding boxes
+     *
+     * @param array<Area> $areas
+     * @return array<string, array> Array of images keyed by area ID
+     */
+    public function fetchMapillaryImagesForAreas(array $areas): array
+    {
+        $mapillaryImages = [];
+
+        try {
+            $mapillary = new \App\Services\Mapillary();
+
+            foreach ($areas as $area) {
+                if (!isset($area->boundingBox)) {
+                    continue;
+                }
+
+                // Calculate center point from bounding box
+                $centerLat = ($area->boundingBox['north'] + $area->boundingBox['south']) / 2;
+                $centerLon = ($area->boundingBox['east'] + $area->boundingBox['west']) / 2;
+
+                // Use 5km radius as requested
+                $radius = 5000; // 5km in meters
+                $limit = 5; // Up to 5 best images
+
+                $images = $mapillary->getBestImagesForArea($centerLat, $centerLon, $radius, $limit);
+
+                if (!empty($images)) {
+                    $mapillaryImages[$area->getKey()] = $images;
+                }
+            }
+        } catch (\Exception $e) {
+            Log::warning('Failed to fetch Mapillary images for areas: ' . $e->getMessage());
+        }
+
+        return $mapillaryImages;
     }
 }

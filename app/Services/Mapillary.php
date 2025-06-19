@@ -48,7 +48,7 @@ class Mapillary
 
     /**
      * Create a bounding box around coordinates
-     * 
+     *
      * @param float $lat Latitude
      * @param float $lon Longitude
      * @param float $radius Radius in meters
@@ -59,7 +59,7 @@ class Mapillary
         // Convert radius from meters to degrees (approximate)
         $latDelta = $radius / 111000; // 1 degree latitude ≈ 111km
         $lonDelta = $radius / (111000 * cos(deg2rad($lat))); // Adjust for longitude
-        
+
         return [
             $lon - $lonDelta, // west
             $lat - $latDelta, // south
@@ -89,15 +89,15 @@ class Mapillary
         ]);
 
         $bboxString = implode(',', $bbox);
-        
+
         $requestStart = microtime(true);
-        
+
         try {
             $response = $client->get('/images', [
                 'query' => [
                     'bbox' => $bboxString,
                     'limit' => $limit,
-                    'fields' => 'id,thumb_256_url,thumb_1024_url,captured_at,compass_angle,geometry,creator'
+                    'fields' => 'id,thumb_256_url,thumb_1024_url,captured_at,compass_angle,geometry,creator,quality_score'
                 ]
             ]);
         } catch (ClientException $e) {
@@ -109,7 +109,7 @@ class Mapillary
         Log::notice(sprintf('Mapillary request took %fs', $requestTime));
 
         $data = json_decode($response->getBody(), true);
-        
+
         if (!isset($data['data'])) {
             Log::warning('Mapillary API returned unexpected response format');
             return [];
@@ -169,28 +169,67 @@ class Mapillary
                     'username' => $image['creator']['username'] ?? null,
                     'id' => $image['creator']['id'] ?? null
                 ],
+                'quality_score' => $image['quality_score'] ?? null,
                 'mapillary_url' => sprintf('https://www.mapillary.com/app/?pKey=%s', $image['id']),
                 'attribution' => 'Mapillary'
             ];
         }
 
+        // Sort by quality score (highest first), then by distance (closest first)
+        usort($processed, function($a, $b) {
+            // First sort by quality score (higher is better)
+            $qualityA = $a['quality_score'] ?? 0;
+            $qualityB = $b['quality_score'] ?? 0;
+
+            if ($qualityA !== $qualityB) {
+                return $qualityB <=> $qualityA; // Descending order (higher quality first)
+            }
+
+            // If quality scores are equal, sort by distance (closer is better)
+            $distanceA = $a['distance_meters'] ?? PHP_FLOAT_MAX;
+            $distanceB = $b['distance_meters'] ?? PHP_FLOAT_MAX;
+
+            return $distanceA <=> $distanceB; // Ascending order (closer first)
+        });
+
         return $processed;
     }
 
     /**
+     * Get the best quality images for an area using a larger search radius
+     *
+     * @param float $lat Latitude
+     * @param float $lon Longitude
+     * @param float $radius Radius in meters (default: 5000 for 5km)
+     * @param int $limit Maximum number of images to return (default: 5)
+     * @return array Array of best quality image data
+     * @throws GuzzleException
+     */
+    public function getBestImagesForArea(float $lat, float $lon, float $radius = 5000, int $limit = 5): array
+    {
+        // Use a larger limit to get more images to choose from, then filter to the best ones
+        $searchLimit = 2500;
+
+        $images = $this->getImagesNearLocation($lat, $lon, $radius, $searchLimit);
+
+        // Return only the top images (already sorted by quality and distance)
+        return array_slice($images, 0, $limit);
+    }
+
+    /**
      * Build user agent string for API requests
-     * 
+     *
      * @return string
      */
     private function buildUserAgent(): string
     {
         $contact = config('app.technical_contact');
         $version = 'dev'; // FIXME: detect proper version
-        
+
         if (empty($contact)) {
             throw new \InvalidArgumentException('Please configure APP_TECHNICAL_CONTACT in your environment file. This will be used to identify external requests');
         }
-        
+
         return sprintf('opg-pages/%s (%s, %s)', $version, url(''), $contact);
     }
 

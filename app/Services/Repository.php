@@ -230,7 +230,19 @@ class Repository
             $result[$areaInfo->getKey()] = $areaInfo;
         }
 
-        (new Overpass())->addTagsForAreas($result);
+        $overpass = new Overpass();
+        $overpass->addTagsForAreas($result);
+
+        // Fetch Mapillary images for areas with bounding boxes
+        $mapillaryImages = $overpass->fetchMapillaryImagesForAreas($result);
+
+        // Assign Mapillary images to areas
+        foreach ($mapillaryImages as $areaKey => $images) {
+            if (isset($result[$areaKey])) {
+                $result[$areaKey]->setMapillaryImages($images);
+            }
+        }
+
         return $result;
     }
 
