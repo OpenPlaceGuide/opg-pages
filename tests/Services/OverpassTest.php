@@ -21,10 +21,10 @@ class OverpassTest extends TestCase
     }
     public function testOsmInfoOne()
     {
-        $place = new OsmId('way', 162817836);
+        $place = new OsmId('node', 12749724203);
         $osmInfo = $this->getInstance()->fetchOsmInfo([ $place ])[0];
         self::assertInstanceOf(OsmInfo::class, $osmInfo);
-        self::assertEquals('Bandira Addis Map Entertainment PLC', $osmInfo->tags->name);
+        self::assertEquals('Bandira Addis Map Entertainment PLC HQ', $osmInfo->tags->name);
     }
 
     public function testOsmInfoMany()
