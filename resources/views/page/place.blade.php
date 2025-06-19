@@ -63,6 +63,42 @@
 
             <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
 
+            @if(!empty($mapillaryImages))
+                <h2>Community Street View Images</h2>
+                <div class="overflow-x-auto flex space-x-4 flex-row w-full mb-6">
+                    @foreach($mapillaryImages as $image)
+                        <div class="flex-none">
+                            <figure class="inline-grid grid-cols-1 auto-rows-auto">
+                                <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener">
+                                    <img class="shadow-lg p-1 bg-white md:h-80 h-48 w-auto"
+                                         src="{{ $image['thumbnail_url'] }}"
+                                         alt="Street view image from Mapillary"
+                                         loading="lazy">
+                                </a>
+                                <figcaption class="py-3 w-0 min-w-full text-sm text-gray-600">
+                                    <div>
+                                        @if($image['captured_at_formatted'])
+                                            Captured: {{ $image['captured_at_formatted'] }}
+                                        @endif
+                                        @if($image['creator']['username'])
+                                            by {{ $image['creator']['username'] }}
+                                        @endif
+                                        @if($image['distance_formatted'])
+                                            <span class="text-xs text-gray-500">📍 {{ $image['distance_formatted'] }} away</span>
+                                        @endif
+                                        <span class="text-xs">
+                                            <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">
+                                                View on {{ $image['attribution'] }}
+                                            </a>
+                                        </span>
+                                    </div>
+                                </figcaption>
+                            </figure>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+
             <h2>Location(s)</h2>
             @foreach($branches as $branch)
                 <section id="{{ $branch->idInfo->getKey() }}">

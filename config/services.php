@@ -31,4 +31,9 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'mapillary' => [
+        'access_token' => env('MAPILLARY_ACCESS_TOKEN'),
+        'base_url' => 'https://graph.mapillary.com',
+    ],
+
 ];
