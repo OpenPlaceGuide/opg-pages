@@ -63,6 +63,12 @@
 
             <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
 
+            <x-mapillary-gallery
+                :images="$mapillaryImages"
+                :branches="$branches"
+                container-class=""
+            />
+
             <h2>Location(s)</h2>
             @foreach($branches as $branch)
                 <section id="{{ $branch->idInfo->getKey() }}">

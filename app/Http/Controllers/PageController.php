@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\Fallback;
 use App\Models\OsmId;
 use App\Services\Language;
+use App\Services\Mapillary;
 use App\Services\Overpass;
 use App\Services\Repository;
 use Bame\StaticMap\TripleZoomMap;
@@ -52,12 +53,16 @@ class PageController extends Controller
 
         $logoUrl = $place->getLogoUrl();
 
+        // Fetch Mapillary images for all branches
+        $mapillaryImages = $this->fetchMapillaryImages($branchesInfo);
+
         return view('page.place')
             ->with('place', $place)
             ->with('logoUrl', $logoUrl)
             ->with('slug', $slug)
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery())
+            ->with('mapillaryImages', $mapillaryImages)
             ->with('branches', $branchesInfo)
             ->with('newPlaceUrl', null)
             ->with('githubUrl', $githubUrl)
@@ -92,12 +97,16 @@ YAML;
 
         $logoUrl = $type->getLogoUrl();
 
+        // Fetch Mapillary images for OSM place
+        $mapillaryImages = $this->fetchMapillaryImages([$main]);
+
         return view('page.place')
             ->with('place', null)
             ->with('logoUrl', $logoUrl)
             ->with('slug', null)
             ->with('main', $main)
             ->with('gallery', [])
+            ->with('mapillaryImages', $mapillaryImages)
             ->with('branches', [$main])
             ->with('newPlaceUrl', $newPlaceUrl)
             ->with('type', $type)
@@ -155,6 +164,53 @@ YAML;
     private function fetchOsmInfo(array $places): array
     {
         return (new Overpass())->fetchOsmInfo($places, Repository::getInstance()->listLeafAreas());
+    }
+
+    /**
+     * Fetch Mapillary images for branches
+     *
+     * @param array $branches Array of OsmInfo objects
+     * @return array Array of Mapillary images with branch association
+     */
+    private function fetchMapillaryImages(array $branches): array
+    {
+        try {
+            $mapillary = new Mapillary();
+            $allImages = [];
+
+            if (count($branches) > 1) {
+                $limit = 1;
+            } else {
+                $limit = 3;
+            }
+            foreach (array_slice($branches, 0, 10) as $branch) {
+                if (isset($branch->lat) && isset($branch->lon)) {
+                    $images = $mapillary->getImagesNearLocation($branch->lat, $branch->lon, 50, $limit);
+
+                    // Associate each image with the branch it came from
+                    foreach ($images as &$image) {
+                        $image['branch_key'] = $branch->idInfo->getKey();
+                        $image['branch_name'] = \App\Facades\Fallback::field($branch->tags, 'name');
+                    }
+
+                    $allImages = array_merge($allImages, $images);
+                }
+            }
+
+            // Remove duplicates based on image ID, keeping the first occurrence
+            $uniqueImages = [];
+            foreach ($allImages as $image) {
+                if (!isset($uniqueImages[$image['id']])) {
+                    $uniqueImages[$image['id']] = $image;
+                }
+            }
+
+            return array_values($uniqueImages);
+        } catch (\Exception $e) {
+            // Log error but don't break the page if Mapillary fails
+            \Illuminate\Support\Facades\Log::warning('Failed to fetch Mapillary images: ' . $e->getMessage());
+            return [];
+        }
     }
 
     public function tripleZoomMap($lat, $lon, Request $request)

@@ -230,7 +230,9 @@ class Repository
             $result[$areaInfo->getKey()] = $areaInfo;
         }
 
-        (new Overpass())->addTagsForAreas($result);
+        $overpass = new Overpass();
+        $overpass->addTagsForAreas($result);
+
         return $result;
     }
 
