@@ -79,6 +79,7 @@ The integration uses the Mapillary Graph API v4:
 - `compass_angle`: Camera direction
 - `geometry`: Image coordinates
 - `creator`: Information about the photographer (username and ID)
+- `quality_score`: Image Quality score 0..1, which is multiplied by 5 in the frontend
 
 ### Distance Calculation
 

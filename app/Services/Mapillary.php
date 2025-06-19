@@ -196,27 +196,6 @@ class Mapillary
     }
 
     /**
-     * Get the best quality images for an area using a larger search radius
-     *
-     * @param float $lat Latitude
-     * @param float $lon Longitude
-     * @param float $radius Radius in meters (default: 5000 for 5km)
-     * @param int $limit Maximum number of images to return (default: 5)
-     * @return array Array of best quality image data
-     * @throws GuzzleException
-     */
-    public function getBestImagesForArea(float $lat, float $lon, float $radius = 5000, int $limit = 5): array
-    {
-        // Use a larger limit to get more images to choose from, then filter to the best ones
-        $searchLimit = 2500;
-
-        $images = $this->getImagesNearLocation($lat, $lon, $radius, $searchLimit);
-
-        // Return only the top images (already sorted by quality and distance)
-        return array_slice($images, 0, $limit);
-    }
-
-    /**
      * Fetch images within a specific bounding box
      *
      * @param array $boundingBox Bounding box with keys: north, south, east, west
@@ -242,7 +221,7 @@ class Mapillary
 
         return Cache::remember($cacheKey, function () use ($boundingBox, $limit, $centerLat, $centerLon) {
             // Use a larger search limit to get more images to choose from
-            $searchLimit = min($limit * 10, 500);
+            $searchLimit = 250;
             return $this->fetchImagesFromBoundingBox($boundingBox, $searchLimit, $centerLat, $centerLon, $limit);
         });
     }
@@ -337,7 +316,7 @@ class Mapillary
                 'query' => [
                     'bbox' => $bboxString,
                     'limit' => $searchLimit,
-                    'fields' => 'id,thumb_256_url,thumb_1024_url,captured_at,compass_angle,geometry,creator,quality_score'
+                    'fields' => 'id,thumb_256_url,thumb_1024_url,captured_at,compass_angle,geometry,creator,quality_score',
                 ]
             ]);
         } catch (ClientException $e) {
