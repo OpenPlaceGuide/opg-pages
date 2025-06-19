@@ -48,7 +48,7 @@
 
                                 @if(isset($image['quality_score']) && $image['quality_score'] > 0)
                                     <span class="text-xs text-green-600">
-                                        ⭐ {{ number_format($image['quality_score'], 1) }}
+                                        ⭐ {{ number_format($image['quality_score'] * 5, 1) }}
                                     </span>
                                 @endif
 
