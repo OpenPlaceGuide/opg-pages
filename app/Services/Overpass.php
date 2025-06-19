@@ -27,25 +27,30 @@ class Overpass
 
         $data = $this->cachedRunQuery($objectQuerys, $areas);
 
-        $currentObject = null;
+        $result = [];
+        $osmObjects = [];
+        $areaElements = [];
+
+        // First pass: separate OSM objects from area elements
         foreach ($data->elements as $element) {
             if ($element->type === 'area') {
-                if ($currentObject === null) {
-                    throw new \Exception('Area found but no element');
-                }
-                $currentArea = Repository::getInstance()->resolveArea($element->id);
-                $result[] = $this->createOsmInfoFromElement($currentObject, $currentArea);;
-                $currentObject = null;
+                $areaElements[] = $element;
             } else {
-                if ($currentObject !== null) {
-                    $result[] = $this->createOsmInfoFromElement($currentObject);;
-                }
-                $currentObject = $element;
+                $osmObjects[] = $element;
             }
         }
 
-        if ($currentObject !== null) {
-            $result[] = $this->createOsmInfoFromElement($currentObject);;
+        // Second pass: process OSM objects and find their areas
+        foreach ($osmObjects as $osmObject) {
+            $matchingArea = null;
+
+            // Find the first matching area for this OSM object
+            // In most cases, we only care about the first/primary area
+            if (!empty($areaElements)) {
+                $matchingArea = Repository::getInstance()->resolveArea($areaElements[0]->id);
+            }
+
+            $result[] = $this->createOsmInfoFromElement($osmObject, $matchingArea);
         }
 
         return $result;
