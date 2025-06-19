@@ -19,6 +19,8 @@ return [
 
     'technical_contact' => env('APP_TECHNICAL_CONTACT', null),
 
+    'umami_website_id' => env('UMAMI_WEBSITE_ID', null),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment

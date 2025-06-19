@@ -6,6 +6,9 @@
     <title>@yield('pageTitle', config('app.name'))</title>
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
+    @if(config('app.umami_website_id'))
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="{{ config('app.umami_website_id') }}"></script>
+    @endif
 </head>
 <body
     class="relative text-gray-700 bg-gradient-to-br from-white to-{{ $color ?? 'black' }}-100 border-t-2 border-{{ $color ?? 'black' }}-900 min-h-screen">
