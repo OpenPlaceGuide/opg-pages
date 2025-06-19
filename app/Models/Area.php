@@ -78,9 +78,28 @@ class Area
 
     /**
      * Get Mapillary images for this area
+     * Fetches images on-demand using the area's bounding box
      */
     public function getMapillaryImages(): array
     {
+        // If images are already loaded, return them
+        if (!empty($this->mapillaryImages)) {
+            return $this->mapillaryImages;
+        }
+
+        // If no bounding box, return empty array
+        if (!$this->hasBoundingBox()) {
+            return [];
+        }
+
+        try {
+            $mapillary = new \App\Services\Mapillary();
+            $this->mapillaryImages = $mapillary->getImagesInBoundingBox($this->boundingBox, 5);
+        } catch (\Exception $e) {
+            \Illuminate\Support\Facades\Log::warning('Failed to fetch Mapillary images for area ' . $this->getKey() . ': ' . $e->getMessage());
+            $this->mapillaryImages = [];
+        }
+
         return $this->mapillaryImages;
     }
 

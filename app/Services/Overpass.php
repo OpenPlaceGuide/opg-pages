@@ -287,42 +287,5 @@ OVERPASS;
         return $query;
     }
 
-    /**
-     * Fetch Mapillary images for areas using their bounding boxes
-     *
-     * @param array<Area> $areas
-     * @return array<string, array> Array of images keyed by area ID
-     */
-    public function fetchMapillaryImagesForAreas(array $areas): array
-    {
-        $mapillaryImages = [];
 
-        try {
-            $mapillary = new \App\Services\Mapillary();
-
-            foreach ($areas as $area) {
-                if (!isset($area->boundingBox)) {
-                    continue;
-                }
-
-                // Calculate center point from bounding box
-                $centerLat = ($area->boundingBox['north'] + $area->boundingBox['south']) / 2;
-                $centerLon = ($area->boundingBox['east'] + $area->boundingBox['west']) / 2;
-
-                // Use 5km radius as requested
-                $radius = 5000; // 5km in meters
-                $limit = 5; // Up to 5 best images
-
-                $images = $mapillary->getBestImagesForArea($centerLat, $centerLon, $radius, $limit);
-
-                if (!empty($images)) {
-                    $mapillaryImages[$area->getKey()] = $images;
-                }
-            }
-        } catch (\Exception $e) {
-            Log::warning('Failed to fetch Mapillary images for areas: ' . $e->getMessage());
-        }
-
-        return $mapillaryImages;
-    }
 }

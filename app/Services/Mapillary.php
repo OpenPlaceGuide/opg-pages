@@ -217,6 +217,37 @@ class Mapillary
     }
 
     /**
+     * Fetch images within a specific bounding box
+     *
+     * @param array $boundingBox Bounding box with keys: north, south, east, west
+     * @param int $limit Maximum number of images to return (default: 5)
+     * @return array Array of image data
+     * @throws GuzzleException
+     */
+    public function getImagesInBoundingBox(array $boundingBox, int $limit = 5): array
+    {
+        // Validate bounding box
+        if (!isset($boundingBox['north'], $boundingBox['south'], $boundingBox['east'], $boundingBox['west'])) {
+            throw new \InvalidArgumentException('Bounding box must contain north, south, east, and west coordinates');
+        }
+
+        // Calculate center point for distance calculations
+        $centerLat = ($boundingBox['north'] + $boundingBox['south']) / 2;
+        $centerLon = ($boundingBox['east'] + $boundingBox['west']) / 2;
+
+        // Create cache key based on bounding box
+        $cacheKey = sprintf('mapillary_bbox_%s_%s_%s_%s_%s',
+            $boundingBox['west'], $boundingBox['south'],
+            $boundingBox['east'], $boundingBox['north'], $limit);
+
+        return Cache::remember($cacheKey, function () use ($boundingBox, $limit, $centerLat, $centerLon) {
+            // Use a larger search limit to get more images to choose from
+            $searchLimit = min($limit * 10, 500);
+            return $this->fetchImagesFromBoundingBox($boundingBox, $searchLimit, $centerLat, $centerLon, $limit);
+        });
+    }
+
+    /**
      * Build user agent string for API requests
      *
      * @return string
@@ -271,5 +302,62 @@ class Mapillary
         } else {
             return round($meters / 1000, 1) . 'km';
         }
+    }
+
+    /**
+     * Fetch images from Mapillary API using a bounding box
+     *
+     * @param array $boundingBox Bounding box [west, south, east, north]
+     * @param int $searchLimit Maximum number of images to search through
+     * @param float $centerLat Center latitude for distance calculation
+     * @param float $centerLon Center longitude for distance calculation
+     * @param int $finalLimit Final number of images to return
+     * @return array
+     * @throws GuzzleException
+     */
+    private function fetchImagesFromBoundingBox(array $boundingBox, int $searchLimit, float $centerLat, float $centerLon, int $finalLimit): array
+    {
+        $client = new \GuzzleHttp\Client([
+            'base_uri' => $this->baseUrl,
+            'headers' => [
+                'Authorization' => 'OAuth ' . $this->accessToken,
+                'User-Agent' => $this->buildUserAgent()
+            ]
+        ]);
+
+        // Format bounding box as west,south,east,north
+        $bboxString = sprintf('%f,%f,%f,%f',
+            $boundingBox['west'], $boundingBox['south'],
+            $boundingBox['east'], $boundingBox['north']);
+
+        $requestStart = microtime(true);
+
+        try {
+            $response = $client->get('/images', [
+                'query' => [
+                    'bbox' => $bboxString,
+                    'limit' => $searchLimit,
+                    'fields' => 'id,thumb_256_url,thumb_1024_url,captured_at,compass_angle,geometry,creator,quality_score'
+                ]
+            ]);
+        } catch (ClientException $e) {
+            Log::error(sprintf('Mapillary API error, time %fs: %s', microtime(true) - $requestStart, $e->getMessage()));
+            return [];
+        }
+
+        $requestTime = microtime(true) - $requestStart;
+        Log::notice(sprintf('Mapillary bounding box request took %fs', $requestTime));
+
+        $data = json_decode($response->getBody(), true);
+
+        if (!isset($data['data'])) {
+            Log::warning('Mapillary API returned unexpected response format');
+            return [];
+        }
+
+        $processedImages = $this->processImageData($data['data'], $centerLat, $centerLon);
+
+        // Return only the top images (already sorted by quality and distance)
+        return array_slice($processedImages, 0, $finalLimit);
     }
 }
