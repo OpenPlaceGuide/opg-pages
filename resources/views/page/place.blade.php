@@ -63,8 +63,9 @@
 
             <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
 
+            <h2>Community Street View Images</h2>
+
             @if(!empty($mapillaryImages))
-                <h2>Community Street View Images</h2>
                 <div class="overflow-x-auto flex space-x-4 flex-row w-full mb-6">
                     @foreach($mapillaryImages as $image)
                         <div class="flex-none">
@@ -78,7 +79,7 @@
                                 <figcaption class="py-3 w-0 min-w-full text-sm text-gray-600">
                                     <div>
                                         @if($image['captured_at_formatted'])
-                                            Captured: {{ $image['captured_at_formatted'] }}
+                                            {{ $image['captured_at_formatted'] }}
                                         @endif
                                         @if($image['creator']['username'])
                                             by {{ $image['creator']['username'] }}
@@ -98,6 +99,10 @@
                     @endforeach
                 </div>
             @endif
+
+            <a href="https://www.mapillary.com/mobile-apps" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold mt-2 py-1 px-2 rounded inline-flex items-center no-underline" target="_blank">
+                <span class="text-sm">Contribute to Mapillary</span>
+            </a>
 
             <h2>Location(s)</h2>
             @foreach($branches as $branch)

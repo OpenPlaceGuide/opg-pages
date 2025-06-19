@@ -178,9 +178,14 @@ YAML;
             $mapillary = new Mapillary();
             $allImages = [];
 
-            foreach ($branches as $branch) {
+            if (count($branches) > 1) {
+                $limit = 1;
+            } else {
+                $limit = 3;
+            }
+            foreach (array_slice($branches, 0, 10) as $branch) {
                 if (isset($branch->lat) && isset($branch->lon)) {
-                    $images = $mapillary->getImagesNearLocation($branch->lat, $branch->lon, 200, 5);
+                    $images = $mapillary->getImagesNearLocation($branch->lat, $branch->lon, 50, $limit);
                     $allImages = array_merge($allImages, $images);
                 }
             }
