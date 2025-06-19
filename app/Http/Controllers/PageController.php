@@ -8,6 +8,7 @@ use App\Services\Language;
 use App\Services\Mapillary;
 use App\Services\Overpass;
 use App\Services\Repository;
+use App\Services\SchemaOrg;
 use Bame\StaticMap\TripleZoomMap;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
@@ -56,6 +57,10 @@ class PageController extends Controller
         // Fetch Mapillary images for all branches
         $mapillaryImages = $this->fetchMapillaryImages($branchesInfo);
 
+        // Generate schema.org markup
+        $schemaOrg = new SchemaOrg($this->repository);
+        $schemaMarkup = $schemaOrg->generatePlaceSchema($place, $type, $main, $branchesInfo);
+
         return view('page.place')
             ->with('place', $place)
             ->with('logoUrl', $logoUrl)
@@ -68,7 +73,8 @@ class PageController extends Controller
             ->with('githubUrl', $githubUrl)
             ->with('type', $type)
             ->with('color', $place->color ?? $type->color ?? 'gray')
-            ->with('icon', $place->icon ?? $type->icon);
+            ->with('icon', $place->icon ?? $type->icon)
+            ->with('schemaMarkup', $schemaMarkup);
 
     }
 
@@ -100,6 +106,11 @@ YAML;
         // Fetch Mapillary images for OSM place
         $mapillaryImages = $this->fetchMapillaryImages([$main]);
 
+        // Generate schema.org markup for OSM place (create a temporary place object)
+        $tempPlace = new \App\Models\Place($this->repository, '', $type->logo ?? '', $type->color ?? 'gray', [$idInfo], []);
+        $schemaOrg = new SchemaOrg($this->repository);
+        $schemaMarkup = $schemaOrg->generatePlaceSchema($tempPlace, $type, $main, [$main]);
+
         return view('page.place')
             ->with('place', null)
             ->with('logoUrl', $logoUrl)
@@ -111,7 +122,8 @@ YAML;
             ->with('newPlaceUrl', $newPlaceUrl)
             ->with('type', $type)
             ->with('color', $type->color ?? 'gray')
-            ->with('icon', $type->icon);
+            ->with('icon', $type->icon)
+            ->with('schemaMarkup', $schemaMarkup);
 
     }
 
@@ -151,10 +163,15 @@ YAML;
 
         $area = $this->repository->getAreaInfo($slug);
 
+        // Generate schema.org markup
+        $schemaOrg = new SchemaOrg($this->repository);
+        $schemaMarkup = $schemaOrg->generateAreaSchema($area);
+
         return view('page.area')
             ->with('area', $area)
             ->with('types', $types)
-            ->with('color', $area->color);
+            ->with('color', $area->color)
+            ->with('schemaMarkup', $schemaMarkup);
     }
 
     /**

@@ -9,6 +9,9 @@
     @if(config('app.umami_website_id'))
         <script defer src="https://cloud.umami.is/script.js" data-website-id="{{ config('app.umami_website_id') }}"></script>
     @endif
+    @if(isset($schemaMarkup))
+        {!! (new \App\Services\SchemaOrg(\App\Services\Repository::getInstance()))->renderJsonLd($schemaMarkup) !!}
+    @endif
 </head>
 <body
     class="relative text-gray-700 bg-gradient-to-br from-white to-{{ $color ?? 'black' }}-100 border-t-2 border-{{ $color ?? 'black' }}-900 min-h-screen">
