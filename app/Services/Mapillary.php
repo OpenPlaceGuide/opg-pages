@@ -317,7 +317,6 @@ class Mapillary
                     'bbox' => $bboxString,
                     'limit' => $searchLimit,
                     'fields' => 'id,thumb_256_url,thumb_1024_url,captured_at,compass_angle,geometry,creator,quality_score',
-                    'quality_score_min' => 0.9,
                 ]
             ]);
         } catch (ClientException $e) {
