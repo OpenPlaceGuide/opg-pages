@@ -170,7 +170,7 @@ YAML;
      * Fetch Mapillary images for branches
      *
      * @param array $branches Array of OsmInfo objects
-     * @return array Array of Mapillary images
+     * @return array Array of Mapillary images with branch association
      */
     private function fetchMapillaryImages(array $branches): array
     {
@@ -186,14 +186,23 @@ YAML;
             foreach (array_slice($branches, 0, 10) as $branch) {
                 if (isset($branch->lat) && isset($branch->lon)) {
                     $images = $mapillary->getImagesNearLocation($branch->lat, $branch->lon, 50, $limit);
+
+                    // Associate each image with the branch it came from
+                    foreach ($images as &$image) {
+                        $image['branch_key'] = $branch->idInfo->getKey();
+                        $image['branch_name'] = \App\Facades\Fallback::field($branch->tags, 'name');
+                    }
+
                     $allImages = array_merge($allImages, $images);
                 }
             }
 
-            // Remove duplicates based on image ID
+            // Remove duplicates based on image ID, keeping the first occurrence
             $uniqueImages = [];
             foreach ($allImages as $image) {
-                $uniqueImages[$image['id']] = $image;
+                if (!isset($uniqueImages[$image['id']])) {
+                    $uniqueImages[$image['id']] = $image;
+                }
             }
 
             return array_values($uniqueImages);

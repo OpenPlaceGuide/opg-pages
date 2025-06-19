@@ -84,14 +84,20 @@
                                         @if($image['creator']['username'])
                                             by {{ $image['creator']['username'] }}
                                         @endif
-                                        @if($image['distance_formatted'])
-                                            <span class="text-xs text-gray-500">📍 {{ $image['distance_formatted'] }} away</span>
-                                        @endif
+
                                         <span class="text-xs">
-                                            <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">
-                                                View on {{ $image['attribution'] }}
-                                            </a>
+                                            <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener" class="text-blue-600 hover:underline">({{ $image['attribution'] }})</a>
                                         </span>
+
+                                        @if($image['distance_formatted'])
+                                            <span class="text-xs text-gray-500">
+                                                📍  {{ $image['distance_formatted'] }} away
+                                                @if(isset($image['branch_key']) && (count($branches) > 1) && isset($image['branch_name']))
+                                                    from
+                                                    <a href="#{{ $image['branch_key'] }}" class="text-blue-600 hover:underline">{{ $image['branch_name'] }}</a>
+                                                @endif
+                                            </span>
+                                        @endif
                                     </div>
                                 </figcaption>
                             </figure>
