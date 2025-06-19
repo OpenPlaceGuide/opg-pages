@@ -6,14 +6,17 @@
 
 @section('content')
     <header>
-        <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
+        <div class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
             @if($logoUrl)
                 <img class="h-20 mr-5 mb-4 inline aspect-square" src="{{ asset($logoUrl) }} ">
             @endif
-            <div class="hyphens-auto">
+            <h1 class="flex-grow hyphens-auto">
                 {{ ucfirst(Fallback::resolve($type->plural)) }} in <a href="{{ route('page.' . App::currentLocale(), ['slug' => $area->slug]) }}">{{ Fallback::resolve($area->names) }}</a>
+            </h1>
+            <div class="flex justify-end">
+                <x-map-button :href="$mapLink">To the Map</x-map-button>
             </div>
-        </h1>
+        </div>
 
         <h2 class="text-2xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
             What do you find here?

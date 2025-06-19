@@ -3,13 +3,15 @@
 @endsection
 
 @extends('layouts.index')
-
 <header>
-    <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
-        <div class="hyphens-auto">
+    <div class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
+        <h1 class="flex-grow hyphens-auto">
             {{ $area->getFullName() }}
+        </h1>
+        <div class="flex justify-end">
+            <x-map-button :href="$mapLink">To the map of the area</x-map-button>
         </div>
-    </h1>
+    </div>
 
     @php($description = Fallback::resolve($area->descriptions))
     @if($description)

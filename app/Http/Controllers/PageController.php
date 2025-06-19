@@ -123,6 +123,8 @@ YAML;
 
         $logoUrl = $type->getLogoUrl();
 
+        $query = (new Overpass())->buildOverviewQuery($type, $area);
+        $mapLink = 'https://osmapp.org?qd=overpass:' . $query;
 
         return view('page.overview')
             ->with('area', $area)
@@ -130,7 +132,8 @@ YAML;
             ->with('logoUrl', $logoUrl)
             ->with('places', $places)
             ->with('color', $type->color)
-            ->with('logo', $type->logo);
+            ->with('logo', $type->logo)
+            ->with('mapLink', $mapLink);
     }
 
     /**
@@ -142,10 +145,13 @@ YAML;
 
         $area = $this->repository->getAreaInfo($slug);
 
+       $mapLink = '';
+
         return view('page.area')
             ->with('area', $area)
             ->with('types', $types)
-            ->with('color', $area->color);
+            ->with('color', $area->color)
+            ->with('mapLink', $mapLink);
     }
 
     /**

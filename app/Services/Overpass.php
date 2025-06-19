@@ -167,11 +167,7 @@ OVERPASS;
 
     public function fetchOsmOverview(\App\Models\PoiType $type, Area $area)
     {
-        $key = $type->tags[0]['key']; // FIXME: support multiple tags, currently taking the first one
-        $value = $type->tags[0]['value'];
-
-        $innerQuery = sprintf('area(%d);', $area->idInfo->getAreaId());
-        $innerQuery .= sprintf('nwr["%s"="%s"][name](area);', $key, $value);
+        $innerQuery = $this->buildOverviewQuery($type, $area) . ';';
 
         $result = [];
         $data = $this->cachedRunQuery($innerQuery);
@@ -187,6 +183,16 @@ OVERPASS;
 
     }
 
+    public function buildOverviewQuery(\App\Models\PoiType $type, Area $area): string
+    {
+        $key = $type->tags[0]['key']; // FIXME: support multiple tags, currently taking the first one
+        $value = $type->tags[0]['value'];
+
+        $innerQuery = sprintf('area(%d);', $area->idInfo->getAreaId());
+        $innerQuery .= sprintf('nwr["%s"="%s"][name](area)', $key, $value);
+
+        return $innerQuery;
+    }
 
     /**
      * @param array<Area> $area
