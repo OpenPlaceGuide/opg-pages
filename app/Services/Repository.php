@@ -242,4 +242,11 @@ class Repository
 
         return $areas[$id] ?? null;
     }
+
+    public function getSchemaMappingsFileName(): string
+    {
+        return storage_path(
+            sprintf('app/repositories/opg-data-%s/schema-org-mappings.yaml', $this->name)
+        );
+    }
 }
