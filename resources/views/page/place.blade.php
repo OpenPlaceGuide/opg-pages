@@ -72,7 +72,7 @@
                             <figure class="inline-grid grid-cols-1 auto-rows-auto">
                                 <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener">
                                     <img class="shadow-lg p-1 bg-white md:h-80 h-48 w-auto"
-                                         src="{{ $image['thumbnail_url'] }}"
+                                         src="{{ $image['large_thumbnail_url'] }}"
                                          alt="Street view image from Mapillary"
                                          loading="lazy">
                                 </a>
