@@ -249,4 +249,27 @@ class Repository
             sprintf('app/repositories/opg-data-%s/schema-org-mappings.yaml', $this->name)
         );
     }
+
+    /**
+     * Get subarea information for a given area
+     * 
+     * @param Area $area The parent area
+     * @return array Array of Area objects representing subareas
+     */
+    public function getSubareas(Area $area): array
+    {
+        $subareas = [];
+        if (!empty($area->subAreas)) {
+            foreach ($area->subAreas as $subareaSlug) {
+                try {
+                    $subarea = $this->getAreaInfo($subareaSlug);
+                    $subareas[] = $subarea;
+                } catch (\Exception $e) {
+                    // Skip if subarea file doesn't exist
+                    continue;
+                }
+            }
+        }
+        return $subareas;
+    }
 }

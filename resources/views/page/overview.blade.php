@@ -39,6 +39,13 @@
         @endif
     </header>
 
+    <x-subarea-links 
+        :subareas="$subareas" 
+        :title="ucfirst(Fallback::resolve($type->plural)) . ' in Subareas'" 
+        :link-generator="fn($subarea) => route('typesInArea.' . App::currentLocale(), ['areaSlug' => $subarea->slug, 'typeSlug' => $type->slug])" 
+        :type="$type"
+    />
+
     <section>
         <h3 class="text-xl px-5 mt-4 md:flex text-center items-center max-w-5xl mx-auto">There are {{ count($places) }} {{ Fallback::resolve($type->plural) }} here:</h3>
 
