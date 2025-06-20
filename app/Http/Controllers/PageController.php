@@ -144,12 +144,19 @@ YAML;
 
         $logoUrl = $type->getLogoUrl();
 
+        // Get subarea information if there are any subareas
+        $subareas = $this->repository->getSubareas($area);
+
+        // Get parent area for backlink
+        $parentArea = $this->repository->getParentArea($areaSlug);
 
         return view('page.overview')
             ->with('area', $area)
             ->with('type', $type)
             ->with('logoUrl', $logoUrl)
             ->with('places', $places)
+            ->with('subareas', $subareas)
+            ->with('parentArea', $parentArea)
             ->with('color', $type->color)
             ->with('logo', $type->logo);
     }
@@ -163,6 +170,12 @@ YAML;
 
         $area = $this->repository->getAreaInfo($slug);
 
+        // Get subarea information if there are any subareas
+        $subareas = $this->repository->getSubareas($area);
+
+        // Get parent area for backlink
+        $parentArea = $this->repository->getParentArea($slug);
+
         // Generate schema.org markup
         $schemaOrg = new SchemaOrg($this->repository);
         $schemaMarkup = $schemaOrg->generateAreaSchema($area);
@@ -170,6 +183,8 @@ YAML;
         return view('page.area')
             ->with('area', $area)
             ->with('types', $types)
+            ->with('subareas', $subareas)
+            ->with('parentArea', $parentArea)
             ->with('color', $area->color)
             ->with('schemaMarkup', $schemaMarkup);
     }

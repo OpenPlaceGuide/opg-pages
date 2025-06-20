@@ -6,6 +6,14 @@
 
 @section('content')
     <header>
+        @if($parentArea)
+            <nav class="px-5 mt-5 max-w-5xl mx-auto">
+                <a href="{{ route('typesInArea.' . App::currentLocale(), ['areaSlug' => $parentArea->slug, 'typeSlug' => $type->slug]) }}" class="text-blue-600 hover:text-blue-800 text-sm">
+                    ← Back to {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::field($parentArea->tags, 'name') ?? ucfirst(str_replace('-', ' ', $parentArea->slug)) }}
+                </a>
+            </nav>
+        @endif
+        
         <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
             @if($logoUrl)
                 <img class="h-20 mr-5 mb-4 inline aspect-square" src="{{ asset($logoUrl) }} ">
@@ -38,6 +46,13 @@
             <p class="px-5 mt-3 max-w-5xl mx-auto">{{ $description }}</p>
         @endif
     </header>
+
+    <x-subarea-links 
+        :subareas="$subareas" 
+        :title="ucfirst(Fallback::resolve($type->plural)) . ' in Subareas'" 
+        :link-generator="fn($subarea) => route('typesInArea.' . App::currentLocale(), ['areaSlug' => $subarea->slug, 'typeSlug' => $type->slug])" 
+        :type="$type"
+    />
 
     <section>
         <h3 class="text-xl px-5 mt-4 md:flex text-center items-center max-w-5xl mx-auto">There are {{ count($places) }} {{ Fallback::resolve($type->plural) }} here:</h3>

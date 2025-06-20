@@ -6,6 +6,14 @@
 
 @section('content')
     <header>
+        @if($parentArea)
+            <nav class="px-5 mt-5 max-w-5xl mx-auto">
+                <a href="{{ $parentArea->getUrl() }}" class="text-blue-600 hover:text-blue-800 text-sm">
+                    ← Back to {{ Fallback::field($parentArea->tags, 'name') ?? ucfirst(str_replace('-', ' ', $parentArea->slug)) }}
+                </a>
+            </nav>
+        @endif
+        
         <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
             <div class="hyphens-auto">
                 {{ $area->getFullName() }}
@@ -25,8 +33,15 @@
         :location-name="$area->getFullName()"
     />
 
+    <x-subarea-links 
+        :subareas="$subareas" 
+        :title="'Areas in ' . $area->getFullName()" 
+        :link-generator="fn($subarea) => $subarea->getUrl()" 
+    />
+
     <section>
         <div class="px-5 py-2 max-w-5xl mx-auto">
+            <h2 class="text-2xl font-bold mb-4">Places in {{ $area->getFullName() }}</h2>
             <div class="grid md:grid-cols-2 lg:grid-cols-3 grid-flow-row auto-rows-fr mt-6 w-full">
                 @foreach($types as $type)
                     <a class="no-underline px-4 flex flex-row justify-between items-center border text-card-foreground max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4"
