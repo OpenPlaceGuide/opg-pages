@@ -21,11 +21,25 @@ jobs:
           password: ${{ secrets.GHCR_PAT }}
       - name: Build the Docker image
         run: |
-          docker build . --file Dockerfile --tag ghcr.io/openplaceguide/opg-pages:latest
           # Check if this is a tag push
           if [[ $GITHUB_REF == refs/tags/* ]]; then
-            echo "Tag push detected. Pushing the Docker image..."
+            # Extract tag name from the ref
+            TAG_NAME=${GITHUB_REF#refs/tags/}
+            echo "Tag push detected: $TAG_NAME"
+
+            # Build the image
+            docker build . --file Dockerfile --tag ghcr.io/openplaceguide/opg-pages:$TAG_NAME
+
+            # Tag it as latest as well
+            docker tag ghcr.io/openplaceguide/opg-pages:$TAG_NAME ghcr.io/openplaceguide/opg-pages:latest
+
+            # Push both tags
+            echo "Pushing Docker image with tag: $TAG_NAME"
+            docker push ghcr.io/openplaceguide/opg-pages:$TAG_NAME
+            echo "Pushing Docker image with tag: latest"
             docker push ghcr.io/openplaceguide/opg-pages:latest
           else
-            echo "Not a tag push. Skipping Docker push."
+            # Just build for PR testing
+            echo "Not a tag push. Building image for testing only."
+            docker build . --file Dockerfile --tag ghcr.io/openplaceguide/opg-pages:test
           fi
