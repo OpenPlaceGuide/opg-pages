@@ -272,4 +272,23 @@ class Repository
         }
         return $subareas;
     }
+
+    /**
+     * Find the parent area for a given area slug
+     * 
+     * @param string $areaSlug The slug of the area to find parent for
+     * @return Area|null The parent area or null if no parent found
+     */
+    public function getParentArea(string $areaSlug): ?Area
+    {
+        $allAreas = $this->listAreas();
+        
+        foreach ($allAreas as $area) {
+            if (!empty($area->subAreas) && in_array($areaSlug, $area->subAreas)) {
+                return $area;
+            }
+        }
+        
+        return null;
+    }
 }

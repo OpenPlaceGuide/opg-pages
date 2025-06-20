@@ -6,6 +6,14 @@
 
 @section('content')
     <header>
+        @if($parentArea)
+            <nav class="px-5 mt-5 max-w-5xl mx-auto">
+                <a href="{{ $parentArea->getUrl() }}" class="text-blue-600 hover:text-blue-800 text-sm">
+                    ← Back to {{ Fallback::field($parentArea->tags, 'name') ?? ucfirst(str_replace('-', ' ', $parentArea->slug)) }}
+                </a>
+            </nav>
+        @endif
+        
         <h1 class="text-3xl px-5 mt-10 md:flex text-center items-center max-w-5xl mx-auto">
             <div class="hyphens-auto">
                 {{ $area->getFullName() }}
