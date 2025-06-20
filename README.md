@@ -17,6 +17,11 @@ Example URLs:
 * Laravel 10
 * PHP 8.1
 
+## Versioning
+
+* CalVer: YY.CalendarWeek.0
+  * CalenderWeek does not have trailing zeros
+
 ## Fonts for Static Map
 
 see `resources/fonts/README.md`
