@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Helpers\GeoHelper;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Support\Facades\Log;
@@ -56,16 +57,7 @@ class Mapillary
      */
     private function createBoundingBox(float $lat, float $lon, float $radius): array
     {
-        // Convert radius from meters to degrees (approximate)
-        $latDelta = $radius / 111000; // 1 degree latitude ≈ 111km
-        $lonDelta = $radius / (111000 * cos(deg2rad($lat))); // Adjust for longitude
-
-        return [
-            $lon - $lonDelta, // west
-            $lat - $latDelta, // south
-            $lon + $lonDelta, // east
-            $lat + $latDelta  // north
-        ];
+        return GeoHelper::createBoundingBox($lat, $lon, $radius);
     }
 
     /**
@@ -148,8 +140,8 @@ class Mapillary
             $distanceFormatted = null;
 
             if ($imageLat !== null && $imageLon !== null) {
-                $distance = $this->calculateDistance($centerLat, $centerLon, $imageLat, $imageLon);
-                $distanceFormatted = $this->formatDistance($distance);
+                $distance = GeoHelper::calculateDistanceInMeters($centerLat, $centerLon, $imageLat, $imageLon);
+                $distanceFormatted = GeoHelper::formatDistance($distance);
             }
 
             $processed[] = [
@@ -243,45 +235,7 @@ class Mapillary
         return sprintf('opg-pages/%s (%s, %s)', $version, url(''), $contact);
     }
 
-    /**
-     * Calculate distance between two coordinates using Haversine formula
-     *
-     * @param float $lat1 Latitude of first point
-     * @param float $lon1 Longitude of first point
-     * @param float $lat2 Latitude of second point
-     * @param float $lon2 Longitude of second point
-     * @return float Distance in meters
-     */
-    private function calculateDistance(float $lat1, float $lon1, float $lat2, float $lon2): float
-    {
-        $earthRadius = 6371000; // Earth's radius in meters
 
-        $dLat = deg2rad($lat2 - $lat1);
-        $dLon = deg2rad($lon2 - $lon1);
-
-        $a = sin($dLat / 2) * sin($dLat / 2) +
-             cos(deg2rad($lat1)) * cos(deg2rad($lat2)) *
-             sin($dLon / 2) * sin($dLon / 2);
-
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
-
-        return $earthRadius * $c;
-    }
-
-    /**
-     * Format distance for display
-     *
-     * @param float $meters Distance in meters
-     * @return string Formatted distance string
-     */
-    private function formatDistance(float $meters): string
-    {
-        if ($meters < 1000) {
-            return round($meters) . 'm';
-        } else {
-            return round($meters / 1000, 1) . 'km';
-        }
-    }
 
     /**
      * Fetch images from Mapillary API using a bounding box

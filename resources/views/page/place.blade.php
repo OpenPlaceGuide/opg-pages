@@ -85,7 +85,9 @@
                         @endforeach
                     </ul>
 
-                    @php($mainUrl = $branch->idInfo->getOsmUrl(url('/')))
+                    @php
+                        $mainUrl = $branch->idInfo->getOsmUrl(url('/'))
+                    @endphp
                     <a href="{{ $mainUrl }}" target="_blank">
                         <img class="shadow-lg" width="699" height="300"
                              alt="Map showing the address of {{  Fallback::field($branch->tags, 'name') }} in three different zoom levels."
@@ -96,6 +98,44 @@
                         <li><a href="{{ $mainUrl }}" target="_blank">Main page {{ config('app.name') }}</a>
                         </li>
                     </ul>
+
+                    {{-- Reviews for this branch --}}
+                    @php
+                        $branchReviews = collect($mangroveReviews ?? [])->filter(function($review) use ($branch) {
+                            return isset($review['branch_key']) && $review['branch_key'] === $branch->idInfo->getKey();
+                        })->values()->all();
+                    @endphp
+
+                    @if(!empty($branchReviews))
+                        <div class="mt-6">
+                            <h4 class="text-lg font-semibold mb-4">Reviews</h4>
+                            <x-mangrove-reviews
+                                :reviews="$branchReviews"
+                                :branches="[$branch]"
+                                container-class=""
+                            />
+                        </div>
+                    @endif
+
+                    {{-- Write review button for this branch --}}
+                    @if(!empty($mangroveReviewUrls) && is_array($mangroveReviewUrls))
+                        @foreach($mangroveReviewUrls as $key => $reviewOption)
+                            @if(isset($reviewOption['branch_key']) && $reviewOption['branch_key'] === $branch->idInfo->getKey())
+                                <div class="mt-4">
+                                    <a href="{{ $reviewOption['url'] }}"
+                                       target="_blank"
+                                       rel="noopener"
+                                       class="inline-flex items-center px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg transition-colors duration-200 no-underline">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                        Write a Review
+                                    </a>
+                                </div>
+                                @break
+                            @endif
+                        @endforeach
+                    @endif
                 </section>
             @endforeach
         </div>
