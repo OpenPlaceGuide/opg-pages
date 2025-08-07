@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Facades\Fallback;
 use App\Models\OsmId;
 use App\Services\Language;
+use App\Services\Mangrove;
 use App\Services\Mapillary;
 use App\Services\Overpass;
 use App\Services\Repository;
@@ -57,6 +58,12 @@ class PageController extends Controller
         // Fetch Mapillary images for all branches
         $mapillaryImages = $this->fetchMapillaryImages($branchesInfo);
 
+        // Fetch Mangrove reviews for all branches
+        $mangroveReviews = $this->fetchMangroveReviews($branchesInfo, $place);
+
+        // Generate Mangrove review URLs for all branches
+        $mangroveReviewUrls = $this->generateMangroveReviewUrls($branchesInfo, $place);
+
         // Generate schema.org markup
         $schemaOrg = new SchemaOrg($this->repository);
         $schemaMarkup = $schemaOrg->generatePlaceSchema($place, $type, $main, $branchesInfo);
@@ -68,6 +75,8 @@ class PageController extends Controller
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery())
             ->with('mapillaryImages', $mapillaryImages)
+            ->with('mangroveReviews', $mangroveReviews)
+            ->with('mangroveReviewUrls', $mangroveReviewUrls)
             ->with('branches', $branchesInfo)
             ->with('newPlaceUrl', null)
             ->with('githubUrl', $githubUrl)
@@ -106,6 +115,12 @@ YAML;
         // Fetch Mapillary images for OSM place
         $mapillaryImages = $this->fetchMapillaryImages([$main]);
 
+        // Fetch Mangrove reviews for OSM place
+        $mangroveReviews = $this->fetchMangroveReviews([$main], null);
+
+        // Generate Mangrove review URLs for the main branch
+        $mangroveReviewUrls = $this->generateMangroveReviewUrls([$main], null);
+
         // Generate schema.org markup for OSM place (create a temporary place object)
         $tempPlace = new \App\Models\Place($this->repository, '', $type->logo ?? '', $type->color ?? 'gray', [$idInfo], []);
         $schemaOrg = new SchemaOrg($this->repository);
@@ -118,6 +133,8 @@ YAML;
             ->with('main', $main)
             ->with('gallery', [])
             ->with('mapillaryImages', $mapillaryImages)
+            ->with('mangroveReviews', $mangroveReviews)
+            ->with('mangroveReviewUrls', $mangroveReviewUrls)
             ->with('branches', [$main])
             ->with('newPlaceUrl', $newPlaceUrl)
             ->with('type', $type)
@@ -243,6 +260,155 @@ YAML;
             \Illuminate\Support\Facades\Log::warning('Failed to fetch Mapillary images: ' . $e->getMessage());
             return [];
         }
+    }
+
+    /**
+     * Fetch Mangrove reviews for branches
+     *
+     * @param array $branches Array of OsmInfo objects
+     * @param \App\Models\Place|null $place Place object for company-wide search
+     * @return array Array of Mangrove reviews near the branches and company-wide
+     */
+    private function fetchMangroveReviews(array $branches, $place = null): array
+    {
+        try {
+            $mangrove = new Mangrove();
+
+            // If we have a place object, use combined search (location + company name)
+            if ($place !== null) {
+                // Get the main business name for company-wide search
+                $companyName = '';
+                if (!empty($branches)) {
+                    $companyName = \App\Facades\Fallback::field($branches[0]->tags, 'name') ?? '';
+                }
+
+                $allReviews = $mangrove->getCombinedBusinessReviews($branches, $companyName);
+
+                // Associate each review with the appropriate branch
+                foreach ($allReviews as &$review) {
+                    if ($review['match_type'] === 'location' && isset($review['branch_lat'], $review['branch_lon'])) {
+                        // Find the closest branch for location-based reviews
+                        $closestBranch = null;
+                        $minDistance = PHP_FLOAT_MAX;
+
+                        foreach ($branches as $branch) {
+                            if (isset($branch->lat) && isset($branch->lon)) {
+                                $distance = abs($branch->lat - $review['branch_lat']) + abs($branch->lon - $review['branch_lon']);
+                                if ($distance < $minDistance) {
+                                    $minDistance = $distance;
+                                    $closestBranch = $branch;
+                                }
+                            }
+                        }
+
+                        if ($closestBranch) {
+                            $review['branch_key'] = $closestBranch->idInfo->getKey();
+                            $review['branch_name'] = \App\Facades\Fallback::field($closestBranch->tags, 'name');
+                        }
+                    } else {
+                        // For company-wide reviews, don't associate with a specific branch
+                        $review['branch_key'] = null;
+                        $review['branch_name'] = null;
+                    }
+                }
+
+                return $allReviews;
+            } else {
+                // Fallback to location-only search for OSM places
+                $allReviews = [];
+
+                foreach (array_slice($branches, 0, 10) as $branch) {
+                    if (isset($branch->lat) && isset($branch->lon)) {
+                        $reviews = $mangrove->getReviewsNearLocationMeters($branch->lat, $branch->lon, 3.0);
+
+                        foreach ($reviews as &$review) {
+                            $review['branch_key'] = $branch->idInfo->getKey();
+                            $review['branch_name'] = \App\Facades\Fallback::field($branch->tags, 'name');
+                            $review['match_type'] = 'location';
+                        }
+
+                        $allReviews = array_merge($allReviews, $reviews);
+                    }
+                }
+
+                // Remove duplicates
+                $uniqueReviews = [];
+                foreach ($allReviews as $review) {
+                    if (!isset($uniqueReviews[$review['id']])) {
+                        $uniqueReviews[$review['id']] = $review;
+                    }
+                }
+
+                return array_values($uniqueReviews);
+            }
+        } catch (\Exception $e) {
+            // Log error but don't break the page if Mangrove fails
+            \Illuminate\Support\Facades\Log::warning('Failed to fetch Mangrove reviews: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
+     * Generate Mangrove review URL for a location
+     *
+     * @param \App\Models\OsmInfo $branch
+     * @return string
+     */
+    private function generateMangroveReviewUrl($branch): string
+    {
+        if (!isset($branch->lat) || !isset($branch->lon)) {
+            return 'https://mangrove.reviews';
+        }
+
+        $lat = $branch->lat;
+        $lon = $branch->lon;
+        $name = \App\Facades\Fallback::field($branch->tags, 'name') ?? 'Location';
+
+        // Create the geo subject string: geo:lat,lon?q=Name&u=30
+        $geoSubject = sprintf('geo:%s,%s?q=%s&u=30', $lat, $lon, urlencode($name));
+
+        // URL encode the entire subject for the search parameter
+        $encodedSubject = urlencode($geoSubject);
+
+        return sprintf('https://mangrove.reviews/search?sub=%s', $encodedSubject);
+    }
+
+    /**
+     * Generate Mangrove review URLs for multiple branches
+     *
+     * @param array $branches
+     * @param \App\Models\Place|null $place
+     * @return array
+     */
+    private function generateMangroveReviewUrls(array $branches, $place = null): array
+    {
+        $urls = [];
+
+        if (count($branches) > 1 && $place !== null) {
+            // For multi-branch businesses, provide individual branch options only
+            foreach ($branches as $index => $branch) {
+                $branchName = \App\Facades\Fallback::field($branch->tags, 'name') ?? "Branch " . ($index + 1);
+                $urls['branch_' . $branch->idInfo->getKey()] = [
+                    'url' => $this->generateMangroveReviewUrl($branch),
+                    'label' => $branchName,
+                    'type' => 'branch',
+                    'branch_key' => $branch->idInfo->getKey()
+                ];
+            }
+        } else {
+            // Single branch or OSM place
+            $mainBranch = $branches[0] ?? null;
+            if ($mainBranch) {
+                $urls['branch_' . $mainBranch->idInfo->getKey()] = [
+                    'url' => $this->generateMangroveReviewUrl($mainBranch),
+                    'label' => \App\Facades\Fallback::field($mainBranch->tags, 'name') ?? 'This Location',
+                    'type' => 'branch',
+                    'branch_key' => $mainBranch->idInfo->getKey()
+                ];
+            }
+        }
+
+        return $urls;
     }
 
     public function tripleZoomMap($lat, $lon, Request $request)
