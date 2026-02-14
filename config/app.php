@@ -21,6 +21,8 @@ return [
 
     'umami_website_id' => env('UMAMI_WEBSITE_ID', null),
 
+    'overpass_api_url' => env('OVERPASS_API_URL', 'https://overpass.private.coffee/api/'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Environment
