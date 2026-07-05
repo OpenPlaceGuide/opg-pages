@@ -113,8 +113,8 @@
   "": {
     "name": null,
     "domain": null,
-    "action": "Closure",
-    "uri": "api/user",
+    "action": "App\\Http\\Controllers\\SitemapController@index",
+    "uri": "sitemap.xml",
     "method": [
       "GET",
       "HEAD"
@@ -125,6 +125,26 @@
     "domain": null,
     "action": "App\\Http\\Controllers\\PageController@tripleZoomMap",
     "uri": "assets/static-map/{lat}/{lon}/{slug}.png",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "branch.mapillary": {
+    "name": "branch.mapillary",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\BranchDataController@mapillary",
+    "uri": "api/branch/{lat}/{lon}/mapillary",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "branch.mangrove": {
+    "name": "branch.mangrove",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\BranchDataController@mangrove",
+    "uri": "api/branch/{lat}/{lon}/mangrove",
     "method": [
       "GET",
       "HEAD"
