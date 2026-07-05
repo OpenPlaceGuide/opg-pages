@@ -5,8 +5,6 @@ namespace App\Http\Controllers;
 use App\Facades\Fallback;
 use App\Models\OsmId;
 use App\Services\Language;
-use App\Services\Mangrove;
-use App\Services\Mapillary;
 use App\Services\Overpass;
 use App\Services\Repository;
 use App\Services\SchemaOrg;
@@ -55,11 +53,9 @@ class PageController extends Controller
 
         $logoUrl = $place->getLogoUrl();
 
-        // Fetch Mapillary images for all branches
-        $mapillaryImages = $this->fetchMapillaryImages($branchesInfo);
-
-        // Fetch Mangrove reviews for all branches
-        $mangroveReviews = $this->fetchMangroveReviews($branchesInfo, $place);
+        // Mapillary images and Mangrove reviews are lazy-loaded per branch via
+        // the BranchDataController API (see routes/web.php), so they are not
+        // fetched here anymore.
 
         // Generate Mangrove review URLs for all branches
         $mangroveReviewUrls = $this->generateMangroveReviewUrls($branchesInfo, $place);
@@ -74,8 +70,6 @@ class PageController extends Controller
             ->with('slug', $slug)
             ->with('main', $main)
             ->with('gallery', $place->getProcessedGallery())
-            ->with('mapillaryImages', $mapillaryImages)
-            ->with('mangroveReviews', $mangroveReviews)
             ->with('mangroveReviewUrls', $mangroveReviewUrls)
             ->with('branches', $branchesInfo)
             ->with('newPlaceUrl', null)
@@ -112,11 +106,8 @@ YAML;
 
         $logoUrl = $type->getLogoUrl();
 
-        // Fetch Mapillary images for OSM place
-        $mapillaryImages = $this->fetchMapillaryImages([$main]);
-
-        // Fetch Mangrove reviews for OSM place
-        $mangroveReviews = $this->fetchMangroveReviews([$main], null);
+        // Mapillary images and Mangrove reviews are lazy-loaded per branch via
+        // the BranchDataController API (see routes/web.php).
 
         // Generate Mangrove review URLs for the main branch
         $mangroveReviewUrls = $this->generateMangroveReviewUrls([$main], null);
@@ -132,8 +123,6 @@ YAML;
             ->with('slug', null)
             ->with('main', $main)
             ->with('gallery', [])
-            ->with('mapillaryImages', $mapillaryImages)
-            ->with('mangroveReviews', $mangroveReviews)
             ->with('mangroveReviewUrls', $mangroveReviewUrls)
             ->with('branches', [$main])
             ->with('newPlaceUrl', $newPlaceUrl)
@@ -213,139 +202,6 @@ YAML;
     private function fetchOsmInfo(array $places): array
     {
         return (new Overpass())->fetchOsmInfo($places, Repository::getInstance()->listLeafAreas());
-    }
-
-    /**
-     * Fetch Mapillary images for branches
-     *
-     * @param array $branches Array of OsmInfo objects
-     * @return array Array of Mapillary images with branch association
-     */
-    private function fetchMapillaryImages(array $branches): array
-    {
-        try {
-            $mapillary = new Mapillary();
-            $allImages = [];
-
-            if (count($branches) > 1) {
-                $limit = 1;
-            } else {
-                $limit = 3;
-            }
-            foreach (array_slice($branches, 0, 10) as $branch) {
-                if (isset($branch->lat) && isset($branch->lon)) {
-                    $images = $mapillary->getImagesNearLocation($branch->lat, $branch->lon, 50, $limit);
-
-                    // Associate each image with the branch it came from
-                    foreach ($images as &$image) {
-                        $image['branch_key'] = $branch->idInfo->getKey();
-                        $image['branch_name'] = \App\Facades\Fallback::field($branch->tags, 'name');
-                    }
-
-                    $allImages = array_merge($allImages, $images);
-                }
-            }
-
-            // Remove duplicates based on image ID, keeping the first occurrence
-            $uniqueImages = [];
-            foreach ($allImages as $image) {
-                if (!isset($uniqueImages[$image['id']])) {
-                    $uniqueImages[$image['id']] = $image;
-                }
-            }
-
-            return array_values($uniqueImages);
-        } catch (\Exception $e) {
-            // Log error but don't break the page if Mapillary fails
-            \Illuminate\Support\Facades\Log::warning('Failed to fetch Mapillary images: ' . $e->getMessage());
-            return [];
-        }
-    }
-
-    /**
-     * Fetch Mangrove reviews for branches
-     *
-     * @param array $branches Array of OsmInfo objects
-     * @param \App\Models\Place|null $place Place object for company-wide search
-     * @return array Array of Mangrove reviews near the branches and company-wide
-     */
-    private function fetchMangroveReviews(array $branches, $place = null): array
-    {
-        try {
-            $mangrove = new Mangrove();
-
-            // If we have a place object, use combined search (location + company name)
-            if ($place !== null) {
-                // Get the main business name for company-wide search
-                $companyName = '';
-                if (!empty($branches)) {
-                    $companyName = \App\Facades\Fallback::field($branches[0]->tags, 'name') ?? '';
-                }
-
-                $allReviews = $mangrove->getCombinedBusinessReviews($branches, $companyName);
-
-                // Associate each review with the appropriate branch
-                foreach ($allReviews as &$review) {
-                    if ($review['match_type'] === 'location' && isset($review['branch_lat'], $review['branch_lon'])) {
-                        // Find the closest branch for location-based reviews
-                        $closestBranch = null;
-                        $minDistance = PHP_FLOAT_MAX;
-
-                        foreach ($branches as $branch) {
-                            if (isset($branch->lat) && isset($branch->lon)) {
-                                $distance = abs($branch->lat - $review['branch_lat']) + abs($branch->lon - $review['branch_lon']);
-                                if ($distance < $minDistance) {
-                                    $minDistance = $distance;
-                                    $closestBranch = $branch;
-                                }
-                            }
-                        }
-
-                        if ($closestBranch) {
-                            $review['branch_key'] = $closestBranch->idInfo->getKey();
-                            $review['branch_name'] = \App\Facades\Fallback::field($closestBranch->tags, 'name');
-                        }
-                    } else {
-                        // For company-wide reviews, don't associate with a specific branch
-                        $review['branch_key'] = null;
-                        $review['branch_name'] = null;
-                    }
-                }
-
-                return $allReviews;
-            } else {
-                // Fallback to location-only search for OSM places
-                $allReviews = [];
-
-                foreach (array_slice($branches, 0, 10) as $branch) {
-                    if (isset($branch->lat) && isset($branch->lon)) {
-                        $reviews = $mangrove->getReviewsNearLocationMeters($branch->lat, $branch->lon, 3.0);
-
-                        foreach ($reviews as &$review) {
-                            $review['branch_key'] = $branch->idInfo->getKey();
-                            $review['branch_name'] = \App\Facades\Fallback::field($branch->tags, 'name');
-                            $review['match_type'] = 'location';
-                        }
-
-                        $allReviews = array_merge($allReviews, $reviews);
-                    }
-                }
-
-                // Remove duplicates
-                $uniqueReviews = [];
-                foreach ($allReviews as $review) {
-                    if (!isset($uniqueReviews[$review['id']])) {
-                        $uniqueReviews[$review['id']] = $review;
-                    }
-                }
-
-                return array_values($uniqueReviews);
-            }
-        } catch (\Exception $e) {
-            // Log error but don't break the page if Mangrove fails
-            \Illuminate\Support\Facades\Log::warning('Failed to fetch Mangrove reviews: ' . $e);
-            return [];
-        }
     }
 
     /**
