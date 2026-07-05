@@ -5,10 +5,10 @@
     'containerClass' => 'px-5 py-4 max-w-5xl mx-auto'
 ])
 
-@if(!empty($reviews))
-    <section class="{{ $containerClass }}">
-        <h2 class="text-xl font-bold mb-4">{{ $title }}</h2>
+<section class="{{ $containerClass }}">
+    <h2 class="text-xl font-bold mb-4">{{ $title }}</h2>
 
+@if(!empty($reviews))
         <div class="space-y-6">
             @foreach($reviews as $review)
                 <div class="bg-white rounded-lg shadow-md p-6 border border-gray-200">
@@ -106,7 +106,7 @@
                                 @foreach($review['images'] as $image)
                                     <div class="flex-none">
                                         <a href="{{ $image['url'] }}" target="_blank" rel="noopener" class="block hover:opacity-90 transition-opacity">
-                                            <img class="shadow-lg rounded-lg md:h-48 h-32 w-auto object-cover cursor-pointer"
+                                            <img class="shadow-lg p-1 bg-white md:h-80 h-48 w-auto cursor-pointer"
                                                  src="{{ $image['url'] }}"
                                                  alt="{{ $image['alt'] }}"
                                                  loading="lazy"
@@ -135,9 +135,7 @@
                 </div>
             @endforeach
         </div>
-
-        @if(count($reviews) === 0)
-            <p class="text-gray-500 text-center py-8">No reviews found in this area yet.</p>
-        @endif
-    </section>
+@else
+    <p class="text-gray-500 text-center py-8">No reviews found for this place, yet. Be the first to write a review!</p>
 @endif
+</section>

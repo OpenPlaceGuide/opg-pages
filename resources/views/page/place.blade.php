@@ -106,16 +106,13 @@
                         })->values()->all();
                     @endphp
 
-                    @if(!empty($branchReviews))
-                        <div class="mt-6">
-                            <h4 class="text-lg font-semibold mb-4">Reviews</h4>
-                            <x-mangrove-reviews
-                                :reviews="$branchReviews"
-                                :branches="[$branch]"
-                                container-class=""
-                            />
-                        </div>
-                    @endif
+                    <div class="mt-6">
+                        <x-mangrove-reviews
+                            :reviews="$branchReviews"
+                            :branches="[$branch]"
+                            container-class=""
+                        />
+                    </div>
 
                     {{-- Write review button for this branch --}}
                     @if(!empty($mangroveReviewUrls) && is_array($mangroveReviewUrls))
