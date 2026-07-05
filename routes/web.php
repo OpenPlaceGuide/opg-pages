@@ -18,6 +18,16 @@ use Illuminate\Support\Facades\Route;
 Route::get('/assets/static-map/{lat}/{lon}/{slug}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
     ->name('tripleZoomMap');
 
+// Lazy-loaded, per-branch fragments (Mapillary images / Mangrove reviews).
+// Same public cache headers as the pages, so responses are full-page cached.
+Route::middleware(\App\Services\Cache::getCacheMiddleware())
+    ->group(function() {
+        Route::get('/api/branch/{lat}/{lon}/mapillary', [\App\Http\Controllers\BranchDataController::class, 'mapillary'])
+            ->name('branch.mapillary');
+        Route::get('/api/branch/{lat}/{lon}/mangrove', [\App\Http\Controllers\BranchDataController::class, 'mangrove'])
+            ->name('branch.mangrove');
+    });
+
 $routes = function($locale) {
     Route::get('/{osmTypeLetter}{osmId}/{slug?}', [\App\Http\Controllers\PageController::class, 'osmPlace'])
         ->where('osmTypeLetter', '[nwr]')

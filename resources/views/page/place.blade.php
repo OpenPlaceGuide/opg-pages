@@ -63,12 +63,6 @@
 
             <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
 
-            <x-mapillary-gallery
-                :images="$mapillaryImages"
-                :branches="$branches"
-                container-class=""
-            />
-
             <h2>Location(s)</h2>
             @foreach($branches as $branch)
                 <section id="{{ $branch->idInfo->getKey() }}">
@@ -99,20 +93,27 @@
                         </li>
                     </ul>
 
-                    {{-- Reviews for this branch --}}
-                    @php
-                        $branchReviews = collect($mangroveReviews ?? [])->filter(function($review) use ($branch) {
-                            return isset($review['branch_key']) && $review['branch_key'] === $branch->idInfo->getKey();
-                        })->values()->all();
-                    @endphp
-
-                    <div class="mt-6">
-                        <x-mangrove-reviews
-                            :reviews="$branchReviews"
-                            :branches="[$branch]"
-                            container-class=""
-                        />
+                    {{-- Mapillary street view images for this branch. The heading and a
+                         skeleton are rendered immediately so users see what is loading and the
+                         layout does not shift; the gallery itself is lazy-loaded on scroll and
+                         replaces the skeleton. Empty branches are collapsed by the lazy loader.
+                         Skeleton tiles use the same h-48/md:h-80 aspect-video size as the real
+                         images so the swap does not move anything. --}}
+                    <div class="mt-6 min-h-[20rem] md:min-h-[28rem]" data-lazy-src="{{ route('branch.mapillary', ['lat' => $branch->lat, 'lon' => $branch->lon]) }}">
+                        <h2 class="text-xl font-bold mb-4">Community Street View Images</h2>
+                        <div class="animate-pulse" aria-hidden="true">
+                            <div class="flex space-x-4 w-full overflow-hidden mb-6">
+                                <div class="flex-none rounded-lg bg-gray-200 h-48 md:h-80 aspect-video"></div>
+                                <div class="flex-none rounded-lg bg-gray-200 h-48 md:h-80 aspect-video"></div>
+                                <div class="flex-none rounded-lg bg-gray-200 h-48 md:h-80 aspect-video"></div>
+                            </div>
+                            <div class="h-4 w-48 bg-gray-200 rounded mb-4"></div>
+                            <div class="h-8 w-40 bg-gray-200 rounded"></div>
+                        </div>
                     </div>
+
+                    {{-- Mangrove reviews for this branch (lazy-loaded on scroll) --}}
+                    <div class="mt-6" data-lazy-src="{{ route('branch.mangrove', ['lat' => $branch->lat, 'lon' => $branch->lon]) }}"></div>
 
                     {{-- Write review button for this branch --}}
                     @if(!empty($mangroveReviewUrls) && is_array($mangroveReviewUrls))

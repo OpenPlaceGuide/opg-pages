@@ -15,7 +15,7 @@
                 <div class="flex-none">
                     <figure class="inline-grid grid-cols-1 auto-rows-auto">
                         <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener">
-                            <img class="shadow-lg p-1 bg-white md:h-80 h-48 w-auto"
+                            <img class="shadow-lg p-1 bg-white md:h-80 h-48 w-auto aspect-video object-cover bg-gray-100"
                                  src="{{ $image['large_thumbnail_url'] }}"
                                  alt="Street view image{{ $locationName ? ' from ' . $locationName : ' from Mapillary' }}"
                                  loading="lazy">
