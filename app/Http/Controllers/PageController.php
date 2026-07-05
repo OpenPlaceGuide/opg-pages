@@ -343,7 +343,7 @@ YAML;
             }
         } catch (\Exception $e) {
             // Log error but don't break the page if Mangrove fails
-            \Illuminate\Support\Facades\Log::warning('Failed to fetch Mangrove reviews: ' . $e->getMessage());
+            \Illuminate\Support\Facades\Log::warning('Failed to fetch Mangrove reviews: ' . $e);
             return [];
         }
     }
