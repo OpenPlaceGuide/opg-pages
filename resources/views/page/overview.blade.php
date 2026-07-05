@@ -1,7 +1,7 @@
 @extends('layouts.index')
 
 @section('pageTitle')
-    {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::resolve($area->names) }}
+    {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::resolve($area->names) ?: $area->getFullName() }}
 @endsection
 
 @section('content')
@@ -19,7 +19,7 @@
                 <img class="h-20 mb-4 md:mb-0 aspect-square" src="{{ asset($logoUrl) }}" alt="">
             @endif
             <h1 class="plate px-5 py-3 text-2xl md:text-3xl">
-                {{ ucfirst(Fallback::resolve($type->plural)) }} in <a href="{{ route('page.' . App::currentLocale(), ['slug' => $area->slug]) }}" class="underline decoration-2 underline-offset-4 text-accent-contrast">{{ Fallback::resolve($area->names) }}</a>
+                {{ ucfirst(Fallback::resolve($type->plural)) }} in <a href="{{ route('page.' . App::currentLocale(), ['slug' => $area->slug]) }}" class="underline decoration-2 underline-offset-4 text-accent-contrast">{{ Fallback::resolve($area->names) ?: $area->getFullName() }}</a>
             </h1>
         </div>
     </header>
