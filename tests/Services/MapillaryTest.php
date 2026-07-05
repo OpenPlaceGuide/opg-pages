@@ -45,18 +45,7 @@ class MapillaryTest extends TestCase
     public function test_bounding_box_calculation()
     {
         // Test that bounding box is calculated correctly
-        config(['services.mapillary.access_token' => 'test_token']);
-        config(['services.mapillary.base_url' => 'https://graph.mapillary.com']);
-        config(['app.technical_contact' => 'test@example.com']);
-
-        $mapillary = new Mapillary();
-
-        // Use reflection to test private method
-        $reflection = new \ReflectionClass($mapillary);
-        $method = $reflection->getMethod('createBoundingBox');
-        $method->setAccessible(true);
-
-        $bbox = $method->invoke($mapillary, 9.0, 38.7, 100);
+        $bbox = \App\Helpers\GeoHelper::createBoundingBox(9.0, 38.7, 100);
 
         $this->assertIsArray($bbox);
         $this->assertCount(4, $bbox);

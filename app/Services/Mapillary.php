@@ -9,6 +9,11 @@ use Illuminate\Support\Facades\Log;
 
 class Mapillary
 {
+    /**
+     * Maximum radius (in meters) supported by the Mapillary radius API.
+     */
+    private const MAX_RADIUS = 50;
+
     private string $accessToken;
     private string $baseUrl;
 
@@ -28,49 +33,40 @@ class Mapillary
     /**
      * Fetch images near a specific location
      *
+     * Uses the Mapillary radius API which returns the best images within a
+     * given radius of a lat/lon, sorted by proximity, recency and 360°
+     * preference. The radius is capped at the API maximum of 50 meters.
+     *
      * @param float $lat Latitude
      * @param float $lon Longitude
-     * @param float $radius Radius in meters (default: 100)
+     * @param float $radius Radius in meters (default: 50, max: 50)
      * @param int $limit Maximum number of images to return (default: 10)
      * @return array Array of image data
      * @throws GuzzleException
      */
-    public function getImagesNearLocation(float $lat, float $lon, float $radius = 100, int $limit = 10): array
+    public function getImagesNearLocation(float $lat, float $lon, float $radius = self::MAX_RADIUS, int $limit = 10): array
     {
-        // Create bounding box around the coordinates
-        $bbox = $this->createBoundingBox($lat, $lon, $radius);
+        // The radius API only supports a radius of up to 50 meters
+        $radius = min($radius, self::MAX_RADIUS);
 
         $cacheKey = sprintf('mapillary_images_%s_%s_%s_%s', $lat, $lon, $radius, $limit);
 
-        return Cache::remember($cacheKey, function () use ($bbox, $limit, $lat, $lon) {
-            return $this->fetchImages($bbox, $limit, $lat, $lon);
+        return Cache::remember($cacheKey, function () use ($lat, $lon, $radius, $limit) {
+            return $this->fetchImages($lat, $lon, $radius, $limit);
         });
     }
 
     /**
-     * Create a bounding box around coordinates
+     * Fetch images from the Mapillary radius API
      *
-     * @param float $lat Latitude
-     * @param float $lon Longitude
-     * @param float $radius Radius in meters
-     * @return array [west, south, east, north]
-     */
-    private function createBoundingBox(float $lat, float $lon, float $radius): array
-    {
-        return GeoHelper::createBoundingBox($lat, $lon, $radius);
-    }
-
-    /**
-     * Fetch images from Mapillary API
-     *
-     * @param array $bbox Bounding box [west, south, east, north]
+     * @param float $lat Center latitude
+     * @param float $lon Center longitude
+     * @param float $radius Radius in meters (max: 50)
      * @param int $limit Maximum number of images
-     * @param float $centerLat Center latitude for distance calculation
-     * @param float $centerLon Center longitude for distance calculation
      * @return array
      * @throws GuzzleException
      */
-    private function fetchImages(array $bbox, int $limit, float $centerLat, float $centerLon): array
+    private function fetchImages(float $lat, float $lon, float $radius, int $limit): array
     {
         $client = new \GuzzleHttp\Client([
             'base_uri' => $this->baseUrl,
@@ -80,14 +76,14 @@ class Mapillary
             ]
         ]);
 
-        $bboxString = implode(',', $bbox);
-
         $requestStart = microtime(true);
 
         try {
             $response = $client->get('/images', [
                 'query' => [
-                    'bbox' => $bboxString,
+                    'lat' => $lat,
+                    'lng' => $lon,
+                    'radius' => $radius,
                     'limit' => $limit,
                     'fields' => 'id,thumb_256_url,thumb_1024_url,captured_at,compass_angle,geometry,creator,quality_score'
                 ]
@@ -107,7 +103,7 @@ class Mapillary
             return [];
         }
 
-        return $this->processImageData($data['data'], $centerLat, $centerLon);
+        return $this->processImageData($data['data'], $lat, $lon);
     }
 
     /**

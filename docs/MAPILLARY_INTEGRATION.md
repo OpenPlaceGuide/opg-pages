@@ -42,10 +42,11 @@ APP_TECHNICAL_CONTACT=your-email@example.com
 ### Image Fetching Process
 
 1. For each place branch with coordinates (lat/lon), the system:
-   - Creates a bounding box around the coordinates (200m radius by default)
-   - Queries the Mapillary API for up to 5 images in that area
+   - Queries the Mapillary radius API for the best images within a radius of the coordinates (50m, the API maximum)
    - Caches the results to improve performance
    - Removes duplicate images across branches
+
+   Area pages use a separate bounding-box query (`getImagesInBoundingBox`), since the radius API cannot be combined with a bounding box.
 
 2. Images are displayed with:
    - Thumbnail preview (256px)
@@ -69,6 +70,8 @@ The integration uses the Mapillary Graph API v4:
 - **Endpoint**: `https://graph.mapillary.com/images`
 - **Authentication**: OAuth 2.0 with access token
 - **Rate Limiting**: Handled by caching responses
+
+Place pages use the [radius API](https://forum.mapillary.com/t/new-radius-api-to-find-the-best-images-near-a-lat-long/10424), passing `lat`, `lng`, `radius` and `limit`. The radius is capped at the API maximum of **50 meters**. This returns the best images near a point (ranked by proximity, recency and 360° preference) instead of an arbitrary set within a bounding box.
 
 ### Requested Fields
 
@@ -95,8 +98,8 @@ The system automatically calculates the distance between each image's coordinate
 You can modify the search parameters in `PageController::fetchMapillaryImages()`:
 
 ```php
-// Change radius (in meters) and image limit
-$images = $mapillary->getImagesNearLocation($branch->lat, $branch->lon, 200, 5);
+// Change radius (in meters, max 50) and image limit
+$images = $mapillary->getImagesNearLocation($branch->lat, $branch->lon, 50, 5);
 ```
 
 ### Styling
