@@ -3,13 +3,13 @@
 @if(!empty($subareas))
     <section>
         <div class="px-5 py-2 max-w-5xl mx-auto">
-            <h2 class="text-2xl font-bold mb-4">{{ $title }}</h2>
-            <div class="grid md:grid-cols-2 lg:grid-cols-3 grid-flow-row auto-rows-fr mt-6 w-full">
+            <h2 class="section-title mb-4">{{ $title }}</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-6">
                 @foreach($subareas as $subarea)
-                    <a class="no-underline px-4 flex flex-row justify-between items-center border text-card-foreground max-w-md bg-white rounded-xl shadow-md overflow-hidden md:max-w-2xl m-4"
+                    <a class="card px-4 py-3 flex flex-row justify-between items-center gap-3"
                        href="{{ $linkGenerator($subarea) }}">
                         <div class="flex-grow">
-                            <h3 class="tracking-tight text-lg font-bold">
+                            <h3 class="text-base m-0">
                                 @if($type)
                                     {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::field($subarea->tags, 'name') ?? ucfirst(str_replace('-', ' ', $subarea->slug)) }}
                                 @else
@@ -19,7 +19,7 @@
                             @if(!$type)
                                 @php($description = Fallback::resolve($subarea->descriptions))
                                 @if($description)
-                                    <p class="text-sm text-gray-600 mt-1">{{ Str::limit($description, 100) }}</p>
+                                    <p class="text-sm text-ink/70 mt-1">{{ Str::limit($description, 100) }}</p>
                                 @endif
                             @endif
                         </div>
