@@ -81,7 +81,7 @@
         background-color: rgb(var(--accent));
         color: rgb(var(--accent-contrast));
         border: 2px solid rgb(var(--ink));
-        border-radius: 0.375rem;
+        border-radius: 0.25rem;
         box-shadow: 0.3rem 0.3rem 0 rgb(var(--accent-deep));
         font-family: theme(fontFamily.display);
         font-stretch: 115%;
@@ -126,45 +126,65 @@
         transform: translate(-1px, -1px);
     }
 
+    /* Frame for static map images: a subtle grid-paper background so a
+       still-loading or failed map tile reads as intentional, not broken. */
+    .map-frame {
+        background-color: rgb(var(--soft));
+        background-image: repeating-linear-gradient(0deg, rgb(var(--edge) / 0.5) 0 1px, transparent 1px 24px),
+            repeating-linear-gradient(90deg, rgb(var(--edge) / 0.5) 0 1px, transparent 1px 24px);
+    }
+
     .chip {
         @apply inline-flex items-center gap-1.5 rounded px-2.5 py-1 text-sm;
         background-color: rgb(var(--accent-soft));
         border: 1.5px solid rgb(var(--edge));
     }
 
+    /* Buttons are a different object than plates: fully-round pills, flat
+       fill, no border extrusion, regular type. Plate = "this is a name",
+       button = "this does something". */
     .btn {
-        @apply inline-flex items-center gap-2 rounded-md border-2 px-3.5 py-2 text-sm font-semibold no-underline;
+        @apply inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold no-underline;
+        font-stretch: 100%;
+    }
+
+    .btn:active {
+        transform: translateY(1px);
     }
 
     .btn-primary {
         @apply btn;
         background-color: rgb(var(--accent));
         color: rgb(var(--accent-contrast));
-        border-color: rgb(var(--ink));
-        box-shadow: 0.2rem 0.2rem 0 rgb(var(--accent-deep));
     }
 
     .btn-primary:hover {
-        transform: translate(1px, 1px);
-        box-shadow: 0.1rem 0.1rem 0 rgb(var(--accent-deep));
+        filter: brightness(0.94);
     }
 
     .btn-quiet {
         @apply btn;
         background-color: rgb(var(--surface));
         color: rgb(var(--ink));
-        border-color: rgb(var(--edge));
+        border: 1.5px solid rgb(var(--edge));
     }
 
     .btn-quiet:hover {
         border-color: rgb(var(--ink));
+        background-color: rgb(var(--soft));
+    }
+}
+
+@media (prefers-color-scheme: dark) {
+    .btn-primary:hover {
+        filter: brightness(1.1);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
     a.plate:hover,
     a.card:hover,
-    .btn-primary:hover {
+    .btn:active {
         transform: none;
     }
 }
