@@ -12,6 +12,12 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Keep Alpine-controlled elements (e.g. the share dialog) hidden until Alpine
+   initialises, so they don't flash on load. */
+[x-cloak] {
+    display: none !important;
+}
+
 /* Design tokens. Values are space-separated RGB so Tailwind can apply
    alpha (rgb(var(--x) / <alpha-value>)). The per-POI-type accent
    variables (--accent*) are emitted by partials/accent.blade.php. */
