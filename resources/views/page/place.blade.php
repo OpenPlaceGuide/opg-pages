@@ -70,7 +70,7 @@
                         // so callers need the alternatives.
                         $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
                         $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
-                        $qaWebsite = $qaTags->website ?? $qaTags->{'contact:website'} ?? null;
+                        $qaWebsite = \App\Services\TagRenderer::safeWebsiteUrl($qaTags->website ?? $qaTags->{'contact:website'} ?? null);
                     @endphp
                     <p class="mt-4 flex flex-wrap items-center gap-2">
                         @foreach($qaPhones as $qaPhone)
