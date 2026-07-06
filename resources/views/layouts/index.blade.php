@@ -48,8 +48,10 @@
                         Data as of <time datetime="{{ gmdate('Y-m-d\TH:i:s\Z', $dataStoredAt) }}">{{ gmdate('j M Y, H:i', $dataStoredAt) }} UTC</time>
                     </p>
                 @endif
+                {{-- No @csrf: this page is publicly cached, so a token here would
+                     belong to whichever session warmed the cache and 419 for every
+                     other visitor. The endpoint is CSRF-exempt (see VerifyCsrfToken). --}}
                 <form method="POST" action="{{ route('refreshCache') }}" class="m-0">
-                    @csrf
                     <input type="hidden" name="return" value="{{ request()->getRequestUri() }}">
                     <button type="submit" class="btn-quiet" title="Reload the latest data for this page">
                         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
