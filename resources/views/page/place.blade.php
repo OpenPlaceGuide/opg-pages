@@ -38,9 +38,11 @@
                     @endif
                 </h1>
                 <p class="mt-4 flex flex-wrap items-center gap-2 text-sm">
-                    <span class="chip font-semibold">{{ ucfirst(Fallback::resolve($type->name)) }}</span>
                     @if($branches[0]?->area)
+                        <a href="{{ route('typesInArea.' . App::currentLocale(), ['areaSlug' => $branches[0]->area->slug, 'typeSlug' => $type->slug]) }}" class="chip font-semibold">{{ ucfirst(Fallback::resolve($type->name)) }}</a>
                         <a href="{{ $branches[0]->area->getUrl() }}" class="chip">{{ $branches[0]->area->getFullName() }}</a>
+                    @else
+                        <span class="chip font-semibold">{{ ucfirst(Fallback::resolve($type->name)) }}</span>
                     @endif
                 </p>
             </div>
@@ -97,10 +99,13 @@
                 <section id="{{ $branch->idInfo->getKey() }}" class="card p-5 my-6 scroll-mt-4">
                     <h3 class="inline-block bg-accent-soft border-2 border-edge rounded px-3 py-1 m-0">{{ Fallback::field($branch->tags, 'name') }}</h3>
                     <p class="text-sm text-ink/70 mt-2">
-                        <strong>{{ ucfirst(Fallback::resolve($type->name)) }}</strong>
                         @if($branch->area !== null)
+                            <strong><a
+                                    href="{{ route('typesInArea.' . App::currentLocale(), ['areaSlug' => $branch->area->slug, 'typeSlug' => $type->slug]) }}">{{ ucfirst(Fallback::resolve($type->name)) }}</a></strong>
                             in <strong><a
-                                    href="<?php echo $branch->area->getUrl() ?>">{{ $branch->area->getFullName() }}</a></strong>
+                                    href="{{ $branch->area->getUrl() }}">{{ $branch->area->getFullName() }}</a></strong>
+                        @else
+                            <strong>{{ ucfirst(Fallback::resolve($type->name)) }}</strong>
                         @endif
                     </p>
 
