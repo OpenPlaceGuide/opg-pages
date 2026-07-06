@@ -46,19 +46,29 @@
                     @endif
                 </p>
 
-                {{-- Quick actions, from OSM tags. Only for single-location places:
-                     with many branches these would ambiguously point at one of them. --}}
-                @if(count($branches) === 1)
-                    @php
-                        $qaTags = $branches[0]->tags;
-                        // OSM multi-value phone tags use ';' but ',' occurs in the wild
-                        // too. Offer every number: lines are often broken in Ethiopia,
-                        // so callers need the alternatives.
-                        $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
-                        $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
-                        $qaWebsite = $qaTags->website ?? $qaTags->{'contact:website'} ?? null;
-                    @endphp
-                    <p class="mt-4 flex flex-wrap items-center gap-2">
+                {{-- Quick actions, from OSM tags. The phone/website/directions
+                     actions only make sense for single-location places: with many
+                     branches they would ambiguously point at one of them. The Share
+                     action is always offered; its coordinates block is likewise only
+                     added for single-location places. --}}
+                @php
+                    $isSingle = count($branches) === 1;
+                    $shareName = Fallback::field($main->tags, 'name');
+                    // Only overlay a real business logo (featured places); type-logo
+                    // fallbacks are generic and not worth putting in the QR centre.
+                    $shareLogo = ($place && $place->logo) ? asset($logoUrl) : null;
+                @endphp
+                <p class="mt-4 flex flex-wrap items-center gap-2">
+                    @if($isSingle)
+                        @php
+                            $qaTags = $branches[0]->tags;
+                            // OSM multi-value phone tags use ';' but ',' occurs in the wild
+                            // too. Offer every number: lines are often broken in Ethiopia,
+                            // so callers need the alternatives.
+                            $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
+                            $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
+                            $qaWebsite = $qaTags->website ?? $qaTags->{'contact:website'} ?? null;
+                        @endphp
                         @foreach($qaPhones as $qaPhone)
                             <a href="tel:{{ preg_replace('/[^+0-9]/', '', $qaPhone) }}" class="btn-primary">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -77,8 +87,14 @@
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                             Directions
                         </a>
-                    </p>
-                @endif
+                    @endif
+                    <x-share
+                        :title="$shareName"
+                        :logo="$shareLogo"
+                        :lat="$isSingle ? $main->lat : null"
+                        :lon="$isSingle ? $main->lon : null"
+                    />
+                </p>
             </div>
         </div>
     </header>
