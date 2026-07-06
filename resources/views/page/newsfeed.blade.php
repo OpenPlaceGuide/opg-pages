@@ -11,7 +11,7 @@
         </h1>
         <p class="mt-4 max-w-prose text-ink/70">
             Places on the map that were added or edited by
-            <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors in the last {{ $days }} days.
+            <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors in the last {{ $days }} days (up to {{ $limit }} places).
         </p>
     </header>
 

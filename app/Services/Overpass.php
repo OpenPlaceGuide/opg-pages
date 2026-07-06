@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Log;
 class Overpass
 {
     public const RECENT_CHANGES_DAYS = 30;
+    public const RECENT_CHANGES_LIMIT = 100;
 
     /**
      * @param array<OsmId> $places
@@ -210,7 +211,7 @@ OVERPASS;
      *
      * @return array<OsmInfo> newest first, at most $limit entries
      */
-    public function fetchRecentChanges(Area $area, int $days = self::RECENT_CHANGES_DAYS, int $limit = 50): array
+    public function fetchRecentChanges(Area $area, int $days = self::RECENT_CHANGES_DAYS, int $limit = self::RECENT_CHANGES_LIMIT): array
     {
         if ($area->idInfo === null) {
             throw new \InvalidArgumentException(sprintf('Area %s has no OSM id', $area->slug));
@@ -218,7 +219,8 @@ OVERPASS;
 
         $query = $this->buildRecentChangesQuery($area->idInfo->getAreaId(), $this->recentChangesSince($days));
 
-        $data = $this->cachedRunRawQuery($query);
+        // Uncached on purpose: the newsfeed should reflect OSM edits immediately.
+        $data = $this->runQuery($query);
 
         $result = [];
         foreach ($data->elements as $element) {
@@ -234,8 +236,7 @@ OVERPASS;
     }
 
     /**
-     * Rounded down to midnight UTC so the query string (= cache key) stays
-     * stable for a whole day instead of busting the cache on every request.
+     * Rounded down to midnight UTC for a stable, day-granular window.
      */
     protected function recentChangesSince(int $days): string
     {
