@@ -32,6 +32,12 @@ class RoutesTest extends TestCase
         $response = $this->get('/nefas-silk/businesses');
         $response->assertStatus(200);
     }
+    public function testNewsfeedPage(): void
+    {
+        $response = $this->get('/nefas-silk/newsfeed');
+        $response->assertStatus(200);
+    }
+
     public function testAreaPage(): void
     {
         $response = $this->get('/nefas-silk');
