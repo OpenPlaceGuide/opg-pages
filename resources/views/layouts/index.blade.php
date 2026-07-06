@@ -42,18 +42,25 @@
                 <p class="m-0"><a href="{{ route('newsfeed.' . App::currentLocale(), ['areaSlug' => $footerArea->slug]) }}">What's new in {{ Fallback::resolve($footerArea->names) ?: Fallback::field($footerArea->tags, 'name') }}</a></p>
             @endif
             <p class="m-0"><a href="https://github.com/OpenPlaceGuide/opg-pages">Source code</a> (AGPL)</p>
-            <form method="POST" action="{{ route('refreshCache') }}" class="m-0">
-                @csrf
-                <input type="hidden" name="return" value="{{ request()->getRequestUri() }}">
-                <button type="submit" class="btn-quiet" title="Reload the latest data for this page">
-                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
-                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                        <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
-                        <path d="M21 3v6h-6"></path>
-                    </svg>
-                    Refresh data
-                </button>
-            </form>
+            <div class="flex items-center gap-3">
+                @if($dataStoredAt = \App\Services\Cache::getOldestStoredAt())
+                    <p class="m-0 text-ink/70" title="When the oldest data on this page was fetched">
+                        Data as of <time datetime="{{ gmdate('Y-m-d\TH:i:s\Z', $dataStoredAt) }}">{{ gmdate('j M Y, H:i', $dataStoredAt) }} UTC</time>
+                    </p>
+                @endif
+                <form method="POST" action="{{ route('refreshCache') }}" class="m-0">
+                    @csrf
+                    <input type="hidden" name="return" value="{{ request()->getRequestUri() }}">
+                    <button type="submit" class="btn-quiet" title="Reload the latest data for this page">
+                        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                            <path d="M21 3v6h-6"></path>
+                        </svg>
+                        Refresh data
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </footer>
