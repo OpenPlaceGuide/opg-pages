@@ -130,6 +130,15 @@
       "HEAD"
     ]
   },
+  "refreshCache": {
+    "name": "refreshCache",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\CacheController@refresh",
+    "uri": "refresh-cache",
+    "method": [
+      "POST"
+    ]
+  },
   "branch.mapillary": {
     "name": "branch.mapillary",
     "domain": null,
@@ -170,6 +179,16 @@
       "HEAD"
     ]
   },
+  "newsfeed.am": {
+    "name": "newsfeed.am",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@newsfeed",
+    "uri": "am/{areaSlug}/newsfeed",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
   "typesInArea.am": {
     "name": "typesInArea.am",
     "domain": null,
@@ -200,6 +219,16 @@
       "HEAD"
     ]
   },
+  "newsfeed.de": {
+    "name": "newsfeed.de",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@newsfeed",
+    "uri": "de/{areaSlug}/newsfeed",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
   "typesInArea.de": {
     "name": "typesInArea.de",
     "domain": null,
@@ -225,6 +254,16 @@
     "domain": null,
     "action": "App\\Http\\Controllers\\PageController@page",
     "uri": "{slug}",
+    "method": [
+      "GET",
+      "HEAD"
+    ]
+  },
+  "newsfeed.en": {
+    "name": "newsfeed.en",
+    "domain": null,
+    "action": "App\\Http\\Controllers\\PageController@newsfeed",
+    "uri": "{areaSlug}/newsfeed",
     "method": [
       "GET",
       "HEAD"
