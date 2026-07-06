@@ -24,7 +24,6 @@
         $geoName = rawurlencode($title);
         $geoUri = sprintf('geo:%s,%s?q=%s,%s(%s)', $latPlain, $lonPlain, $latPlain, $lonPlain, $geoName);
         $osmUrl = sprintf('https://www.openstreetmap.org/?mlat=%s&mlon=%s#map=18/%s/%s', $latPlain, $lonPlain, $latPlain, $lonPlain);
-        $gmapsUrl = sprintf('https://www.google.com/maps/search/?api=1&query=%s,%s', $latPlain, $lonPlain);
     }
 @endphp
 
@@ -120,10 +119,6 @@
                     <a href="{{ $osmUrl }}" target="_blank" rel="noopener" class="card no-underline flex items-center gap-3 px-4 py-2.5 text-sm hover:border-ink">
                         <svg class="w-4 h-4 shrink-0 text-accent-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                         OpenStreetMap.org
-                    </a>
-                    <a href="{{ $gmapsUrl }}" target="_blank" rel="noopener" class="card no-underline flex items-center gap-3 px-4 py-2.5 text-sm hover:border-ink">
-                        <svg class="w-4 h-4 shrink-0 text-accent-text" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        Google Maps
                     </a>
                 </div>
             @endif
