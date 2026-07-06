@@ -168,6 +168,26 @@ YAML;
     }
 
     /**
+     * Recently added or edited OSM objects in an area
+     */
+    public function newsfeed(string $areaSlug)
+    {
+        if (!$this->repository->isArea($areaSlug)) {
+            throw new \InvalidArgumentException(sprintf('%s is not a valid area', $areaSlug));
+        }
+
+        $area = $this->repository->getAreaInfo($areaSlug);
+
+        $places = (new Overpass())->fetchRecentChanges($area);
+
+        return view('page.newsfeed')
+            ->with('area', $area)
+            ->with('places', $places)
+            ->with('days', Overpass::RECENT_CHANGES_DAYS)
+            ->with('color', $area->color);
+    }
+
+    /**
      * POI overview page
      */
     public function area(string $slug)

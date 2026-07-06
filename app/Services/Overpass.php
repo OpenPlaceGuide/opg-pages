@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Area;
 use App\Models\OsmId;
 use App\Models\OsmInfo;
+use App\Models\OsmMeta;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\GuzzleException;
 use App\Services\Cache;
@@ -12,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class Overpass
 {
+    public const RECENT_CHANGES_DAYS = 30;
 
     /**
      * @param array<OsmId> $places
@@ -59,7 +61,11 @@ class Overpass
 
     protected function cachedRunQuery(string $objectQueries, array $areas = null)
     {
-        $query = $this->buildQuery($objectQueries, $areas);
+        return $this->cachedRunRawQuery($this->buildQuery($objectQueries, $areas));
+    }
+
+    protected function cachedRunRawQuery(string $query)
+    {
         $cacheKey = md5($query);
 
         return Cache::remember($cacheKey, function () use ($query) {
@@ -163,11 +169,17 @@ OVERPASS;
     private function createOsmInfoFromElement(mixed $element, Area $area = null)
     {
         $idInfo = new OsmId($element->type, $element->id);
-        if ($element->type === 'node') {
-            return new OsmInfo($idInfo, $element->lat, $element->lon, $element->tags, $area);
+
+        $meta = null;
+        if (isset($element->version, $element->timestamp, $element->changeset)) {
+            $meta = new OsmMeta($element->version, $element->timestamp, $element->changeset, $element->user ?? null);
         }
 
-        return new OsmInfo($idInfo, $element->center->lat, $element->center->lon, $element->tags, $area);
+        if ($element->type === 'node') {
+            return new OsmInfo($idInfo, $element->lat, $element->lon, $element->tags, $area, $meta);
+        }
+
+        return new OsmInfo($idInfo, $element->center->lat, $element->center->lon, $element->tags, $area, $meta);
     }
 
     public function fetchOsmOverview(\App\Models\PoiType $type, Area $area)
@@ -192,6 +204,57 @@ OVERPASS;
 
     }
 
+
+    /**
+     * Named objects in the area that were added or edited since $days ago.
+     *
+     * @return array<OsmInfo> newest first, at most $limit entries
+     */
+    public function fetchRecentChanges(Area $area, int $days = self::RECENT_CHANGES_DAYS, int $limit = 50): array
+    {
+        if ($area->idInfo === null) {
+            throw new \InvalidArgumentException(sprintf('Area %s has no OSM id', $area->slug));
+        }
+
+        $query = $this->buildRecentChangesQuery($area->idInfo->getAreaId(), $this->recentChangesSince($days));
+
+        $data = $this->cachedRunRawQuery($query);
+
+        $result = [];
+        foreach ($data->elements as $element) {
+            if ($element->type === 'area') {
+                continue;
+            }
+            $result[] = $this->createOsmInfoFromElement($element);
+        }
+
+        usort($result, fn(OsmInfo $a, OsmInfo $b) => strcmp($b->meta->timestamp, $a->meta->timestamp));
+
+        return array_slice($result, 0, $limit);
+    }
+
+    /**
+     * Rounded down to midnight UTC so the query string (= cache key) stays
+     * stable for a whole day instead of busting the cache on every request.
+     */
+    protected function recentChangesSince(int $days): string
+    {
+        return (new \DateTimeImmutable('now', new \DateTimeZone('UTC')))
+            ->modify(sprintf('-%d days', $days))
+            ->setTime(0, 0)
+            ->format('Y-m-d\TH:i:s\Z');
+    }
+
+    protected function buildRecentChangesQuery(int $areaId, string $since): string
+    {
+        // Higher timeout than the other queries: date filters are slower.
+        return <<<OVERPASS
+[out:json][timeout:25];
+area($areaId)->.a;
+nwr(area.a)[name](newer:"$since");
+out meta center;
+OVERPASS;
+    }
 
     /**
      * @param array<Area> $area

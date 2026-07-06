@@ -34,6 +34,10 @@
         <p class="m-0">&copy; OdBL <a href="https://openstreetmap.org/">OpenStreetMap</a> contributors &amp;
             <a href="https://openplaceguide.org">OpenPlaceGuide</a> data repository contributors</p>
         <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+            @php($footerArea = $area ?? ($main ?? null)?->area)
+            @if($footerArea?->idInfo)
+                <p class="m-0"><a href="{{ route('newsfeed.' . App::currentLocale(), ['areaSlug' => $footerArea->slug]) }}">What's new in {{ Fallback::resolve($footerArea->names) ?: Fallback::field($footerArea->tags, 'name') }}</a></p>
+            @endif
             <p class="m-0"><a href="https://github.com/OpenPlaceGuide/opg-pages">Source code</a> (AGPL)</p>
             <form method="POST" action="{{ route('refreshCache') }}" class="m-0">
                 @csrf

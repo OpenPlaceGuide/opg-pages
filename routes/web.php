@@ -44,6 +44,11 @@ $routes = function($locale) {
         ->where('slug', '[a-z-]{3,}')
         ->name('page' . '.' . $locale);
 
+    // Must be registered before the catch-all /{areaSlug}/{typeSlug} route.
+    Route::get('/{areaSlug}/newsfeed', [\App\Http\Controllers\PageController::class, 'newsfeed'])
+        ->where('areaSlug', '[a-z-]{3,}')
+        ->name('newsfeed' . '.' . $locale);
+
     Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage'])
         ->where('typeSlug', '[a-z-]{3,}')
         ->where('areaSlug', '[a-z-]{3,}')
