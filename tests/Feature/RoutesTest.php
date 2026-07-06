@@ -36,6 +36,7 @@ class RoutesTest extends TestCase
     {
         $response = $this->get('/nefas-silk/newsfeed');
         $response->assertStatus(200);
+        $response->assertHeader('Cache-Control', 'max-age=300, public');
     }
 
     public function testAreaPage(): void

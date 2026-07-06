@@ -8,13 +8,20 @@ use Illuminate\Support\Facades\Log;
 class Cache
 {
     const LIFETIME = 86400;
+    const SHORT_LIFETIME = 300;
 
-    public static function getCacheMiddleware()
+    /**
+     * Oldest storedAt timestamp of the cache entries read during this request,
+     * i.e. how stale the most stale data on the page is. Shown in the footer.
+     */
+    private static ?int $oldestStoredAt = null;
+
+    public static function getCacheMiddleware(int $lifetime = self::LIFETIME)
     {
-        return 'cache.headers:public;max_age=' . self::LIFETIME;
+        return 'cache.headers:public;max_age=' . $lifetime;
     }
 
-    public static function remember(string $key, \Closure $callback): mixed
+    public static function remember(string $key, \Closure $callback, int $lifetime = self::LIFETIME): mixed
     {
         static $logged = false;
         static $flushedKeys = [];
@@ -30,7 +37,23 @@ class Cache
             }
         }
 
-        return CacheFacade::remember($key, self::LIFETIME, $callback);
+        $entry = CacheFacade::remember($key, $lifetime, function () use ($callback) {
+            return ['storedAt' => time(), 'value' => $callback()];
+        });
+
+        // Entries written before values were wrapped with storedAt.
+        if (!is_array($entry) || !array_key_exists('storedAt', $entry) || !array_key_exists('value', $entry)) {
+            return $entry;
+        }
+
+        self::$oldestStoredAt = min(self::$oldestStoredAt ?? PHP_INT_MAX, $entry['storedAt']);
+
+        return $entry['value'];
+    }
+
+    public static function getOldestStoredAt(): ?int
+    {
+        return self::$oldestStoredAt;
     }
 
     /**

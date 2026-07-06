@@ -65,13 +65,13 @@ class Overpass
         return $this->cachedRunRawQuery($this->buildQuery($objectQueries, $areas));
     }
 
-    protected function cachedRunRawQuery(string $query)
+    protected function cachedRunRawQuery(string $query, int $lifetime = Cache::LIFETIME)
     {
         $cacheKey = md5($query);
 
         return Cache::remember($cacheKey, function () use ($query) {
             return $this->runQuery($query);
-        });
+        }, $lifetime);
     }
 
     /**
@@ -219,8 +219,9 @@ OVERPASS;
 
         $query = $this->buildRecentChangesQuery($area->idInfo->getAreaId(), $this->recentChangesSince($days));
 
-        // Uncached on purpose: the newsfeed should reflect OSM edits immediately.
-        $data = $this->runQuery($query);
+        // Cached only briefly so the newsfeed stays fresh without hitting
+        // Overpass on every page view.
+        $data = $this->cachedRunRawQuery($query, Cache::SHORT_LIFETIME);
 
         $result = [];
         foreach ($data->elements as $element) {

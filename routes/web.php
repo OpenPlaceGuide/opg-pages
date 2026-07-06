@@ -45,10 +45,12 @@ $routes = function($locale) {
         ->name('page' . '.' . $locale);
 
     // Must be registered before the catch-all /{areaSlug}/{typeSlug} route.
-    // Uncached (opts out of the group's cache headers) so new OSM edits show up immediately.
+    // Cached for 5 minutes instead of the group's 24 hours so new OSM edits
+    // show up quickly without hitting Overpass on every view.
     Route::get('/{areaSlug}/newsfeed', [\App\Http\Controllers\PageController::class, 'newsfeed'])
         ->where('areaSlug', '[a-z-]{3,}')
         ->withoutMiddleware(\App\Services\Cache::getCacheMiddleware())
+        ->middleware(\App\Services\Cache::getCacheMiddleware(\App\Services\Cache::SHORT_LIFETIME))
         ->name('newsfeed' . '.' . $locale);
 
     Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage'])
