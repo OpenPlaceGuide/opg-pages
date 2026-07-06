@@ -30,10 +30,24 @@
     @yield('content')
 </main>
 <footer class="mt-auto border-t-2 border-edge bg-soft">
-    <div class="max-w-5xl mx-auto px-5 py-6 text-sm flex flex-wrap justify-between gap-x-8 gap-y-2">
+    <div class="max-w-5xl mx-auto px-5 py-6 text-sm flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
         <p class="m-0">&copy; OdBL <a href="https://openstreetmap.org/">OpenStreetMap</a> contributors &amp;
             <a href="https://openplaceguide.org">OpenPlaceGuide</a> data repository contributors</p>
-        <p class="m-0"><a href="https://github.com/OpenPlaceGuide/opg-pages">Source code</a> (AGPL)</p>
+        <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
+            <p class="m-0"><a href="https://github.com/OpenPlaceGuide/opg-pages">Source code</a> (AGPL)</p>
+            <form method="POST" action="{{ route('refreshCache') }}" class="m-0">
+                @csrf
+                <input type="hidden" name="return" value="{{ request()->getRequestUri() }}">
+                <button type="submit" class="btn-quiet" title="Reload the latest data for this page">
+                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor"
+                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 12a9 9 0 1 1-2.64-6.36"></path>
+                        <path d="M21 3v6h-6"></path>
+                    </svg>
+                    Refresh data
+                </button>
+            </form>
+        </div>
     </div>
 </footer>
 </body>
