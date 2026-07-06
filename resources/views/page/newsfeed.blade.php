@@ -13,6 +13,10 @@
             Places on the map that were added or edited by
             <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors in the last {{ $days }} days (up to {{ $limit }} places).
         </p>
+
+        <p class="mt-5">
+            <x-share :title="'What\'s new in ' . (Fallback::resolve($area->names) ?: $area->getFullName())" />
+        </p>
     </header>
 
     <section>

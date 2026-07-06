@@ -22,6 +22,10 @@
         @if($description)
             <p class="mt-5 max-w-prose text-lg">{{ $description }}</p>
         @endif
+
+        <p class="mt-5">
+            <x-share :title="$area->getFullName()" />
+        </p>
     </header>
 
     <!-- Mapillary Images Section -->

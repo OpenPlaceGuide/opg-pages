@@ -22,6 +22,10 @@
                 {{ ucfirst(Fallback::resolve($type->plural)) }} in <a href="{{ route('page.' . App::currentLocale(), ['slug' => $area->slug]) }}" class="underline decoration-2 underline-offset-4 text-accent-contrast">{{ Fallback::resolve($area->names) ?: $area->getFullName() }}</a>
             </h1>
         </div>
+
+        <p class="mt-5">
+            <x-share :title="ucfirst(Fallback::resolve($type->plural)) . ' in ' . ($area->getFullName())" />
+        </p>
     </header>
 
     <div class="px-5 mt-8 max-w-5xl mx-auto">
