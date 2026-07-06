@@ -107,7 +107,7 @@ class Repository
             }
         }
 
-        return new Area($this, $osmId, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['color'] ?? 'gray', $parsed['sub_areas'] ?? []);
+        return new Area($this, $osmId, $areaSlug, $parsed['name'] ?? [], $parsed['description'] ?? [], $parsed['color'] ?? 'green', $parsed['sub_areas'] ?? []);
     }
 
     public function listTypes(): array

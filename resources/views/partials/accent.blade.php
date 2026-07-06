@@ -31,7 +31,10 @@
             'dark' => ['accent' => '201 196 184', 'contrast' => '19 18 15', 'deep' => '25 24 21', 'soft' => '42 40 36', 'text' => '208 203 191'],
         ],
     ];
-    $accent = $accentMap[$color ?? 'black'] ?? $accentMap['black'];
+    // Pages without a YAML color (typically areas) get the brand green so
+    // they are not the only colorless pages on the site; unknown color
+    // names still fall back to neutral black.
+    $accent = $accentMap[$color ?? 'green'] ?? $accentMap['black'];
 @endphp
 <style>
     :root {
