@@ -19,9 +19,9 @@ class Cache
         static $logged = false;
         static $flushedKeys = [];
 
-        if (request()->header('cache-control') === 'no-cache') {
+        if (self::flushRequested()) {
             if (!$logged) {
-                Log::notice(sprintf('Cache flush header received from %s', request()->ip()));
+                Log::notice(sprintf('Cache flush requested from %s', request()->ip()));
                 $logged = true;
             }
             if (!isset($flushedKeys[$key])) {
@@ -31,5 +31,19 @@ class Cache
         }
 
         return CacheFacade::remember($key, self::LIFETIME, $callback);
+    }
+
+    /**
+     * A flush is requested either by a desktop hard reload (browsers send
+     * `Cache-Control: no-cache` on Ctrl+F5, which mobile browsers can't) or by
+     * the `refresh-cache` query param behind the footer "Refresh data" button.
+     * The param doubles as a cache-buster so the browser's own HTTP cache
+     * (max_age from getCacheMiddleware) is bypassed for the page and its
+     * lazy-loaded Mapillary/Mangrove fragments alike.
+     */
+    public static function flushRequested(): bool
+    {
+        return request()->header('cache-control') === 'no-cache'
+            || request()->has('refresh-cache');
     }
 }

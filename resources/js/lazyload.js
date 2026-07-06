@@ -6,12 +6,34 @@
  * API requests on initial page load for places with many branches.
  */
 
+// When the page was opened via the footer "Refresh data" button it carries a
+// `refresh-cache` param. Capture it once, before we scrub it from the address
+// bar, so the same flush is propagated to the lazy fragment requests below —
+// otherwise their Mapillary/Mangrove data (and the browser's HTTP cache of it)
+// would stay stale.
+const REFRESH_PARAM = 'refresh-cache';
+const refreshCacheBuster = new URLSearchParams(window.location.search).get(REFRESH_PARAM);
+
+function scrubRefreshParam() {
+    if (refreshCacheBuster === null) return;
+    const url = new URL(window.location.href);
+    url.searchParams.delete(REFRESH_PARAM);
+    window.history.replaceState(window.history.state, '', url.toString());
+}
+
 async function loadFragment(el) {
-    const url = el.dataset.lazySrc;
-    if (!url) return;
+    const src = el.dataset.lazySrc;
+    if (!src) return;
 
     // Mark as loading so it is never observed/loaded twice.
     delete el.dataset.lazySrc;
+
+    // Propagate the cache flush to the fragment endpoint. The unique value also
+    // busts the browser's own HTTP cache of the fragment (see routes/web.php).
+    const url = new URL(src, window.location.origin);
+    if (refreshCacheBuster !== null) {
+        url.searchParams.set(REFRESH_PARAM, refreshCacheBuster);
+    }
 
     try {
         const response = await fetch(url, {
@@ -35,6 +57,10 @@ async function loadFragment(el) {
 }
 
 function initLazyFragments() {
+    // Tidy the address bar so the cache-buster isn't bookmarked or shared;
+    // done after refreshCacheBuster is captured above, and before any fetch.
+    scrubRefreshParam();
+
     const targets = document.querySelectorAll('[data-lazy-src]');
     if (!targets.length) return;
 

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CacheController;
 use App\Http\Controllers\DetailRedirectController;
 use App\Http\Controllers\SitemapController;
 use Illuminate\Support\Facades\Route;
@@ -17,6 +18,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/assets/static-map/{lat}/{lon}/{slug}.png', [\App\Http\Controllers\PageController::class, 'tripleZoomMap'] )
     ->name('tripleZoomMap');
+
+// Footer "Refresh data" button: POST (so crawlers never trigger it) that
+// redirects back to the page with a cache-busting `refresh-cache` param.
+Route::post('/refresh-cache', [CacheController::class, 'refresh'])
+    ->name('refreshCache');
 
 // Lazy-loaded, per-branch fragments (Mapillary images / Mangrove reviews).
 // Same public cache headers as the pages, so responses are full-page cached.
