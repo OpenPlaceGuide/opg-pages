@@ -45,6 +45,40 @@
                         <span class="chip font-semibold">{{ ucfirst(Fallback::resolve($type->name)) }}</span>
                     @endif
                 </p>
+
+                {{-- Quick actions, from OSM tags. Only for single-location places:
+                     with many branches these would ambiguously point at one of them. --}}
+                @if(count($branches) === 1)
+                    @php
+                        $qaTags = $branches[0]->tags;
+                        // OSM multi-value phone tags use ';' but ',' occurs in the wild
+                        // too. Offer every number: lines are often broken in Ethiopia,
+                        // so callers need the alternatives.
+                        $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
+                        $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
+                        $qaWebsite = $qaTags->website ?? $qaTags->{'contact:website'} ?? null;
+                    @endphp
+                    <p class="mt-4 flex flex-wrap items-center gap-2">
+                        @foreach($qaPhones as $qaPhone)
+                            <a href="tel:{{ preg_replace('/[^+0-9]/', '', $qaPhone) }}" class="btn-primary">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+                                Call {{ $qaPhone }}
+                            </a>
+                        @endforeach
+                        @if($qaWebsite)
+                            <a href="{{ $qaWebsite }}" target="_blank" rel="noopener" class="btn-quiet">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+                                Website
+                            </a>
+                        @endif
+                        {{-- Links to the place's main map page (e.g. /node/12345): OsmApp has a
+                             directions button there but no deep link straight to directions. --}}
+                        <a href="{{ $branches[0]->idInfo->getOsmUrl(url('/')) }}" target="_blank" rel="noopener" class="btn-quiet">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
+                            Directions
+                        </a>
+                    </p>
+                @endif
             </div>
         </div>
     </header>
@@ -63,41 +97,82 @@
                 @endif
             </div>
 
-            <h2 class="section-title">Media</h2>
+            @if(count($gallery) > 0)
+                <h2 class="section-title">Media</h2>
 
-            <div class="overflow-x-auto flex space-x-4 flex-row w-full snap-x pb-2">
-                <!-- Slides -->
-                @foreach($gallery as $text => $mediaPath)
-                    <div class="flex-none snap-start">
-                        <figure class="inline-grid grid-cols-1 auto-rows-auto">
-                            <img class="card p-1 md:h-80 h-48 w-auto" src="{{ asset($mediaPath) }}" alt="{{ $text }}">
-                            <figcaption class="py-3 w-0 min-w-full text-sm text-ink/70">{{ $text }}</figcaption>
-                        </figure>
-                    </div>
-                @endforeach
-            </div>
+                <div class="overflow-x-auto flex space-x-4 flex-row w-full snap-x pb-2">
+                    <!-- Slides -->
+                    @foreach($gallery as $text => $mediaPath)
+                        <div class="flex-none snap-start">
+                            <figure class="inline-grid grid-cols-1 auto-rows-auto">
+                                <img class="card p-1 md:h-80 h-48 w-auto" src="{{ asset($mediaPath) }}" alt="{{ $text }}">
+                                <figcaption class="py-3 w-0 min-w-full text-sm text-ink/70">{{ $text }}</figcaption>
+                            </figure>
+                        </div>
+                    @endforeach
+                </div>
 
-            <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
+                <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
+            @else
+                {{-- No media yet: one quiet invitation instead of an empty gallery strip. --}}
+                <div class="mt-6 border-2 border-dashed border-edge rounded p-5 flex flex-wrap items-center justify-between gap-4">
+                    <p class="m-0 text-sm text-ink/70">No photos of {{ Fallback::field($main->tags, 'name') }} yet — add the first one.</p>
+                    <x-github-button :href="$newPlaceUrl ?? $githubUrl">Add media</x-github-button>
+                </div>
+            @endif
 
             <h2 class="section-title">Location(s)</h2>
 
             @if(count($branches) > 1)
+                @php
+                    // Branch names mostly repeat the place name ("Commercial Bank of
+                    // Ethiopia (Furi Branch)" x70), so the index shows only what
+                    // differs: when a branch name starts with the place name
+                    // (case-insensitively, to survive OSM capitalisation drift),
+                    // show just the remainder. Grouped by sub-area.
+                    $navMainName = Fallback::field($main->tags, 'name') ?? '';
+                    $navGroups = [];
+                    foreach ($branches as $navBranch) {
+                        $navName = Fallback::field($navBranch->tags, 'name') ?? '';
+                        $navLabel = $navName;
+                        if ($navMainName !== '' && mb_stripos($navName, $navMainName) === 0) {
+                            $navLabel = mb_substr($navName, mb_strlen($navMainName));
+                            // Drop the wrapping "(...)"/dashes the remainder was set off with.
+                            $navLabel = preg_replace('/^[\s()\-–—]+|[\s()\-–—]+$/u', '', $navLabel);
+                        }
+                        $navGroups[$navBranch->area?->getFullName() ?? ''][] = [
+                            'key' => $navBranch->idInfo->getKey(),
+                            'label' => $navLabel !== '' ? $navLabel : $navName,
+                        ];
+                    }
+                    ksort($navGroups);
+                @endphp
                 <nav class="card p-5 my-6">
-                    <p class="m-0 mb-3 font-display font-bold text-sm uppercase tracking-wider text-ink/70">{{ count($branches) }} locations</p>
-                    <ul class="columns-1 sm:columns-2 lg:columns-3 gap-6 m-0 list-none">
-                        @foreach($branches as $branch)
-                            <li class="m-0 ml-0 mb-2 break-inside-avoid">
-                                <a href="#{{ $branch->idInfo->getKey() }}" class="text-sm">{{ Fallback::field($branch->tags, 'name') }}</a>
-                                @if($branch->area)<span class="block text-xs text-ink/60">{{ $branch->area->getFullName() }}</span>@endif
-                            </li>
-                        @endforeach
-                    </ul>
+                    <p class="m-0 font-display font-bold text-sm uppercase tracking-wider tabular-nums text-ink/70">{{ count($branches) }} locations</p>
+                    @foreach($navGroups as $navArea => $navEntries)
+                        @if($navArea !== '' && count($navGroups) > 1)
+                            <p class="m-0 mt-4 mb-1 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-ink/60">
+                                <span class="inline-block h-2 w-2 rounded-sm bg-accent" aria-hidden="true"></span>{{ $navArea }}
+                            </p>
+                        @elseif($navArea !== '')
+                            <p class="m-0 mt-1 text-xs text-ink/60">{{ $navArea }}</p>
+                        @endif
+                        <ul class="columns-1 sm:columns-2 lg:columns-3 gap-6 m-0 mt-2 list-none">
+                            @foreach($navEntries as $navEntry)
+                                <li class="m-0 ml-0 mb-1.5 break-inside-avoid">
+                                    <a href="#{{ $navEntry['key'] }}" class="text-sm">{{ $navEntry['label'] }}</a>
+                                </li>
+                            @endforeach
+                        </ul>
+                    @endforeach
                 </nav>
             @endif
 
             @foreach($branches as $branch)
                 <section id="{{ $branch->idInfo->getKey() }}" class="card p-5 my-6 scroll-mt-4">
-                    <h3 class="inline-block bg-accent-soft border-2 border-edge rounded px-3 py-1 m-0">{{ Fallback::field($branch->tags, 'name') }}</h3>
+                    @if(count($branches) > 1 || Fallback::field($branch->tags, 'name') !== Fallback::field($main->tags, 'name'))
+                        <h3 class="inline-block m-0 pb-1 border-b-4 border-accent/70">{{ Fallback::field($branch->tags, 'name') }}</h3>
+                    @endif
                     <p class="text-sm text-ink/70 mt-2">
                         @if($branch->area !== null)
                             <strong><a
@@ -118,7 +193,7 @@
                     @php
                         $mainUrl = $branch->idInfo->getOsmUrl(url('/'))
                     @endphp
-                    <a href="{{ $mainUrl }}" target="_blank" class="card inline-block overflow-hidden mt-4">
+                    <a href="{{ $mainUrl }}" target="_blank" class="card map-frame inline-block overflow-hidden mt-4">
                         <img class="max-w-full h-auto m-0" width="699" height="300"
                              loading="lazy" decoding="async"
                              alt="Map showing the address of {{  Fallback::field($branch->tags, 'name') }} in three different zoom levels."
