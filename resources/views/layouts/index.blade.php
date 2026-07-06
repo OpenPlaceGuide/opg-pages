@@ -23,7 +23,10 @@
 <header class="border-b-2 border-edge">
     <div class="max-w-5xl mx-auto px-5 py-3 flex items-center justify-between gap-4">
         <a href="{{ url('/') }}" class="plate px-3 py-1 text-lg leading-tight">{{ config('app.name') }}</a>
-        <p class="text-sm text-ink/70 m-0 hidden sm:block">Places &amp; businesses on the map</p>
+        <div class="flex items-center gap-4">
+            <p class="text-sm text-ink/70 m-0 hidden sm:block">Places &amp; businesses on the map</p>
+            @yield('headerShare')
+        </div>
     </div>
 </header>
 <main class="flex-1 pb-16">

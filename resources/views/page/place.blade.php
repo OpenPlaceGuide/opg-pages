@@ -1,7 +1,21 @@
 @extends('layouts.index')
 
+@php
+    $shareName = Fallback::field($main->tags, 'name');
+    // Only overlay a real business logo (featured places) in the QR centre;
+    // type-logo fallbacks are generic and not worth it.
+    $shareLogo = ($place && $place->logo) ? asset($logoUrl) : null;
+@endphp
+
 @section('pageTitle')
     {{ Fallback::field($main->tags, 'name') }} - {{ Fallback::resolve($type->name) }} in {{ $branches[0]?->area?->getFullName() ?? '...' }}
+@endsection
+
+{{-- Page-level share lives in the site header. It shares the page URL only:
+     coordinates and "open in" links are per-location and live on each branch's
+     own share button below, since a place can have many branches. --}}
+@section('headerShare')
+    <x-share :title="$shareName" :logo="$shareLogo" />
 @endsection
 
 @section('content')
@@ -46,29 +60,19 @@
                     @endif
                 </p>
 
-                {{-- Quick actions, from OSM tags. The phone/website/directions
-                     actions only make sense for single-location places: with many
-                     branches they would ambiguously point at one of them. The Share
-                     action is always offered; its coordinates block is likewise only
-                     added for single-location places. --}}
-                @php
-                    $isSingle = count($branches) === 1;
-                    $shareName = Fallback::field($main->tags, 'name');
-                    // Only overlay a real business logo (featured places); type-logo
-                    // fallbacks are generic and not worth putting in the QR centre.
-                    $shareLogo = ($place && $place->logo) ? asset($logoUrl) : null;
-                @endphp
-                <p class="mt-4 flex flex-wrap items-center gap-2">
-                    @if($isSingle)
-                        @php
-                            $qaTags = $branches[0]->tags;
-                            // OSM multi-value phone tags use ';' but ',' occurs in the wild
-                            // too. Offer every number: lines are often broken in Ethiopia,
-                            // so callers need the alternatives.
-                            $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
-                            $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
-                            $qaWebsite = $qaTags->website ?? $qaTags->{'contact:website'} ?? null;
-                        @endphp
+                {{-- Quick actions, from OSM tags. Only for single-location places:
+                     with many branches these would ambiguously point at one of them. --}}
+                @if(count($branches) === 1)
+                    @php
+                        $qaTags = $branches[0]->tags;
+                        // OSM multi-value phone tags use ';' but ',' occurs in the wild
+                        // too. Offer every number: lines are often broken in Ethiopia,
+                        // so callers need the alternatives.
+                        $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
+                        $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
+                        $qaWebsite = $qaTags->website ?? $qaTags->{'contact:website'} ?? null;
+                    @endphp
+                    <p class="mt-4 flex flex-wrap items-center gap-2">
                         @foreach($qaPhones as $qaPhone)
                             <a href="tel:{{ preg_replace('/[^+0-9]/', '', $qaPhone) }}" class="btn-primary">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
@@ -87,14 +91,8 @@
                             <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="3 11 22 2 13 21 11 13 3 11"/></svg>
                             Directions
                         </a>
-                    @endif
-                    <x-share
-                        :title="$shareName"
-                        :logo="$shareLogo"
-                        :lat="$isSingle ? $main->lat : null"
-                        :lon="$isSingle ? $main->lon : null"
-                    />
-                </p>
+                    </p>
+                @endif
             </div>
         </div>
     </header>
@@ -215,11 +213,27 @@
                              alt="Map showing the address of {{  Fallback::field($branch->tags, 'name') }} in three different zoom levels."
                              src="{{ route('tripleZoomMap', ['lat' => $branch->lat, 'lon' => $branch->lon, 'slug' => \App\Services\Language::slug(Fallback::field($branch->tags, 'name', language: 'en')), 'text' => Fallback::field($branch->tags, 'name')]) }}">
                     </a>
-                    <ul class="flex gap-4 mt-2 text-sm list-none">
-                        <li class="m-0 ml-0"><a href="{{ $branch->idInfo->getOsmUrl() }}" target="_blank">OSM Info</a></li>
-                        <li class="m-0 ml-0"><a href="{{ $mainUrl }}" target="_blank">Main page {{ config('app.name') }}</a>
-                        </li>
-                    </ul>
+                    {{-- Actions for this location, below its map. The per-location
+                         share links to this exact branch (page URL + #branch anchor)
+                         and carries this branch's own coordinates, plus code and
+                         "open in" links. --}}
+                    <div class="flex flex-wrap items-center gap-2 mt-3">
+                        <a href="{{ $branch->idInfo->getOsmUrl() }}" target="_blank" rel="noopener" class="btn-quiet">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+                            OSM Info
+                        </a>
+                        <a href="{{ $mainUrl }}" target="_blank" rel="noopener" class="btn-quiet">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="1 6 1 22 8 18 16 22 23 18 23 2 16 6 8 2 1 6"/><line x1="8" y1="2" x2="8" y2="18"/><line x1="16" y1="6" x2="16" y2="22"/></svg>
+                            Main page {{ config('app.name') }}
+                        </a>
+                        <x-share
+                            :title="Fallback::field($branch->tags, 'name')"
+                            :logo="$shareLogo"
+                            :url="url()->current() . '#' . $branch->idInfo->getKey()"
+                            :lat="$branch->lat"
+                            :lon="$branch->lon"
+                        />
+                    </div>
 
                     {{-- Mapillary street view images for this branch. The heading and a
                          skeleton are rendered immediately so users see what is loading and the

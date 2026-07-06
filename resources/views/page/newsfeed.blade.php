@@ -4,6 +4,10 @@
     What's new in {{ Fallback::resolve($area->names) ?: $area->getFullName() }}
 @endsection
 
+@section('headerShare')
+    <x-share :title="'What\'s new in ' . (Fallback::resolve($area->names) ?: $area->getFullName())" />
+@endsection
+
 @section('content')
     <header class="px-5 mt-10 max-w-5xl mx-auto">
         <h1 class="plate px-5 py-3 text-2xl md:text-3xl">
@@ -12,10 +16,6 @@
         <p class="mt-4 max-w-prose text-ink/70">
             Places on the map that were added or edited by
             <a href="https://www.openstreetmap.org">OpenStreetMap</a> contributors in the last {{ $days }} days (up to {{ $limit }} places).
-        </p>
-
-        <p class="mt-5">
-            <x-share :title="'What\'s new in ' . (Fallback::resolve($area->names) ?: $area->getFullName())" />
         </p>
     </header>
 
