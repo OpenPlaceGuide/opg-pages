@@ -79,8 +79,10 @@
                 <div class="relative inline-block rounded bg-white p-3">
                     <canvas x-ref="qr" class="block h-40 w-40" aria-label="QR code linking to this page"></canvas>
                     @if($logo)
+                        {{-- Kept small (~15% of the 160px QR) so error-correction
+                             level H still reads reliably around it. --}}
                         <img src="{{ $logo }}" alt=""
-                             class="absolute left-1/2 top-1/2 h-1/4 w-1/4 -translate-x-1/2 -translate-y-1/2 rounded bg-white object-contain p-0.5">
+                             class="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded bg-white object-contain p-0.5">
                     @endif
                 </div>
             </div>
