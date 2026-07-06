@@ -4,6 +4,10 @@
     Places in {{ $area->getFullName() }}
 @endsection
 
+@section('headerShare')
+    <x-share :title="$area->getFullName()" />
+@endsection
+
 @section('content')
     <header class="px-5 mt-10 max-w-5xl mx-auto">
         @if($parentArea)
@@ -22,10 +26,6 @@
         @if($description)
             <p class="mt-5 max-w-prose text-lg">{{ $description }}</p>
         @endif
-
-        <p class="mt-5">
-            <x-share :title="$area->getFullName()" />
-        </p>
     </header>
 
     <!-- Mapillary Images Section -->

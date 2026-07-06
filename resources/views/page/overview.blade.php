@@ -4,6 +4,10 @@
     {{ ucfirst(Fallback::resolve($type->plural)) }} in {{ Fallback::resolve($area->names) ?: $area->getFullName() }}
 @endsection
 
+@section('headerShare')
+    <x-share :title="ucfirst(Fallback::resolve($type->plural)) . ' in ' . ($area->getFullName())" />
+@endsection
+
 @section('content')
     <header class="px-5 mt-10 max-w-5xl mx-auto">
         @if($parentArea)
