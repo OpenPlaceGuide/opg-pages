@@ -39,6 +39,14 @@ class RoutesTest extends TestCase
         $response->assertHeader('Cache-Control', 'max-age=300, public');
     }
 
+    public function testSitemapContainsNewsfeeds(): void
+    {
+        $response = $this->get('/sitemap.xml');
+        $response->assertStatus(200);
+        $response->assertSee('/nefas-silk/newsfeed</loc>', false);
+        $response->assertSee('<changefreq>always</changefreq>', false);
+    }
+
     public function testAreaPage(): void
     {
         $response = $this->get('/nefas-silk');

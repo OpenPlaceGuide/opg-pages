@@ -20,22 +20,31 @@ class SitemapController extends BaseController
 
     public function index()
     {
-        $urls = array_merge(
+        $entries = array_map(fn (string $url) => ['loc' => $url], array_merge(
             $this->getAreaUrls(),
             $this->getPlaceUrls(),
             $this->getTypeUrls()
-        );
+        ));
 
-        echo $this->generateSitemap($urls);
+        // The newsfeeds are refreshed every few minutes; "always" is the
+        // sitemap protocol's highest change frequency.
+        foreach ($this->getNewsfeedUrls() as $url) {
+            $entries[] = ['loc' => $url, 'changefreq' => 'always'];
+        }
+
+        return response($this->generateSitemap($entries), 200, ['Content-Type' => 'application/xml']);
     }
 
-    private function generateSitemap($urls) {
+    private function generateSitemap($entries) {
         $xml = new SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?><urlset></urlset>');
         $xml->addAttribute('xmlns', 'http://www.sitemaps.org/schemas/sitemap/0.9');
 
-        foreach ($urls as $url) {
+        foreach ($entries as $entry) {
             $urlElement = $xml->addChild('url');
-            $urlElement->addChild('loc', htmlspecialchars($url));
+            $urlElement->addChild('loc', htmlspecialchars($entry['loc']));
+            if (isset($entry['changefreq'])) {
+                $urlElement->addChild('changefreq', $entry['changefreq']);
+            }
         }
 
         $dom = new DOMDocument('1.0', 'UTF-8');
@@ -61,6 +70,19 @@ class SitemapController extends BaseController
         sort($urls);
         $urls = array_unique($urls);
         return $urls;
+    }
+
+    private function getNewsfeedUrls()
+    {
+        $urls = [];
+        foreach ($this->repository->listAreas() as $area) {
+            if ($area->idInfo === null) {
+                continue;
+            }
+            $urls[] = route('newsfeed.' . App::currentLocale(), ['areaSlug' => $area->slug]);
+        }
+        sort($urls);
+        return array_unique($urls);
     }
 
     private function getPlaceUrls()
