@@ -184,6 +184,7 @@ YAML;
             ->with('area', $area)
             ->with('places', $places)
             ->with('days', Overpass::RECENT_CHANGES_DAYS)
+            ->with('limit', Overpass::RECENT_CHANGES_LIMIT)
             ->with('color', $area->color);
     }
 
