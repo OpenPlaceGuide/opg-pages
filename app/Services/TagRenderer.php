@@ -22,6 +22,29 @@ class TagRenderer
         return (object)$keyedArray;
     }
 
+    /**
+     * OSM website/contact:website values are user-controlled, so rendering
+     * them into an href unfiltered would allow javascript:/data: links.
+     * Allow only http(s); scheme-less values (common in OSM) default to https.
+     */
+    public static function safeWebsiteUrl(?string $url): ?string
+    {
+        $url = trim((string) $url);
+        if ($url === '') {
+            return null;
+        }
+
+        $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+        if (in_array($scheme, ['http', 'https'], true)) {
+            return $url;
+        }
+        if ($scheme !== '') {
+            return null;
+        }
+
+        return 'https://' . ltrim($url, '/');
+    }
+
     // phone: as is
     // atm=yes taginfo
     // name: print
