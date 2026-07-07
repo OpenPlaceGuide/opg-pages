@@ -17,6 +17,13 @@
     @if(isset($schemaMarkup))
         {!! (new \App\Services\SchemaOrg(\App\Services\Repository::getInstance()))->renderJsonLd($schemaMarkup) !!}
     @endif
+    {{-- The page's data version (its oldest storedAt, also shown in the
+         footer). lazyload.js appends it as `v` to the fragment URLs so the
+         fragments are never staler than this page (see Cache::remember).
+         Final here because Blade renders the layout after the content. --}}
+    @if($dataVersion = \App\Services\Cache::getOldestStoredAt())
+        <meta name="opg-data-version" content="{{ $dataVersion }}">
+    @endif
 </head>
 <body class="bg-paper text-ink font-sans antialiased min-h-screen flex flex-col">
 <div class="h-1.5 bg-accent" aria-hidden="true"></div>

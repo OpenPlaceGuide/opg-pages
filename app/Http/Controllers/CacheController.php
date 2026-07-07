@@ -12,11 +12,12 @@ use Illuminate\Support\Str;
  *
  * The flush itself happens lazily during the redirected page render: the
  * `refresh-cache` query param makes App\Services\Cache::remember() forget the
- * keys the page (and its lazy Mapillary/Mangrove fragments) touch. Because the
- * data cache is shared, the flush reaches every user: their stored copies
- * revalidate on the next load and pick up the fresh content (see
- * App\Services\Cache::getCacheMiddleware). The param's unique value gives the
- * flushing visitor an unconditional fresh response right away.
+ * keys that page render touches, giving it a fresh data version. The lazy
+ * Mapillary/Mangrove fragments follow via that version in their URLs (see
+ * Cache::remember), and because the data cache is shared the flush reaches
+ * every user: their stored page copies revalidate on the next load (see
+ * Cache::getCacheMiddleware). The param's unique value gives the flushing
+ * visitor an unconditional fresh response right away.
  */
 class CacheController extends Controller
 {

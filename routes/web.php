@@ -25,8 +25,9 @@ Route::post('/refresh-cache', [CacheController::class, 'refresh'])
     ->name('refreshCache');
 
 // Lazy-loaded, per-branch fragments (Mapillary images / Mangrove reviews).
-// Same public revalidation headers as the pages (see Cache::getCacheMiddleware).
-Route::middleware(\App\Services\Cache::getCacheMiddleware())
+// Cached without revalidation: their URLs are versioned by the embedding
+// page's data version (see Cache::getFragmentCacheMiddleware).
+Route::middleware(\App\Services\Cache::getFragmentCacheMiddleware())
     ->group(function() {
         Route::get('/api/branch/{lat}/{lon}/mapillary', [\App\Http\Controllers\BranchDataController::class, 'mapillary'])
             ->name('branch.mapillary');

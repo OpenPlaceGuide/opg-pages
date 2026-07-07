@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Log;
  * Serves per-branch Mapillary images and Mangrove reviews as small HTML
  * fragments that are lazy-loaded by the browser when a branch scrolls into
  * view. This keeps the main place page from making dozens of upstream API
- * calls up front. The fragment responses carry the same public cache headers
- * as the pages themselves (see routes/web.php), so they are full-page cached.
+ * calls up front. The fragment responses are cached long-term without
+ * revalidation; their URLs carry the embedding page's data version, which
+ * both busts the browser cache and makes the data cache refetch anything
+ * older (see Cache::getFragmentCacheMiddleware and Cache::remember).
  */
 class BranchDataController extends Controller
 {
