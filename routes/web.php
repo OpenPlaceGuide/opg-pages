@@ -25,7 +25,7 @@ Route::post('/refresh-cache', [CacheController::class, 'refresh'])
     ->name('refreshCache');
 
 // Lazy-loaded, per-branch fragments (Mapillary images / Mangrove reviews).
-// Same public cache headers as the pages, so responses are full-page cached.
+// Same public revalidation headers as the pages (see Cache::getCacheMiddleware).
 Route::middleware(\App\Services\Cache::getCacheMiddleware())
     ->group(function() {
         Route::get('/api/branch/{lat}/{lon}/mapillary', [\App\Http\Controllers\BranchDataController::class, 'mapillary'])
@@ -45,12 +45,10 @@ $routes = function($locale) {
         ->name('page' . '.' . $locale);
 
     // Must be registered before the catch-all /{areaSlug}/{typeSlug} route.
-    // Cached for 5 minutes instead of the group's 24 hours so new OSM edits
-    // show up quickly without hitting Overpass on every view.
+    // Stays fresh without hitting Overpass on every view: its data cache is
+    // only five minutes (see Overpass::fetchRecentChanges).
     Route::get('/{areaSlug}/newsfeed', [\App\Http\Controllers\PageController::class, 'newsfeed'])
         ->where('areaSlug', '[a-z-]{3,}')
-        ->withoutMiddleware(\App\Services\Cache::getCacheMiddleware())
-        ->middleware(\App\Services\Cache::getCacheMiddleware(\App\Services\Cache::SHORT_LIFETIME))
         ->name('newsfeed' . '.' . $locale);
 
     Route::get('/{areaSlug}/{typeSlug}', [\App\Http\Controllers\PageController::class, 'typePage'])

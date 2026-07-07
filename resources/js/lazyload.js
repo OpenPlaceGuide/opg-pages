@@ -29,7 +29,8 @@ async function loadFragment(el) {
     delete el.dataset.lazySrc;
 
     // Propagate the cache flush to the fragment endpoint. The unique value also
-    // busts the browser's own HTTP cache of the fragment (see routes/web.php).
+    // guarantees an unconditional fresh response instead of a revalidated 304
+    // (see App\Services\Cache::getCacheMiddleware).
     const url = new URL(src, window.location.origin);
     if (refreshCacheBuster !== null) {
         url.searchParams.set(REFRESH_PARAM, refreshCacheBuster);

@@ -36,7 +36,24 @@ class RoutesTest extends TestCase
     {
         $response = $this->get('/nefas-silk/newsfeed');
         $response->assertStatus(200);
-        $response->assertHeader('Cache-Control', 'max-age=300, public');
+        $response->assertHeader('Cache-Control', 'no-cache, public');
+    }
+
+    /**
+     * Pages must revalidate on every use instead of being served stale from
+     * HTTP caches, so a "Refresh data" flush reaches other users too (#65):
+     * unchanged content answers 304, flushed content a fresh 200.
+     */
+    public function testPagesRevalidateWithEtag(): void
+    {
+        $response = $this->get('/nefas-silk');
+        $response->assertStatus(200);
+        $response->assertHeader('Cache-Control', 'no-cache, public');
+        $etag = $response->headers->get('ETag');
+        $this->assertNotNull($etag);
+
+        $revalidation = $this->get('/nefas-silk', ['If-None-Match' => $etag]);
+        $revalidation->assertStatus(304);
     }
 
     public function testSitemapContainsNewsfeeds(): void
