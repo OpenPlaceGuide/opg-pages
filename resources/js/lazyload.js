@@ -6,20 +6,24 @@
  * API requests on initial page load for places with many branches.
  */
 
-// When the page was opened via the footer "Refresh data" button it carries a
-// `refresh-cache` param. Capture it once, before we scrub it from the address
-// bar, so the same flush is propagated to the lazy fragment requests below —
-// otherwise their Mapillary/Mangrove data (and the browser's HTTP cache of it)
-// would stay stale.
+// The page was opened via the footer "Refresh data" button when it carries a
+// `refresh-cache` param; scrub it so it isn't bookmarked or shared. The flush
+// itself already happened server-side while this page was rendered.
 const REFRESH_PARAM = 'refresh-cache';
-const refreshCacheBuster = new URLSearchParams(window.location.search).get(REFRESH_PARAM);
 
 function scrubRefreshParam() {
-    if (refreshCacheBuster === null) return;
     const url = new URL(window.location.href);
+    if (!url.searchParams.has(REFRESH_PARAM)) return;
     url.searchParams.delete(REFRESH_PARAM);
     window.history.replaceState(window.history.state, '', url.toString());
 }
+
+// The page's data version (its oldest storedAt, see the layout's meta tag).
+// Appended to the fragment URLs as `v`: it versions the browser's HTTP cache
+// of the long-max-age fragment responses, and the server refetches fragment
+// data older than this page (see App\Services\Cache::remember) — which is
+// also how a "Refresh data" flush reaches the fragments.
+const dataVersion = document.querySelector('meta[name="opg-data-version"]')?.content;
 
 async function loadFragment(el) {
     const src = el.dataset.lazySrc;
@@ -28,12 +32,9 @@ async function loadFragment(el) {
     // Mark as loading so it is never observed/loaded twice.
     delete el.dataset.lazySrc;
 
-    // Propagate the cache flush to the fragment endpoint. The unique value also
-    // guarantees an unconditional fresh response instead of a revalidated 304
-    // (see App\Services\Cache::getCacheMiddleware).
     const url = new URL(src, window.location.origin);
-    if (refreshCacheBuster !== null) {
-        url.searchParams.set(REFRESH_PARAM, refreshCacheBuster);
+    if (dataVersion) {
+        url.searchParams.set('v', dataVersion);
     }
 
     try {
