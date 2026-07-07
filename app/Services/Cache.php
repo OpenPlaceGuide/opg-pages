@@ -16,9 +16,19 @@ class Cache
      */
     private static ?int $oldestStoredAt = null;
 
-    public static function getCacheMiddleware(int $lifetime = self::LIFETIME)
+    /**
+     * HTTP caching for pages and fragments: any cache (browser or shared) may
+     * store the response but must revalidate it on every use. While the
+     * server-side data cache is unchanged that revalidation is a cheap 304
+     * (the ETag is derived from the rendered content, which only changes when
+     * the data does); once anyone flushes it via the "Refresh data" button,
+     * every other user picks up the fresh content on their next page load
+     * instead of after a fixed max-age. The upstream APIs stay protected by
+     * the server-side data cache (LIFETIME / SHORT_LIFETIME) either way.
+     */
+    public static function getCacheMiddleware(): string
     {
-        return 'cache.headers:public;max_age=' . $lifetime;
+        return 'cache.headers:public;no_cache;etag';
     }
 
     public static function remember(string $key, \Closure $callback, int $lifetime = self::LIFETIME): mixed
@@ -60,9 +70,11 @@ class Cache
      * A flush is requested either by a desktop hard reload (browsers send
      * `Cache-Control: no-cache` on Ctrl+F5, which mobile browsers can't) or by
      * the `refresh-cache` query param behind the footer "Refresh data" button.
-     * The param doubles as a cache-buster so the browser's own HTTP cache
-     * (max_age from getCacheMiddleware) is bypassed for the page and its
-     * lazy-loaded Mapillary/Mangrove fragments alike.
+     * The param's unique value also guarantees the flushing visitor an
+     * unconditional fresh response (no stored entry, so no 304), for the page
+     * and its lazy-loaded Mapillary/Mangrove fragments alike; everyone else
+     * gets the refreshed data when their cached copy next revalidates against
+     * the flushed data cache (see getCacheMiddleware).
      */
     public static function flushRequested(): bool
     {
