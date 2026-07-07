@@ -106,11 +106,18 @@
                                 @foreach($review['images'] as $image)
                                     <div class="flex-none">
                                         <a href="{{ $image['url'] }}" target="_blank" rel="noopener" class="block hover:opacity-90 transition-opacity">
-                                            <img class="card p-1 md:h-80 h-48 w-auto cursor-pointer"
-                                                 src="{{ $image['url'] }}"
-                                                 alt="{{ $image['alt'] }}"
-                                                 loading="lazy"
-                                                 title="Click to view full resolution">
+                                            {{-- While the image loads the browser doesn't know its width,
+                                                 so without a placeholder ratio the frame collapses to a
+                                                 sliver. `aspect-ratio: auto 4/3` holds a 4:3 skeleton until
+                                                 the photo arrives, then defers to its real, uncropped ratio. --}}
+                                            <span class="relative block w-fit card p-1">
+                                                <span class="absolute inset-1 rounded-sm bg-soft animate-pulse" aria-hidden="true"></span>
+                                                <img class="relative h-48 md:h-80 w-auto aspect-[auto_4/3] rounded-sm cursor-pointer"
+                                                     src="{{ $image['url'] }}"
+                                                     alt="{{ $image['alt'] }}"
+                                                     loading="lazy"
+                                                     title="Click to view full resolution">
+                                            </span>
                                         </a>
                                     </div>
                                 @endforeach

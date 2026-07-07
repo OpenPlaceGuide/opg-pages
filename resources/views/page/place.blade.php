@@ -236,21 +236,28 @@
                     </div>
 
                     {{-- Mapillary street view images for this branch. The heading and a
-                         skeleton are rendered immediately so users see what is loading and the
-                         layout does not shift; the gallery itself is lazy-loaded on scroll and
-                         replaces the skeleton. Empty branches are collapsed by the lazy loader.
-                         Skeleton tiles use the same h-48/md:h-80 aspect-video size as the real
-                         images so the swap does not move anything. --}}
+                         skeleton are rendered immediately so users see what is loading; the
+                         gallery itself is lazy-loaded on scroll and replaces the skeleton.
+                         Empty branches are collapsed by the lazy loader. The skeleton mirrors
+                         the rendered gallery markup (heading, card-framed aspect-video tiles
+                         with a caption line, contribute button — see x-mapillary-gallery) so
+                         the content around it does not move on the swap. --}}
                     <div class="mt-6 min-h-[20rem] md:min-h-[28rem]" data-lazy-src="{{ route('branch.mapillary', ['lat' => $branch->lat, 'lon' => $branch->lon]) }}">
-                        <h2 class="text-xl font-bold mb-4">Community Street View Images</h2>
+                        <h2 class="section-title mb-4">Community Street View Images</h2>
                         <div class="animate-pulse" aria-hidden="true">
-                            <div class="flex space-x-4 w-full overflow-hidden mb-6">
-                                <div class="flex-none rounded-lg bg-soft h-48 md:h-80 aspect-video"></div>
-                                <div class="flex-none rounded-lg bg-soft h-48 md:h-80 aspect-video"></div>
-                                <div class="flex-none rounded-lg bg-soft h-48 md:h-80 aspect-video"></div>
+                            <div class="flex space-x-4 w-full overflow-hidden mb-6 pb-2">
+                                @foreach(range(1, 3) as $skeletonTile)
+                                    <div class="flex-none">
+                                        <div class="card p-1 h-48 md:h-80 aspect-video">
+                                            <div class="h-full w-full rounded-sm bg-soft"></div>
+                                        </div>
+                                        <div class="py-3">
+                                            <div class="h-5 w-40 bg-soft rounded"></div>
+                                        </div>
+                                    </div>
+                                @endforeach
                             </div>
-                            <div class="h-4 w-48 bg-soft rounded mb-4"></div>
-                            <div class="h-8 w-40 bg-soft rounded"></div>
+                            <div class="mt-2 h-10 w-44 bg-soft rounded-full"></div>
                         </div>
                     </div>
 

@@ -15,10 +15,14 @@
                 <div class="flex-none snap-start">
                     <figure class="inline-grid grid-cols-1 auto-rows-auto">
                         <a href="{{ $image['mapillary_url'] }}" target="_blank" rel="noopener">
-                            <img class="card p-1 md:h-80 h-48 w-auto aspect-video object-cover"
-                                 src="{{ $image['large_thumbnail_url'] }}"
-                                 alt="Street view image{{ $locationName ? ' from ' . $locationName : ' from Mapillary' }}"
-                                 loading="lazy">
+                            {{-- Skeleton pulses behind the photo until it has loaded. --}}
+                            <span class="relative block card p-1 h-48 md:h-80 aspect-video">
+                                <span class="absolute inset-1 rounded-sm bg-soft animate-pulse" aria-hidden="true"></span>
+                                <img class="relative h-full w-full object-cover rounded-sm"
+                                     src="{{ $image['large_thumbnail_url'] }}"
+                                     alt="Street view image{{ $locationName ? ' from ' . $locationName : ' from Mapillary' }}"
+                                     loading="lazy">
+                            </span>
                         </a>
                         <figcaption class="py-3 w-0 min-w-full text-sm text-ink/70">
                             <div>
