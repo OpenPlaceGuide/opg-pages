@@ -45,6 +45,37 @@ class TagRenderer
         return 'https://' . ltrim($url, '/');
     }
 
+    /**
+     * Build a profile link for a social-media contact tag. OSM values are
+     * either a bare username (the common case in Ethiopia, e.g. "_yenuyabi")
+     * or a full profile URL. Returns a safe http(s) URL, or null if empty.
+     */
+    public static function socialUrl(string $platform, ?string $value): ?string
+    {
+        $value = trim((string) $value);
+        if ($value === '') {
+            return null;
+        }
+
+        // Already a URL, or a scheme-less path/domain (e.g. "tiktok.com/@x"):
+        // reuse the website sanitiser, which rejects javascript:/data: links
+        // and defaults scheme-less values to https.
+        if (preg_match('#^https?://#i', $value) || str_contains($value, '/')) {
+            return self::safeWebsiteUrl($value);
+        }
+
+        $handle = ltrim($value, '@');
+        if ($handle === '') {
+            return null;
+        }
+
+        return match ($platform) {
+            'tiktok' => 'https://www.tiktok.com/@' . rawurlencode($handle),
+            'instagram' => 'https://www.instagram.com/' . rawurlencode($handle),
+            default => null,
+        };
+    }
+
     // phone: as is
     // atm=yes taginfo
     // name: print
