@@ -11,7 +11,7 @@
     <section>
         <div class="px-5 py-2 max-w-3xl mx-auto">
             <p class="mt-4 text-ink/80">
-                We have this place in our directory, but its
+                We might have this place in our directory, but its
                 <a href="https://www.openstreetmap.org" target="_blank" rel="noopener">OpenStreetMap</a>
                 data isn't available from our data source yet. Places that were just
                 added or edited in OpenStreetMap can take a little while to appear here.
