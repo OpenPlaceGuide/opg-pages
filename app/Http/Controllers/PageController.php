@@ -46,6 +46,12 @@ class PageController extends Controller
         $place = $this->repository->getPlaceInfo($slug);
 
         $branchesInfo = $this->fetchOsmInfo($place->branches);
+        // The place is in our data but none of its OSM objects came back from
+        // Overpass - typically a place that was just added to OpenStreetMap and
+        // hasn't propagated yet. Offer a 404 with a "Refresh data" retry.
+        if (empty($branchesInfo)) {
+            return $this->notVisibleResponse($place->branches);
+        }
         $main = $branchesInfo[0];
         $type = Repository::getInstance()->resolveType($main);
 
@@ -91,7 +97,12 @@ class PageController extends Controller
             return redirect()->to($place->getUrl($idInfo));
         }
 
-        $main = $this->fetchOsmInfo([$idInfo])[0];
+        $branchesInfo = $this->fetchOsmInfo([$idInfo]);
+        // OSM object not (yet) visible in Overpass - offer a 404 with a retry.
+        if (empty($branchesInfo)) {
+            return $this->notVisibleResponse([$idInfo]);
+        }
+        $main = $branchesInfo[0];
 
         $newPlaceContent = <<<YAML
 osm:
@@ -224,6 +235,18 @@ YAML;
     private function fetchOsmInfo(array $places): array
     {
         return (new Overpass())->fetchOsmInfo($places, Repository::getInstance()->listLeafAreas());
+    }
+
+    /**
+     * 404 page shown when a place's OSM objects are not (yet) visible in
+     * Overpass. Links the objects and offers the "Refresh data" retry, since
+     * this is usually a just-mapped place waiting to propagate.
+     *
+     * @param array<OsmId> $osmIds
+     */
+    private function notVisibleResponse(array $osmIds): \Illuminate\Http\Response
+    {
+        return response()->view('page.not-visible', ['osmIds' => $osmIds], 404);
     }
 
     /**
