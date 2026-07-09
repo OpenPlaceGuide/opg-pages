@@ -70,9 +70,10 @@
 
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 mt-6">
                 @foreach($places as $place)
+                    @php($hasCustomLogo = \App\Services\Repository::getInstance()->isFeatured($place->idInfo) && \App\Services\Repository::getInstance()->resolvePlace($place->idInfo)?->getLogoUrl())
                     <a class="card px-4 py-3 flex items-center justify-between gap-3"
                        href="{{ \App\Services\Repository::getInstance()->getUrl($place) }}">
-                        @if (\App\Services\Repository::getInstance()->isFeatured($place->idInfo))
+                        @if ($hasCustomLogo)
                             <span class="relative flex h-8 w-8 shrink-0 overflow-hidden">
                                 <img
                                     class="aspect-square h-full w-full"
@@ -88,7 +89,7 @@
                             @endif
                         </div>
                         @php($logo = $type->getLogoUrl())
-                        @if($logo && !\App\Services\Repository::getInstance()->isFeatured($place->idInfo))
+                        @if($logo && !$hasCustomLogo)
                             <span class="relative flex h-8 w-8 shrink-0">
                                 <img
                                     class="aspect-square h-full w-full"
