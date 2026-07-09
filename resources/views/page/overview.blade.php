@@ -73,7 +73,7 @@
                     <a class="card px-4 py-3 flex items-center justify-between gap-3"
                        href="{{ \App\Services\Repository::getInstance()->getUrl($place) }}">
                         @if (\App\Services\Repository::getInstance()->isFeatured($place->idInfo))
-                            <span class="relative flex h-8 w-8 shrink-0 overflow-hidden rounded-full">
+                            <span class="relative flex h-8 w-8 shrink-0 overflow-hidden">
                                 <img
                                     class="aspect-square h-full w-full"
                                     alt="Business Logo"
