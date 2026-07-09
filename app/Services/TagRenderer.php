@@ -72,6 +72,7 @@ class TagRenderer
         return match ($platform) {
             'tiktok' => 'https://www.tiktok.com/@' . rawurlencode($handle),
             'instagram' => 'https://www.instagram.com/' . rawurlencode($handle),
+            'telegram' => 'https://t.me/' . rawurlencode($handle),
             default => null,
         };
     }

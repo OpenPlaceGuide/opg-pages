@@ -75,6 +75,7 @@
                         // but a full profile URL occurs too; socialUrl() handles both.
                         $qaTiktok = \App\Services\TagRenderer::socialUrl('tiktok', $qaTags->{'contact:tiktok'} ?? $qaTags->tiktok ?? null);
                         $qaInstagram = \App\Services\TagRenderer::socialUrl('instagram', $qaTags->{'contact:instagram'} ?? $qaTags->instagram ?? null);
+                        $qaTelegram = \App\Services\TagRenderer::socialUrl('telegram', $qaTags->{'contact:telegram'} ?? $qaTags->telegram ?? null);
                     @endphp
                     <p class="mt-4 flex flex-wrap items-center gap-2">
                         @foreach($qaPhones as $qaPhone)
@@ -99,6 +100,12 @@
                             <a href="{{ $qaInstagram }}" target="_blank" rel="noopener" class="btn-quiet">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                                 Instagram
+                            </a>
+                        @endif
+                        @if($qaTelegram)
+                            <a href="{{ $qaTelegram }}" target="_blank" rel="noopener" class="btn-quiet">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.94 4.4l-3.33 15.7c-.25 1.11-.91 1.38-1.84.86l-5.1-3.76-2.46 2.37c-.27.27-.5.5-1.02.5l.36-5.2 9.46-8.55c.41-.36-.09-.57-.64-.2L5.94 13.4l-5.03-1.57c-1.1-.34-1.12-1.09.23-1.62L20.5 2.9c.91-.34 1.71.2 1.44 1.5z"/></svg>
+                                Telegram
                             </a>
                         @endif
                         {{-- Links to the place's main map page (e.g. /node/12345): OsmApp has a
