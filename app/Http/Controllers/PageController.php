@@ -51,7 +51,8 @@ class PageController extends Controller
 
         $githubUrl = sprintf('https://github.com/OpenPlaceGuide/data/tree/main/places/%s/', $slug);
 
-        $logoUrl = $place->getLogoUrl();
+        // Fall back to the POI type's logo when the place has none of its own.
+        $logoUrl = $place->getLogoUrl() ?? $type->getLogoUrl();
 
         // Mapillary images and Mangrove reviews are lazy-loaded per branch via
         // the BranchDataController API (see routes/web.php), so they are not
