@@ -77,6 +77,89 @@ class TagRenderer
         };
     }
 
+    /**
+     * All phone numbers for a POI. OSM multi-value phone tags use ';' but ','
+     * occurs in the wild too. Lines are often broken in Ethiopia, so callers
+     * need every alternative.
+     *
+     * @return array<string>
+     */
+    public static function phones(object $tags): array
+    {
+        $raw = $tags->phone ?? $tags->{'contact:phone'} ?? '';
+        return array_values(array_filter(array_map('trim', preg_split('/[;,]/', (string) $raw))));
+    }
+
+    /**
+     * The (sanitised) website for a POI, from either the plain or contact: tag.
+     */
+    public static function websiteUrl(object $tags): ?string
+    {
+        return self::safeWebsiteUrl($tags->website ?? $tags->{'contact:website'} ?? null);
+    }
+
+    /**
+     * Business-wide social links for a set of POIs. Collects tiktok/instagram/
+     * telegram from every POI and keeps the first of each platform, so a chain
+     * shows one link per network rather than one per branch.
+     *
+     * @param iterable<object> $tagsList
+     * @return array<string,string> platform => URL
+     */
+    public static function socialLinks(iterable $tagsList): array
+    {
+        $links = [];
+        foreach ($tagsList as $tags) {
+            foreach (['tiktok', 'instagram', 'telegram'] as $platform) {
+                if (isset($links[$platform])) {
+                    continue;
+                }
+                $raw = $tags->{'contact:' . $platform} ?? $tags->{$platform} ?? null;
+                $url = self::socialUrl($platform, $raw);
+                if ($url !== null) {
+                    $links[$platform] = $url;
+                }
+            }
+        }
+        return $links;
+    }
+
+    /**
+     * Human-readable address parts from OSM addr:* tags plus level, in reading
+     * order (building name, street, unit, floor). These tags carry no taginfo
+     * wiki description, so they need explicit rendering.
+     *
+     * @return array<string>
+     */
+    public static function addressParts(object $tags): array
+    {
+        $get = static fn (string $key): string => trim((string) ($tags->$key ?? ''));
+
+        $parts = [];
+
+        if (($housename = $get('addr:housename')) !== '') {
+            $parts[] = $housename;
+        }
+
+        // Street line: "12 Main Street" — the house number prefixes the street.
+        $street = trim($get('addr:housenumber') . ' ' . $get('addr:street'));
+        if ($street !== '') {
+            $parts[] = $street;
+        }
+
+        if (($unit = $get('addr:unit')) !== '') {
+            $parts[] = 'Unit ' . $unit;
+        }
+
+        // addr:floor and level both describe the storey; prefer the addr namespace.
+        $floor = $get('addr:floor') !== '' ? $get('addr:floor') : $get('level');
+        if ($floor !== '') {
+            $parts[] = 'Level ' . $floor;
+        }
+
+        return $parts;
+    }
+
     // phone: as is
     // atm=yes taginfo
     // name: print

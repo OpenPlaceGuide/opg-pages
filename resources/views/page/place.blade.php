@@ -60,54 +60,46 @@
                     @endif
                 </p>
 
-                {{-- Quick actions, from OSM tags. Only for single-location places:
-                     with many branches these would ambiguously point at one of them. --}}
-                @if(count($branches) === 1)
-                    @php
-                        $qaTags = $branches[0]->tags;
-                        // OSM multi-value phone tags use ';' but ',' occurs in the wild
-                        // too. Offer every number: lines are often broken in Ethiopia,
-                        // so callers need the alternatives.
-                        $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
-                        $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
-                        $qaWebsite = \App\Services\TagRenderer::safeWebsiteUrl($qaTags->website ?? $qaTags->{'contact:website'} ?? null);
-                        // Social handles are usually stored as a bare username in Ethiopia,
-                        // but a full profile URL occurs too; socialUrl() handles both.
-                        $qaTiktok = \App\Services\TagRenderer::socialUrl('tiktok', $qaTags->{'contact:tiktok'} ?? $qaTags->tiktok ?? null);
-                        $qaInstagram = \App\Services\TagRenderer::socialUrl('instagram', $qaTags->{'contact:instagram'} ?? $qaTags->instagram ?? null);
-                        $qaTelegram = \App\Services\TagRenderer::socialUrl('telegram', $qaTags->{'contact:telegram'} ?? $qaTags->telegram ?? null);
-                    @endphp
+                {{-- Social handles are business-wide, so they stay at the top even for
+                     chains: collected across every branch and collapsed to one link per
+                     network. socialUrl() handles both bare usernames (common in Ethiopia)
+                     and full profile URLs. --}}
+                @php
+                    $socialLinks = \App\Services\TagRenderer::socialLinks(array_map(fn ($b) => $b->tags, $branches));
+                @endphp
+                @if(!empty($socialLinks))
                     <p class="mt-4 flex flex-wrap items-center gap-2">
-                        @foreach($qaPhones as $qaPhone)
-                            <a href="tel:{{ preg_replace('/[^+0-9]/', '', $qaPhone) }}" class="btn-primary">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-                                Call {{ $qaPhone }}
-                            </a>
-                        @endforeach
-                        @if($qaWebsite)
-                            <a href="{{ $qaWebsite }}" target="_blank" rel="noopener" class="btn-quiet">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
-                                Website
-                            </a>
-                        @endif
-                        @if($qaTiktok)
-                            <a href="{{ $qaTiktok }}" target="_blank" rel="noopener" class="btn-quiet">
+                        @isset($socialLinks['tiktok'])
+                            <a href="{{ $socialLinks['tiktok'] }}" target="_blank" rel="noopener" class="btn-quiet">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.53 1.5h3.02c.18 1.6.98 3.06 2.2 4.05a5.9 5.9 0 0 0 3.25 1.28v3.05a9 9 0 0 1-3.9-.9 9.4 9.4 0 0 1-1.53-.94l.02 6.63a6.63 6.63 0 1 1-5.7-6.57v3.24a3.4 3.4 0 1 0 2.42 3.26V1.5z"/></svg>
                                 TikTok
                             </a>
-                        @endif
-                        @if($qaInstagram)
-                            <a href="{{ $qaInstagram }}" target="_blank" rel="noopener" class="btn-quiet">
+                        @endisset
+                        @isset($socialLinks['instagram'])
+                            <a href="{{ $socialLinks['instagram'] }}" target="_blank" rel="noopener" class="btn-quiet">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
                                 Instagram
                             </a>
-                        @endif
-                        @if($qaTelegram)
-                            <a href="{{ $qaTelegram }}" target="_blank" rel="noopener" class="btn-quiet">
+                        @endisset
+                        @isset($socialLinks['telegram'])
+                            <a href="{{ $socialLinks['telegram'] }}" target="_blank" rel="noopener" class="btn-quiet">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.94 4.4l-3.33 15.7c-.25 1.11-.91 1.38-1.84.86l-5.1-3.76-2.46 2.37c-.27.27-.5.5-1.02.5l.36-5.2 9.46-8.55c.41-.36-.09-.57-.64-.2L5.94 13.4l-5.03-1.57c-1.1-.34-1.12-1.09.23-1.62L20.5 2.9c.91-.34 1.71.2 1.44 1.5z"/></svg>
                                 Telegram
                             </a>
-                        @endif
+                        @endisset
+                    </p>
+                @endif
+
+                {{-- Phone and website are per-location. With a single branch they live here
+                     at the top; with many, each branch may have its own number, so they
+                     move down into each location below. --}}
+                @if(count($branches) === 1)
+                    @php
+                        $qaPhones = \App\Services\TagRenderer::phones($branches[0]->tags);
+                        $qaWebsite = \App\Services\TagRenderer::websiteUrl($branches[0]->tags);
+                    @endphp
+                    <p class="mt-4 flex flex-wrap items-center gap-2">
+                        @include('partials.contact-actions', ['phones' => $qaPhones, 'website' => $qaWebsite])
                         {{-- Links to the place's main map page (e.g. /node/12345): OsmApp has a
                              directions button there but no deep link straight to directions. --}}
                         <a href="{{ $branches[0]->idInfo->getOsmUrl(url('/')) }}" target="_blank" rel="noopener" class="btn-quiet">
@@ -220,6 +212,32 @@
                             <strong>{{ ucfirst(Fallback::resolve($type->name)) }}</strong>
                         @endif
                     </p>
+
+                    {{-- Street address / building / unit / floor, from OSM addr:* + level.
+                         These tags carry no taginfo description, so they are formatted here. --}}
+                    @php
+                        $addressParts = \App\Services\TagRenderer::addressParts($branch->tags);
+                    @endphp
+                    @if(count($addressParts) > 0)
+                        <p class="mt-3 flex items-start gap-2 text-sm text-ink/80">
+                            <svg class="w-4 h-4 mt-0.5 shrink-0 text-ink/60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <span>{{ implode(' · ', $addressParts) }}</span>
+                        </p>
+                    @endif
+
+                    {{-- Phone/website live per-location for multi-branch places (each may
+                         have its own number); single-location places show them at the top. --}}
+                    @if(count($branches) > 1)
+                        @php
+                            $brPhones = \App\Services\TagRenderer::phones($branch->tags);
+                            $brWebsite = \App\Services\TagRenderer::websiteUrl($branch->tags);
+                        @endphp
+                        @if(count($brPhones) > 0 || $brWebsite)
+                            <p class="mt-3 flex flex-wrap items-center gap-2">
+                                @include('partials.contact-actions', ['phones' => $brPhones, 'website' => $brWebsite])
+                            </p>
+                        @endif
+                    @endif
 
                     <ul class="space-y-1.5 mt-3">
                         @foreach((new \App\Services\TagRenderer($branch->tags))->getTagTexts() as $line)
