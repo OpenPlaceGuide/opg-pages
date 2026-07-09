@@ -160,6 +160,12 @@ YAML;
 
         $places = (new Overpass())->fetchOsmOverview($type, $area);
 
+        // Featured places (those with a curated page in our data) float to the
+        // top. usort is stable in PHP 8, so Overpass's order is kept within each
+        // group.
+        usort($places, fn($a, $b) =>
+            (int) $this->repository->isFeatured($b->idInfo) <=> (int) $this->repository->isFeatured($a->idInfo));
+
         $logoUrl = $type->getLogoUrl();
 
         // Get subarea information if there are any subareas
