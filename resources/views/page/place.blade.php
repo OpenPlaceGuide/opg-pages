@@ -71,6 +71,10 @@
                         $qaPhones = $qaTags->phone ?? $qaTags->{'contact:phone'} ?? '';
                         $qaPhones = array_values(array_filter(array_map('trim', preg_split('/[;,]/', $qaPhones))));
                         $qaWebsite = \App\Services\TagRenderer::safeWebsiteUrl($qaTags->website ?? $qaTags->{'contact:website'} ?? null);
+                        // Social handles are usually stored as a bare username in Ethiopia,
+                        // but a full profile URL occurs too; socialUrl() handles both.
+                        $qaTiktok = \App\Services\TagRenderer::socialUrl('tiktok', $qaTags->{'contact:tiktok'} ?? $qaTags->tiktok ?? null);
+                        $qaInstagram = \App\Services\TagRenderer::socialUrl('instagram', $qaTags->{'contact:instagram'} ?? $qaTags->instagram ?? null);
                     @endphp
                     <p class="mt-4 flex flex-wrap items-center gap-2">
                         @foreach($qaPhones as $qaPhone)
@@ -83,6 +87,18 @@
                             <a href="{{ $qaWebsite }}" target="_blank" rel="noopener" class="btn-quiet">
                                 <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M2 12h20"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
                                 Website
+                            </a>
+                        @endif
+                        @if($qaTiktok)
+                            <a href="{{ $qaTiktok }}" target="_blank" rel="noopener" class="btn-quiet">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.53 1.5h3.02c.18 1.6.98 3.06 2.2 4.05a5.9 5.9 0 0 0 3.25 1.28v3.05a9 9 0 0 1-3.9-.9 9.4 9.4 0 0 1-1.53-.94l.02 6.63a6.63 6.63 0 1 1-5.7-6.57v3.24a3.4 3.4 0 1 0 2.42 3.26V1.5z"/></svg>
+                                TikTok
+                            </a>
+                        @endif
+                        @if($qaInstagram)
+                            <a href="{{ $qaInstagram }}" target="_blank" rel="noopener" class="btn-quiet">
+                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+                                Instagram
                             </a>
                         @endif
                         {{-- Links to the place's main map page (e.g. /node/12345): OsmApp has a
