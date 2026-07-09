@@ -115,9 +115,11 @@
         <div class="px-5 py-2 max-w-5xl mx-auto">
             <div class="flex flex-wrap items-start justify-between gap-3">
                 <p class="m-0 text-sm md:text-base">
-                    Welcome to the <a href="{{ url('/') }}">{{ config('app.name') }}</a> page of
-                    <strong>{{ Fallback::field($main->tags, 'name') }}</strong>, a
-                    <strong>{{ Fallback::resolve($type->name) }}</strong>.
+                    <strong>{{ Fallback::field($main->tags, 'name') }}</strong> is a
+                    <strong>{{ Fallback::resolve($type->name) }}</strong>
+                    in in {{ $branches[0]?->area?->getFullName() }}.  
+                    On this <a href="{{ url('/') }}">{{ config('app.name') }}</a> page,
+                    you find a location map, street side images, reviews and other information.
                 </p>
                 @if($newPlaceUrl)
                     <p class="m-0">
