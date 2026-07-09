@@ -34,7 +34,7 @@ class Repository
 
         $gallery = $parsed['gallery'] ?? [];
 
-        return new Place($this, $slug, $parsed['logo'], $parsed['color'], $branches, $gallery);
+        return new Place($this, $slug, $parsed['logo'] ?? null, $parsed['color'] ?? null, $branches, $gallery);
     }
 
     private function getPlaceFileName($slug): string
