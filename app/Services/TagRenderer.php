@@ -8,6 +8,18 @@ use Ujamii\OsmOpeningHours\OsmStringToOpeningHoursConverter;
 
 class TagRenderer
 {
+    /**
+     * Supported social/contact platforms. Each entry maps the OSM tag key to the
+     * display label and the profile-URL prefix used for bare handles.
+     */
+    private const SOCIAL_PLATFORMS = [
+        'tiktok'    => ['label' => 'TikTok',    'baseUrl' => 'https://www.tiktok.com/@'],
+        'instagram' => ['label' => 'Instagram', 'baseUrl' => 'https://www.instagram.com/'],
+        'telegram'  => ['label' => 'Telegram',  'baseUrl' => 'https://t.me/'],
+        'facebook'  => ['label' => 'Facebook',  'baseUrl' => 'https://www.facebook.com/'],
+        'whatsapp'  => ['label' => 'WhatsApp',  'baseUrl' => 'https://wa.me/'],
+    ];
+
     public function __construct(private readonly stdClass $tags)
     {
     }
@@ -46,12 +58,30 @@ class TagRenderer
     }
 
     /**
+     * Normalise a bare social handle. Most platforms allow a leading "@" that
+     * should be stripped; WhatsApp values are phone numbers, so spaces,
+     * non-digit characters and the leading "+" are removed for the wa.me link.
+     */
+    private static function normalizeSocialHandle(string $platform, string $handle): string
+    {
+        $handle = ltrim($handle, '@');
+        return match ($platform) {
+            'whatsapp' => preg_replace('/[^0-9]/', '', $handle),
+            default => $handle,
+        };
+    }
+
+    /**
      * Build a profile link for a social-media contact tag. OSM values are
      * either a bare username (the common case in Ethiopia, e.g. "_yenuyabi")
      * or a full profile URL. Returns a safe http(s) URL, or null if empty.
      */
     public static function socialUrl(string $platform, ?string $value): ?string
     {
+        if (!isset(self::SOCIAL_PLATFORMS[$platform])) {
+            return null;
+        }
+
         $value = trim((string) $value);
         if ($value === '') {
             return null;
@@ -64,17 +94,12 @@ class TagRenderer
             return self::safeWebsiteUrl($value);
         }
 
-        $handle = ltrim($value, '@');
+        $handle = self::normalizeSocialHandle($platform, $value);
         if ($handle === '') {
             return null;
         }
 
-        return match ($platform) {
-            'tiktok' => 'https://www.tiktok.com/@' . rawurlencode($handle),
-            'instagram' => 'https://www.instagram.com/' . rawurlencode($handle),
-            'telegram' => 'https://t.me/' . rawurlencode($handle),
-            default => null,
-        };
+        return self::SOCIAL_PLATFORMS[$platform]['baseUrl'] . rawurlencode($handle);
     }
 
     /**
@@ -99,25 +124,28 @@ class TagRenderer
     }
 
     /**
-     * Business-wide social links for a set of POIs. Collects tiktok/instagram/
-     * telegram from every POI and keeps the first of each platform, so a chain
-     * shows one link per network rather than one per branch.
+     * Business-wide social links for a set of POIs. Collects every supported
+     * social platform from every POI and keeps the first of each platform, so a
+     * chain shows one link per network rather than one per branch.
      *
      * @param iterable<object> $tagsList
-     * @return array<string,string> platform => URL
+     * @return array<string, array{url: string, label: string}> platform => metadata
      */
     public static function socialLinks(iterable $tagsList): array
     {
         $links = [];
         foreach ($tagsList as $tags) {
-            foreach (['tiktok', 'instagram', 'telegram'] as $platform) {
+            foreach (array_keys(self::SOCIAL_PLATFORMS) as $platform) {
                 if (isset($links[$platform])) {
                     continue;
                 }
                 $raw = $tags->{'contact:' . $platform} ?? $tags->{$platform} ?? null;
                 $url = self::socialUrl($platform, $raw);
                 if ($url !== null) {
-                    $links[$platform] = $url;
+                    $links[$platform] = [
+                        'url' => $url,
+                        'label' => self::SOCIAL_PLATFORMS[$platform]['label'],
+                    ];
                 }
             }
         }
