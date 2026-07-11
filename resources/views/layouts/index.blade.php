@@ -41,8 +41,10 @@
 </main>
 <footer class="mt-auto border-t-2 border-edge bg-soft">
     <div class="max-w-5xl mx-auto px-5 py-6 text-sm flex flex-wrap items-center justify-between gap-x-8 gap-y-4">
-        <p class="m-0">&copy; OdBL <a href="https://openstreetmap.org/">OpenStreetMap</a> contributors &amp;
-            <a href="https://openplaceguide.org">OpenPlaceGuide</a> data repository contributors</p>
+        <p class="m-0">&copy; OdBL <a href="https://openstreetmap.org/" target="_blank">OpenStreetMap</a> contributors &amp;
+            <a href="https://openplaceguide.org/" target="_blank">OpenPlaceGuide</a> data repository contributors &
+            <a href="https://mangrove.reviews/" target="_blank">Mangrove</a> Reviewers
+        </p>
         <div class="flex flex-wrap items-center gap-x-8 gap-y-4">
             @php($footerArea = $area ?? ($main ?? null)?->area)
             @if($footerArea?->idInfo)
@@ -51,8 +53,9 @@
             <p class="m-0"><a href="https://github.com/OpenPlaceGuide/opg-pages">Source code</a> (AGPL)</p>
             <div class="flex items-center gap-3">
                 @if($dataStoredAt = \App\Services\Cache::getOldestStoredAt())
+                    @php($dataDate = \Illuminate\Support\Carbon::createFromTimestamp($dataStoredAt))
                     <p class="m-0 text-ink/70" title="When the oldest data on this page was fetched">
-                        Data as of <time datetime="{{ gmdate('Y-m-d\TH:i:s\Z', $dataStoredAt) }}">{{ gmdate('j M Y, H:i', $dataStoredAt) }} UTC</time>
+                        Data as of <time datetime="{{ $dataDate->format('Y-m-d\TH:i:sP') }}">{{ $dataDate->format('j M Y, H:i T') }}</time>
                     </p>
                 @endif
                 {{-- No @csrf: this page is publicly cached, so a token here would
