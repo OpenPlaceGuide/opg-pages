@@ -69,24 +69,12 @@
                 @endphp
                 @if(!empty($socialLinks))
                     <p class="mt-4 flex flex-wrap items-center gap-2">
-                        @isset($socialLinks['tiktok'])
-                            <a href="{{ $socialLinks['tiktok'] }}" target="_blank" rel="noopener" class="btn-quiet">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12.53 1.5h3.02c.18 1.6.98 3.06 2.2 4.05a5.9 5.9 0 0 0 3.25 1.28v3.05a9 9 0 0 1-3.9-.9 9.4 9.4 0 0 1-1.53-.94l.02 6.63a6.63 6.63 0 1 1-5.7-6.57v3.24a3.4 3.4 0 1 0 2.42 3.26V1.5z"/></svg>
-                                TikTok
+                        @foreach($socialLinks as $platform => $link)
+                            <a href="{{ $link['url'] }}" target="_blank" rel="noopener" class="btn-quiet">
+                                @include('components.icons.social-' . $platform)
+                                {{ $link['label'] }}
                             </a>
-                        @endisset
-                        @isset($socialLinks['instagram'])
-                            <a href="{{ $socialLinks['instagram'] }}" target="_blank" rel="noopener" class="btn-quiet">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
-                                Instagram
-                            </a>
-                        @endisset
-                        @isset($socialLinks['telegram'])
-                            <a href="{{ $socialLinks['telegram'] }}" target="_blank" rel="noopener" class="btn-quiet">
-                                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M21.94 4.4l-3.33 15.7c-.25 1.11-.91 1.38-1.84.86l-5.1-3.76-2.46 2.37c-.27.27-.5.5-1.02.5l.36-5.2 9.46-8.55c.41-.36-.09-.57-.64-.2L5.94 13.4l-5.03-1.57c-1.1-.34-1.12-1.09.23-1.62L20.5 2.9c.91-.34 1.71.2 1.44 1.5z"/></svg>
-                                Telegram
-                            </a>
-                        @endisset
+                        @endforeach
                     </p>
                 @endif
 

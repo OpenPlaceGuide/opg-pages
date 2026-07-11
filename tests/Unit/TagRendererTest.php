@@ -43,6 +43,8 @@ class TagRendererTest extends TestCase
         $this->assertSame('https://www.tiktok.com/@_yenuyabi', TagRenderer::socialUrl('tiktok', '@_yenuyabi'));
         $this->assertSame('https://www.instagram.com/yene.habesha', TagRenderer::socialUrl('instagram', 'yene.habesha'));
         $this->assertSame('https://t.me/yene_habesha', TagRenderer::socialUrl('telegram', 'yene_habesha'));
+        $this->assertSame('https://www.facebook.com/yene.habesha', TagRenderer::socialUrl('facebook', 'yene.habesha'));
+        $this->assertSame('https://wa.me/251911111111', TagRenderer::socialUrl('whatsapp', '+251 91 111 1111'));
     }
 
     public function test_social_url_passes_through_full_urls_via_the_sanitiser(): void
@@ -51,6 +53,8 @@ class TagRendererTest extends TestCase
         $this->assertSame('https://t.me/yene_habesha', TagRenderer::socialUrl('telegram', 'https://t.me/yene_habesha'));
         // Scheme-less path values still get https, not a bogus handle link.
         $this->assertSame('https://tiktok.com/@x', TagRenderer::socialUrl('tiktok', 'tiktok.com/@x'));
+        $this->assertSame('https://www.facebook.com/yene.habesha', TagRenderer::socialUrl('facebook', 'www.facebook.com/yene.habesha'));
+        $this->assertSame('https://wa.me/251911111111', TagRenderer::socialUrl('whatsapp', 'https://wa.me/251911111111'));
     }
 
     public function test_social_url_never_produces_a_dangerous_scheme(): void
@@ -82,8 +86,14 @@ class TagRendererTest extends TestCase
         $branchB = (object) ['contact:tiktok' => 'ignored_second', 'contact:telegram' => 'yene_habesha'];
 
         $this->assertSame([
-            'tiktok' => 'https://www.tiktok.com/@___yenuyabi',
-            'telegram' => 'https://t.me/yene_habesha',
+            'tiktok' => [
+                'url' => 'https://www.tiktok.com/@___yenuyabi',
+                'label' => 'TikTok',
+            ],
+            'telegram' => [
+                'url' => 'https://t.me/yene_habesha',
+                'label' => 'Telegram',
+            ],
         ], TagRenderer::socialLinks([$branchA, $branchB]));
     }
 
