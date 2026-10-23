@@ -3,13 +3,12 @@
 namespace Tests\Services;
 
 use App\Services\Language;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class LanguageTest extends TestCase
 {
-    /**
-     * @dataProvider transliterateData
-     */
+    #[DataProvider('transliterateData')]
     public function testTransliterate($expected, $actual)
     {
         self::assertEquals($expected, Language::transliterate($actual));
