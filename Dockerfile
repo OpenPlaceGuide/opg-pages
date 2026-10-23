@@ -13,7 +13,7 @@ RUN npm install && npm run build
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-ARG PHP_VERSION=8.1
+ARG PHP_VERSION=8.3
 
 RUN <<EOF
 set -eo pipefail
@@ -61,7 +61,7 @@ EOF
 
 EXPOSE 8000
 
-RUN apk add --no-cache zip php-8.1 php-8.1-intl php-8.1-gd php-8.1-cgi php-8.1-phar php-8.1-iconv php-8.1-mbstring php-8.1-openssl php-8.1-dom php-8.1-curl php-8.1-simplexml php-8.1-pdo php-8.1-pdo_sqlite curl
+RUN apk add --no-cache zip php-${PHP_VERSION} php-${PHP_VERSION}-intl php-${PHP_VERSION}-gd php-${PHP_VERSION}-cgi php-${PHP_VERSION}-phar php-${PHP_VERSION}-iconv php-${PHP_VERSION}-mbstring php-${PHP_VERSION}-openssl php-${PHP_VERSION}-dom php-${PHP_VERSION}-curl php-${PHP_VERSION}-simplexml php-${PHP_VERSION}-pdo php-${PHP_VERSION}-pdo_sqlite curl
 
 #ENV LOG_CHANNEL=stderr
 
