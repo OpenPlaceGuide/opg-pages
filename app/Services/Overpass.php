@@ -21,7 +21,7 @@ class Overpass
      * @return array<OsmInfo>
      * @throws GuzzleException
      */
-    public function fetchOsmInfo(array $places, array $areas = null): array
+    public function fetchOsmInfo(array $places, ?array $areas = null): array
     {
         $objectQuerys = '';
         foreach ($places as $place) {
@@ -60,7 +60,7 @@ class Overpass
     }
 
 
-    protected function cachedRunQuery(string $objectQueries, array $areas = null)
+    protected function cachedRunQuery(string $objectQueries, ?array $areas = null)
     {
         return $this->cachedRunRawQuery($this->buildQuery($objectQueries, $areas));
     }
@@ -128,7 +128,7 @@ class Overpass
      * @param array<Area>|null $areas
      * @return string
      */
-    protected function buildQuery(string $objectQuerys, array $areas = null): string
+    protected function buildQuery(string $objectQuerys, ?array $areas = null): string
     {
         if ($areas !== null) {
             $areasQuery = '';
@@ -167,7 +167,7 @@ OVERPASS;
         return $query;
     }
 
-    private function createOsmInfoFromElement(mixed $element, Area $area = null)
+    private function createOsmInfoFromElement(mixed $element, ?Area $area = null)
     {
         $idInfo = new OsmId($element->type, $element->id);
 
