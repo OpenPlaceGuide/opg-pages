@@ -15,7 +15,7 @@ Example URLs:
 ## Stack
 
 * Laravel 13
-* PHP 8.3
+* PHP 8.4
 
 ## Versioning
 

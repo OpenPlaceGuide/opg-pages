@@ -32,7 +32,7 @@ docker compose up -d
 ## Architecture
 
 ### Technology Stack
-- **Backend**: Laravel 13, PHP 8.3+
+- **Backend**: Laravel 13, PHP 8.4+
 - **Frontend**: TailwindCSS 3.3, Alpine.js 3.12, Vite 4.0
 - **Data**: Git-based repository with YAML configuration files
 - **APIs**: Overpass (OpenStreetMap), Mapillary (street view images)

@@ -13,7 +13,7 @@ RUN npm install && npm run build
 
 FROM cgr.dev/chainguard/wolfi-base:latest
 
-ARG PHP_VERSION=8.3
+ARG PHP_VERSION=8.4
 
 RUN <<EOF
 set -eo pipefail
